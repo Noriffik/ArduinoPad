@@ -411,7 +411,10 @@ public class MainActivity extends Activity
         }
         
         if (isReceiverRegistered)
-        	unregisterReceiver(broadcastReceiver);
+        {
+            unregisterReceiver(broadcastReceiver);
+            isReceiverRegistered = false;
+        }
     }
 
     @Override
@@ -419,6 +422,12 @@ public class MainActivity extends Activity
     {
         super.onPause();
         if (D) Log.d(TAG, "- ON PAUSE -");
+
+        if (isReceiverRegistered)
+        {
+            unregisterReceiver(broadcastReceiver);
+            isReceiverRegistered = false;
+        }
     }
 
     @Override
@@ -426,6 +435,12 @@ public class MainActivity extends Activity
     {
         super.onStop();
         if (D) Log.d(TAG, "-- ON STOP --");
+
+        if (isReceiverRegistered)
+        {
+            unregisterReceiver(broadcastReceiver);
+            isReceiverRegistered = false;
+        }
     }
     
     private TextWatcher searchBoxTextChangedListener = new TextWatcher()
