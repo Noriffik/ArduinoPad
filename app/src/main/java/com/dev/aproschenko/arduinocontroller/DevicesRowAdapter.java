@@ -1,4 +1,4 @@
-package com.dev.aproschenko.arduinopad;
+package com.dev.aproschenko.arduinocontroller;
 
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.dev.aproschenko.arduinopad.MainActivity.SortType;
+import com.dev.aproschenko.arduinocontroller.MainActivity.SortType;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,6 +1,6 @@
-package com.dev.aproschenko.arduinopad;
+package com.dev.aproschenko.arduinocontroller;
 
-import com.dev.aproschenko.arduinopad.MainActivity.SortType;
+import com.dev.aproschenko.arduinocontroller.MainActivity.SortType;
 
 import java.util.ArrayList;
 

@@ -10,25 +10,25 @@
         <AbsoluteLayout android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-            <com.dev.aproschenko.arduinopad.OrientationView
+            <com.dev.aproschenko.arduinocontroller.OrientationView
                     android:id="@+id/forwardView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                  />
 
-            <com.dev.aproschenko.arduinopad.OrientationView
+            <com.dev.aproschenko.arduinocontroller.OrientationView
                     android:id="@+id/backwardView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     />
 
-            <com.dev.aproschenko.arduinopad.OrientationView
+            <com.dev.aproschenko.arduinocontroller.OrientationView
                     android:id="@+id/leftView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     />
 
-            <com.dev.aproschenko.arduinopad.OrientationView
+            <com.dev.aproschenko.arduinocontroller.OrientationView
                     android:id="@+id/rightView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"

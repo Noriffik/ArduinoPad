@@ -1,4 +1,4 @@
-package com.dev.aproschenko.arduinopad;
+package com.dev.aproschenko.arduinocontroller;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

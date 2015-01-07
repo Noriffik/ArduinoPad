@@ -1,4 +1,4 @@
-package com.dev.aproschenko.arduinopad;
+package com.dev.aproschenko.arduinocontroller;
 
 import android.content.Context;
 import android.graphics.Color;

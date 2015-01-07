@@ -1,4 +1,4 @@
-package com.dev.aproschenko.arduinopad;
+package com.dev.aproschenko.arduinocontroller;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,7 +30,7 @@ public class MainActivity extends Activity
     private static final String TAG = "MainActivity";
     private static final boolean D = true;
     
-    public static final String PREFS_NAME = "com.note4me.arduinopad.txt";
+    public static final String PREFS_NAME = "com.dev.aproschenko.arduinocontroller.txt";
     public static final String PREFS_KEY_COMMAND = "command";
     public static final String PREFS_KEY_SORTTYPE = "sorttype";
     public static final String PREFS_KEY_COLLECT_DEVICES = "collectdevices";

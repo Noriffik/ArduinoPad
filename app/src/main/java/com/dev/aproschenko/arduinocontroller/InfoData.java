@@ -1,4 +1,4 @@
-package com.dev.aproschenko.arduinopad;
+package com.dev.aproschenko.arduinocontroller;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
