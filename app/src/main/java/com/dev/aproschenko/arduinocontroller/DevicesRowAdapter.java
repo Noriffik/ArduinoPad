@@ -68,7 +68,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    ImageView deviceIcon = (ImageView) rowView.findViewById(R.id.deviceIcon);
 	    TextView deviceServices = (TextView) rowView.findViewById(R.id.deviceServices);
 
-	    String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? "bonded" : "";
+	    String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getResources().getString(R.string.bonded) : "";
 
 	    deviceName.setText(device.getName());
 	    deviceState.setText(bondedState);
@@ -89,35 +89,35 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    switch (majorClass)
 	    {
 	    	case BluetoothClass.Device.Major.UNCATEGORIZED:
-	    		deviceDesc.setText("Uncategorized");
+	    		deviceDesc.setText(context.getResources().getString(R.string.uncategorized));
 	    		deviceIcon.setImageResource(R.drawable.icomisc);
 	    		break;
 	    	case BluetoothClass.Device.Major.HEALTH:
-	    		deviceDesc.setText("Health");
+	    		deviceDesc.setText(context.getResources().getString(R.string.health));
 	    		deviceIcon.setImageResource(R.drawable.icohealth);
 	    		break;
 	    	case BluetoothClass.Device.Major.TOY:
-	    		deviceDesc.setText("Toy");
+	    		deviceDesc.setText(context.getResources().getString(R.string.toy));
 	    		deviceIcon.setImageResource(R.drawable.icotoy);
 	    		break;
 	    	case BluetoothClass.Device.Major.IMAGING:
-	    		deviceDesc.setText("Imaging");
+	    		deviceDesc.setText(context.getResources().getString(R.string.imaging));
 	    		deviceIcon.setImageResource(R.drawable.icomisc);
 	    		break;
 	    	case BluetoothClass.Device.Major.NETWORKING:
-	    		deviceDesc.setText("Networking");
+	    		deviceDesc.setText(context.getResources().getString(R.string.networking));
 	    		deviceIcon.setImageResource(R.drawable.iconetworking);
 	    		break;
 	    	case BluetoothClass.Device.Major.PERIPHERAL:
-	    		deviceDesc.setText("Peripheral");
+	    		deviceDesc.setText(context.getResources().getString(R.string.peripheral));
 	    		deviceIcon.setImageResource(R.drawable.icoperipheral);
 	    		break;
 	    	case BluetoothClass.Device.Major.MISC:
-	    		deviceDesc.setText("Mics");
+	    		deviceDesc.setText(context.getResources().getString(R.string.misc));
 	    		deviceIcon.setImageResource(R.drawable.icomisc);
 	    		break;
 	    	case BluetoothClass.Device.Major.WEARABLE:
-	    		deviceDesc.setText("Wearable");
+	    		deviceDesc.setText(context.getResources().getString(R.string.wearable));
 	    		deviceIcon.setImageResource(R.drawable.icomisc);
 	    		break;
 
@@ -125,7 +125,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    		switch (deviceClass)
 	    		{
 	    			case BluetoothClass.Device.PHONE_CELLULAR:
-	    				deviceDesc.setText("Phone (cellular)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.phone_cellular));
 	    				deviceIcon.setImageResource(R.drawable.icophone);
 	    				break;
 	    			case BluetoothClass.Device.PHONE_CORDLESS:
@@ -133,11 +133,11 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    				deviceIcon.setImageResource(R.drawable.icophone);
 	    				break;
 	    			case BluetoothClass.Device.PHONE_SMART:
-	    				deviceDesc.setText("Phone (smart)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.phone_smart));
 	    				deviceIcon.setImageResource(R.drawable.icosmart);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE:
-	    				deviceDesc.setText("AV (handsfree)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.av_handsfree));
 	    				deviceIcon.setImageResource(R.drawable.icohandsfree);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET:
@@ -177,7 +177,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    				deviceIcon.setImageResource(R.drawable.icoloudspeakerdisplay);
 	    				break;
 	    			default:
-	    				deviceDesc.setText("Unknown");
+	    				deviceDesc.setText(context.getResources().getString(R.string.unknown));
 	    				deviceIcon.setImageResource(R.drawable.icomisc);
 	    				break;
 	    		}

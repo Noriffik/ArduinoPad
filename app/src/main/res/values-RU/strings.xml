@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Arduino Controller</string>
+    <string name="bt_devices_to_connect">Устройства Bluetooth для подключения:</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="brightness_control">Яркость:</string>
+    <string name="speed_control">Скорость:</string>
+    <string name="button_message">Команда:</string>
+    <string name="search_finished">Поиск завершен</string>
+    <string name="empty_device_name">&lt;empty&gt;</string>
+    <string name="bt_not_enabled_leaving">Bluetooth выключен.</string>
+    <string name="no_bt_support">Устройство не поддерживает Bluetooth.</string>
+    <string name="enable_bt">Включить Bluetooth</string>
+    <string name="connect">Подключить</string>
+    <string name="disconnect">Отключить</string>
+    <string name="device_info">Об устройстве</string>
+    <string name="search_for_devices">Поиск устройств</string>
+    <string name="sort_by_services">Сортировка по сервисам</string>
+    <string name="sort_by_type">Сортировка по типу</string>
+    <string name="sort_by_name">Сортировка по имени</string>
+    <string name="device_name_to_search">Имя для поиска...</string>
+    <string name="no_services">Устройства без сервисов</string>
+    <string name="filter_av">Аудио-Видео</string>
+    <string name="filter_computer">Компьютер</string>
+    <string name="filter_health">Здоровье</string>
+    <string name="filter_misc">Разное</string>
+    <string name="filter_imaging">Отображение</string>
+    <string name="filter_networking">Сетевое устройство</string>
+    <string name="filter_peripheral">Перифирия</string>
+    <string name="filter_phone">Телефон</string>
+    <string name="filter_toy">Игрушка</string>
+    <string name="filter_wearable">Переносное устройство</string>
+    <string name="filter_uncategorized">Без категории</string>
+    <string name="sort_by_bonded_state">Сортировка по подключению</string>
+    <string name="log_dlg_title">Журнал</string>
+    <string name="save_settings">Сохранить настройки</string>
+    <string name="show_log">Показать журнал</string>
+    <string name="collect_devices">Сбор устройств</string>
+    <string name="searching">Поиск...</string>
+    <string name="stop">Прервать</string>
+    <string name="bonded">подключено</string>
+    <string name="peripheral">Перифирия</string>
+    <string name="uncategorized">Без категории</string>
+    <string name="health">Здоровье</string>
+    <string name="toy">Игрушка</string>
+    <string name="imaging">Отображение</string>
+    <string name="networking">Сетевое устройство</string>
+    <string name="wearable">Носимое устройство</string>
+    <string name="misc">Разное</string>
+    <string name="unknown">Неизвестное устройство</string>
+    <string name="phone_cellular">Телефон (сотовый)</string>
+    <string name="phone_smart">Смартфон</string>
+    <string name="av_handsfree">Гарнитура</string>
+    <string name="unable_connect_to">Не могу подключиться к %s</string>
+    <string name="connection_was_lost">Подключение к %s было потеряно</string>
+    <string name="connected_to">Подключено к %s</string>
+    <string name="connecting_to">Подключение к %s</string>
+    <string name="is_not_connected">%s не подключено</string>
+
+</resources>

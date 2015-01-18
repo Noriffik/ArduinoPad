@@ -275,7 +275,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
 		DeviceData data = new DeviceData(connectedDevice, emptyName);
 
-		connector = new DeviceConnector(data, mHandler);
+		connector = new DeviceConnector(this, data, mHandler);
 		connector.connect();
 	}
 
@@ -586,15 +586,15 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 	            	switch (msg.arg1)
 	                {
 		                case DeviceConnector.STATE_CONNECTED:
-		                	messageText = "Connected to " + connectedDeviceName;
+		                	messageText = String.format(getResources().getString(R.string.connected_to), connectedDeviceName);
 		                	setTitle(messageText);
 		                    break;
 		                case DeviceConnector.STATE_CONNECTING:
-		                	messageText = "Connecting to " + connectedDeviceName;
+		                	messageText = String.format(getResources().getString(R.string.connecting_to), connectedDeviceName);
 		                	setTitle(messageText);
 		                    break;
 		                case DeviceConnector.STATE_NONE:
-		                	messageText = connectedDeviceName + " is not connected";
+		                	messageText = String.format(getResources().getString(R.string.is_not_connected), connectedDeviceName);
 		                	setTitle(messageText);
 		                    break;
 	                }

@@ -3,6 +3,7 @@ package com.dev.aproschenko.arduinocontroller;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,10 +32,12 @@ public class DeviceConnector {
 	private ConnectedThread mConnectedThread;
 	private final Handler mHandler;
 	private DeviceData mDeviceData;
+    private Context mContext;
 
-	public DeviceConnector(DeviceData deviceData, Handler handler) {
+	public DeviceConnector(Context context, DeviceData deviceData, Handler handler) {
 		mHandler = handler;
 		mDeviceData = deviceData;
+        mContext = context;
 
 		btAdapter = BluetoothAdapter.getDefaultAdapter();
 		connectedDevice = btAdapter.getRemoteDevice(mDeviceData.getAddress());
@@ -153,11 +156,9 @@ public class DeviceConnector {
 			Log.d(TAG, "connectionFailed");
 
 		// Send a failure message back to the Activity
-		Message msg = mHandler
-				.obtainMessage(DeviceControlActivity.MESSAGE_TOAST);
+		Message msg = mHandler.obtainMessage(DeviceControlActivity.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
-		bundle.putString(DeviceControlActivity.TOAST, "Unable connect to "
-				+ mDeviceData.getName());
+		bundle.putString(DeviceControlActivity.TOAST, String.format(mContext.getResources().getString(R.string.unable_connect_to), mDeviceData.getName()));
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 
@@ -166,11 +167,9 @@ public class DeviceConnector {
 
 	private void connectionLost() {
 		// Send a failure message back to the Activity
-		Message msg = mHandler
-				.obtainMessage(DeviceControlActivity.MESSAGE_TOAST);
+		Message msg = mHandler.obtainMessage(DeviceControlActivity.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
-		bundle.putString(DeviceControlActivity.TOAST, "Connection to "
-				+ mDeviceData.getName() + " was lost");
+		bundle.putString(DeviceControlActivity.TOAST, String.format(mContext.getResources().getString(R.string.connection_was_lost), mDeviceData.getName()));
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 
@@ -312,8 +311,7 @@ public class DeviceConnector {
 			try {
 				mmOutStream.write(buffer);
 				// Share the sent message back to the UI Activity
-				mHandler.obtainMessage(DeviceControlActivity.MESSAGE_WRITE, -1,
-						-1, buffer).sendToTarget();
+				mHandler.obtainMessage(DeviceControlActivity.MESSAGE_WRITE, -1,	-1, buffer).sendToTarget();
 			} catch (IOException e) {
 				if (D)
 					Log.e(TAG, "Exception during write", e);

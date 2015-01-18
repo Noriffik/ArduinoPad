@@ -37,5 +37,25 @@
     <string name="save_settings">Save settings</string>
     <string name="show_log">Show log</string>
     <string name="collect_devices">Collect devices</string>
-    
+    <string name="searching">Searching...</string>
+    <string name="stop">Stop</string>
+    <string name="bonded">bonded</string>
+    <string name="peripheral">Peripheral</string>
+    <string name="uncategorized">Uncategorized</string>
+    <string name="health">Health</string>
+    <string name="toy">Toy</string>
+    <string name="imaging">Imaging</string>
+    <string name="networking">Networking</string>
+    <string name="wearable">Wearable</string>
+    <string name="misc">Misc</string>
+    <string name="unknown">Unknown</string>
+    <string name="phone_cellular">Phone (cellular)</string>
+    <string name="phone_smart">Phone (smart)</string>
+    <string name="av_handsfree">AV (handsfree)</string>
+    <string name="unable_connect_to">Unable connect to %s</string>
+    <string name="connection_was_lost">Connection to %s was lost</string>
+    <string name="connected_to">Connected to %s</string>
+    <string name="connecting_to">Connecting to %s</string>
+    <string name="is_not_connected">%s is not connected</string>
+
 </resources>

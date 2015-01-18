@@ -123,9 +123,9 @@ public class MainActivity extends Activity
 			deserializeDevices();
 		
         loadingDialog = new ProgressDialog(context);
-        loadingDialog.setMessage("Searching...");
+        loadingDialog.setMessage(getResources().getString(R.string.searching));
         loadingDialog.setCancelable(false);
-        loadingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Stop", new DialogInterface.OnClickListener()
+        loadingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.stop), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
