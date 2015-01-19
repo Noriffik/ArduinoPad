@@ -294,8 +294,7 @@ public class DeviceConnector {
 					bytes = mmInStream.read(buffer);
 
 					// Send the obtained bytes to the UI Activity
-					mHandler.obtainMessage(DeviceControlActivity.MESSAGE_READ,
-							bytes, -1, buffer).sendToTarget();
+					mHandler.obtainMessage(DeviceControlActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 				} catch (IOException e) {
 					if (D)
 						Log.e(TAG, "disconnected", e);

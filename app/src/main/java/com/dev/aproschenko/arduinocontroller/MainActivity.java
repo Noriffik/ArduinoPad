@@ -152,7 +152,7 @@ public class MainActivity extends Activity
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		
 		String defaultCmd = DeviceControlActivity.NOT_SET_TEXT;		
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < DeviceControlActivity.BTN_COUNT; i++)
 		{
 			String cmd = settings.getString(PREFS_KEY_COMMAND + i, "");
 			if (cmd.isEmpty())

@@ -48,6 +48,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private ArrayList<Button> padButtons = new ArrayList<Button>();
     private ArrayList<Integer> padButtonsIds = new ArrayList<Integer>();
     private ArrayList<Rect> padButtonsRect = new ArrayList<Rect>();
+    public static final int BTN_COUNT = 16;
 
     private Button buttonSaveSettings;
     private OrientationView forwardView;
@@ -288,7 +289,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
             padButtons.add(btn);
         }
 
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < padButtons.size(); i++)
         {
             Button btn = padButtons.get(i);
             String cmd = MainActivity.buttonCommands.get(i);
@@ -373,7 +374,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     		setSettingsMode(false);
     		checkButtonLabels();
 
-    		for (int i = 0; i < 12; i++)
+    		for (int i = 0; i < padButtons.size(); i++)
     		{
     			Button btn = padButtons.get(i);
     			String cmd = btn.getText().toString();
@@ -390,13 +391,13 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 		SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
 
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < padButtons.size(); i++)
 		{
 			String cmd = MainActivity.buttonCommands.get(i);
 			editor.putString(MainActivity.PREFS_KEY_COMMAND + i, cmd);
 		}
 
-		editor.commit();
+		editor.apply();
 	}
 
 	@Override
@@ -605,8 +606,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 	                break;
 
 	            case MESSAGE_DEVICE_NAME:
-	                Toast.makeText(getApplicationContext(), "Successfully connected to " + connectedDeviceName,
-	                		Toast.LENGTH_SHORT).show();
+	                Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.successfully_connected_to), connectedDeviceName), Toast.LENGTH_SHORT).show();
 	                break;
 
 	            case MESSAGE_WRITE:
@@ -623,8 +623,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 	                break;
 
 	            case MESSAGE_TOAST:
-	                Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
-	                        Toast.LENGTH_SHORT).show();
+	                Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
 	                break;
             }
         }

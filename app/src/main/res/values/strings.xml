@@ -57,5 +57,6 @@
     <string name="connected_to">Connected to %s</string>
     <string name="connecting_to">Connecting to %s</string>
     <string name="is_not_connected">%s is not connected</string>
+    <string name="successfully_connected_to">Successfully connected to %s</string>
 
 </resources>

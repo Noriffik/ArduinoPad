@@ -57,5 +57,6 @@
     <string name="connected_to">Подключено к %s</string>
     <string name="connecting_to">Подключение к %s</string>
     <string name="is_not_connected">%s не подключено</string>
+    <string name="successfully_connected_to">Подключено к %s</string>
 
 </resources>
