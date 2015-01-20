@@ -3,7 +3,10 @@ package com.dev.aproschenko.arduinocontroller;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +25,9 @@ public class OrientationView extends View
 
     public static int MAX_VALUE = 15;
     public static int MAX_POINTS = 5;
+
+    public static int START_COLOR = Color.GREEN;
+    public static int END_COLOR = Color.RED;
 
     public OrientationView(Context context)
     {
@@ -59,6 +65,29 @@ public class OrientationView extends View
         paint.setDither(true);
     }
 
+    private void drawRect(Canvas canvas, int x1, int y1, int x2, int y2)
+    {
+        Shader shader;
+        if (orientation == LinearLayout.HORIZONTAL)
+        {
+            if (gravity == Gravity.RIGHT)
+                shader = new LinearGradient(0, 0, getRight(), 0, END_COLOR, START_COLOR, Shader.TileMode.CLAMP);
+            else
+                shader = new LinearGradient(0, 0, getRight(), 0, START_COLOR, END_COLOR, Shader.TileMode.CLAMP);
+        }
+        else
+        {
+            if (gravity == Gravity.RIGHT)
+                shader = new LinearGradient(0, 0, 0, getHeight(), END_COLOR, START_COLOR, Shader.TileMode.CLAMP);
+            else
+                shader = new LinearGradient(0, 0, 0, getHeight(), START_COLOR, END_COLOR, Shader.TileMode.CLAMP);
+        }
+
+        Paint paint = new Paint();
+        paint.setShader(shader);
+        canvas.drawRect(new RectF(x1, y1, x2, y2), paint);
+    }
+
     @Override
     public void onDraw(Canvas canvas)
     {
@@ -73,14 +102,14 @@ public class OrientationView extends View
             {
                 if (value >= 0)
                 {
-                    canvas.drawRect((MAX_POINTS - cur) * size1, 0, getRight(), getHeight(), paint);
+                    drawRect(canvas, (MAX_POINTS - cur) * size1, 0, getRight(), getHeight());
                 }
             }
             else //LEFT
             {
                 if (value <= 0)
                 {
-                    canvas.drawRect(0, 0, cur * size1, getHeight(), paint);
+                    drawRect(canvas, 0, 0, cur * size1, getHeight());
                 }
             }
         }
@@ -92,14 +121,14 @@ public class OrientationView extends View
             {
                 if (value >= 0)
                 {
-                    canvas.drawRect(0, (MAX_POINTS - cur) * size1, getRight(), getHeight(), paint);
+                    drawRect(canvas, 0, (MAX_POINTS - cur) * size1, getRight(), getHeight());
                 }
             }
             else //LEFT
             {
                 if (value <= 0)
                 {
-                    canvas.drawRect(0, 0, getRight(), cur * size1, paint);
+                    drawRect(canvas, 0, 0, getRight(), cur * size1);
                 }
             }
         }

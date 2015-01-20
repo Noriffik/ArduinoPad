@@ -52,4 +52,15 @@
         android:text="TextView"
         android:textColor="#f00" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:id="@+id/deviceAddress"
+        android:textColor="#ccc"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/deviceName"
+        android:textSize="10dp" />
+
 </RelativeLayout>

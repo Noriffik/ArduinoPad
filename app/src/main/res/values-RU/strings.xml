@@ -58,5 +58,16 @@
     <string name="connecting_to">Подключение к %s</string>
     <string name="is_not_connected">%s не подключено</string>
     <string name="successfully_connected_to">Подключено к %s</string>
+    <string name="no_services_string">без сервисов</string>
+    <string name="av_headset">Наушники</string>
+    <string name="av_loudspeaker">Динамик</string>
+    <string name="av_portable">AV (переносное устройство)</string>
+    <string name="av_uncategorized">AV-устройство</string>
+    <string name="computer_desktop">Компьютер</string>
+    <string name="computer_laptop">Ноутбук</string>
+    <string name="computer_palm_pda">PDA-компьютер</string>
+    <string name="computer_server">Сервер</string>
+    <string name="av_display_loudspeaker">AV (тв-устройство)</string>
+    <string name="phone_cordless">Телефон (беспроводной)</string>
 
 </resources>

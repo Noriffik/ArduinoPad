@@ -63,6 +63,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    View rowView = inflater.inflate(R.layout.bt_device_row, parent, false);
 	    
 	    TextView deviceName = (TextView) rowView.findViewById(R.id.deviceName);
+        TextView deviceAddress = (TextView) rowView.findViewById(R.id.deviceAddress);
 	    TextView deviceDesc = (TextView) rowView.findViewById(R.id.deviceDesc);
 	    TextView deviceState = (TextView) rowView.findViewById(R.id.deviceState);
 	    ImageView deviceIcon = (ImageView) rowView.findViewById(R.id.deviceIcon);
@@ -71,8 +72,9 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getResources().getString(R.string.bonded) : "";
 
 	    deviceName.setText(device.getName());
+        deviceAddress.setText(String.format("- %s", device.getAddress()));
 	    deviceState.setText(bondedState);
-	    deviceServices.setText(device.getUuids().size() == 0 ? "no services" : "");
+	    deviceServices.setText(device.getUuids().size() == 0 ? context.getResources().getString(R.string.no_services_string) : "");
 	    
 	    deviceServices.setVisibility(deviceServices.getText().length() == 0 ? View.INVISIBLE : View.VISIBLE);
 	    deviceState.setVisibility(deviceState.getText().length() == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -129,7 +131,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    				deviceIcon.setImageResource(R.drawable.icophone);
 	    				break;
 	    			case BluetoothClass.Device.PHONE_CORDLESS:
-	    				deviceDesc.setText("Phone (cordless)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.phone_cordless));
 	    				deviceIcon.setImageResource(R.drawable.icophone);
 	    				break;
 	    			case BluetoothClass.Device.PHONE_SMART:
@@ -141,39 +143,39 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 	    				deviceIcon.setImageResource(R.drawable.icohandsfree);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET:
-	    				deviceDesc.setText("AV (headset)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.av_headset));
 	    				deviceIcon.setImageResource(R.drawable.icoheadset);
 	    				break;
 	    			case BluetoothClass.Device.COMPUTER_LAPTOP:
-	    				deviceDesc.setText("Computer (laptop)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.computer_laptop));
 	    				deviceIcon.setImageResource(R.drawable.icolaptop);
 	    				break;
 	    			case BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA:
-	    				deviceDesc.setText("Computer (palm pda)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.computer_palm_pda));
 	    				deviceIcon.setImageResource(R.drawable.icolaptop);
 	    				break;
 	    			case BluetoothClass.Device.COMPUTER_DESKTOP:
-	    				deviceDesc.setText("Computer (desktop)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.computer_desktop));
 	    				deviceIcon.setImageResource(R.drawable.icocomputer);
 	    				break;
 	    			case BluetoothClass.Device.COMPUTER_SERVER:
-	    				deviceDesc.setText("Computer (server)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.computer_server));
 	    				deviceIcon.setImageResource(R.drawable.icocomputer);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_PORTABLE_AUDIO:
-	    				deviceDesc.setText("AV (portable)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.av_portable));
 	    				deviceIcon.setImageResource(R.drawable.icoportable);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_LOUDSPEAKER:
-	    				deviceDesc.setText("AV (loudspeaker)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.av_loudspeaker));
 	    				deviceIcon.setImageResource(R.drawable.icoloudspeaker);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_UNCATEGORIZED:
-	    				deviceDesc.setText("AV (Uncategorized)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.av_uncategorized));
 	    				deviceIcon.setImageResource(R.drawable.icomisc);
 	    				break;
 	    			case BluetoothClass.Device.AUDIO_VIDEO_VIDEO_DISPLAY_AND_LOUDSPEAKER:
-	    				deviceDesc.setText("AV (display and loudspeaker)");
+	    				deviceDesc.setText(context.getResources().getString(R.string.av_display_loudspeaker));
 	    				deviceIcon.setImageResource(R.drawable.icoloudspeakerdisplay);
 	    				break;
 	    			default:
