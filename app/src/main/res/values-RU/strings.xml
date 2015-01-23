@@ -69,5 +69,9 @@
     <string name="computer_server">Сервер</string>
     <string name="av_display_loudspeaker">AV (тв-устройство)</string>
     <string name="phone_cordless">Телефон (беспроводной)</string>
+    <string name="cancel">Отмена</string>
+    <string name="device_rename">Переименовать...</string>
+    <string name="ok">OK</string>
+    <string name="device_name">Имя устройства</string>
 
 </resources>

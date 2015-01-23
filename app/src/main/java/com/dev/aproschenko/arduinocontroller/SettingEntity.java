@@ -6,21 +6,28 @@ import java.util.ArrayList;
 
 public class SettingEntity
 {
-	private ArrayList<DeviceData> devices = new ArrayList<DeviceData>();
-	private MainActivity.SortType sortType = SortType.SORT_BY_NAME;
+    private ArrayList<DeviceData> devices = new ArrayList<>();
+    private ArrayList<DeviceCustomName> customNames = new ArrayList<>();
 
-	public ArrayList<DeviceData> getDevices()
-	{
-		return devices;
-	}
+    private MainActivity.SortType sortType = SortType.SORT_BY_NAME;
 
-	public void setSortType(MainActivity.SortType value)
-	{
-		sortType = value;
-	}
+    public ArrayList<DeviceData> getDevices()
+    {
+        return devices;
+    }
 
-	public MainActivity.SortType getSortType()
-	{
-		return sortType;
-	}
+    public ArrayList<DeviceCustomName> getCustomNames()
+    {
+        return customNames;
+    }
+
+    public void setSortType(MainActivity.SortType value)
+    {
+        sortType = value;
+    }
+
+    public MainActivity.SortType getSortType()
+    {
+        return sortType;
+    }
 }

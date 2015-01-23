@@ -67,39 +67,39 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private char lastLeftCommand = leftPrefix;
 
     @Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		if (D) Log.d(TAG, "+++ ON CREATE +++");
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (D) Log.d(TAG, "+++ ON CREATE +++");
 
-		setContentView(R.layout.device_controller);
+        setContentView(R.layout.device_controller);
 
-		Intent intent = getIntent();
-		connectedDeviceName = intent.getStringExtra(MainActivity.DEVICE_NAME);
-		connectedDeviceAddress = intent.getStringExtra(MainActivity.DEVICE_ADDRESS);
+        Intent intent = getIntent();
+        connectedDeviceName = intent.getStringExtra(MainActivity.DEVICE_NAME);
+        connectedDeviceAddress = intent.getStringExtra(MainActivity.DEVICE_ADDRESS);
 
-		Integer ids[] = {
+        Integer ids[] = {
                 R.id.button1, R.id.button2, R.id.button3, R.id.button4,
-				R.id.button5, R.id.button6, R.id.button7, R.id.button8,
+                R.id.button5, R.id.button6, R.id.button7, R.id.button8,
                 R.id.button9, R.id.button10, R.id.button11, R.id.button12,
                 R.id.button13, R.id.button14, R.id.button15, R.id.button16
         };
 
-		padButtonsIds.addAll(Arrays.asList(ids));
+        padButtonsIds.addAll(Arrays.asList(ids));
 
-		setTitle(connectedDeviceName + " not connected");
+        setTitle(connectedDeviceName + " not connected");
 
-		btAdapter = BluetoothAdapter.getDefaultAdapter();
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-		setupControls();
+        setupControls();
         setupSensors();
-		enableControls();
+        enableControls();
 
-		if (connector != null)
+        if (connector != null)
         {
-        	if (D) Log.d(TAG, "+++ ON CREATE +++, connector state " + connector.getState());
+            if (D) Log.d(TAG, "+++ ON CREATE +++, connector state " + connector.getState());
         }
-	}
+    }
 
     @Override
     public void onStart()
@@ -109,7 +109,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         if (!btAdapter.isEnabled())
         {
-        	if (D) Log.d(TAG, "++ ON START BT disabled ++");
+            if (D) Log.d(TAG, "++ ON START BT disabled ++");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, MainActivity.REQUEST_ENABLE_BT);
         }
@@ -118,12 +118,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
             if (D) Log.d(TAG, "++ ON START BT enabled ++");
             if (connector == null)
             {
-            	if (D) Log.d(TAG, "++ ON START setupConnector() ++");
-            	setupConnector();
+                if (D) Log.d(TAG, "++ ON START setupConnector() ++");
+                setupConnector();
             }
             else
             {
-            	if (D) Log.d(TAG, "++ ON START ++, connector state " + connector.getState());
+                if (D) Log.d(TAG, "++ ON START ++, connector state " + connector.getState());
             }
         }
     }
@@ -138,7 +138,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         if (connector != null)
         {
-        	if (D) Log.d(TAG, "+ ON RESUME +, connector state " + connector.getState());
+            if (D) Log.d(TAG, "+ ON RESUME +, connector state " + connector.getState());
         }
     }
 
@@ -208,9 +208,9 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         if (connector != null)
         {
-        	if (D) Log.d(TAG, "--- ON DESTROY ---, connector state " + connector.getState());
-        	connector.stop();
-        	connector = null;
+            if (D) Log.d(TAG, "--- ON DESTROY ---, connector state " + connector.getState());
+            connector.stop();
+            connector = null;
         }
     }
 
@@ -224,7 +224,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         if (connector != null)
         {
-        	if (D) Log.d(TAG, "- ON PAUSE -, connector state " + connector.getState());
+            if (D) Log.d(TAG, "- ON PAUSE -, connector state " + connector.getState());
         }
     }
 
@@ -236,49 +236,49 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         if (connector != null)
         {
-        	if (D) Log.d(TAG, "-- ON STOP --, connector state " + connector.getState());
+            if (D) Log.d(TAG, "-- ON STOP --, connector state " + connector.getState());
         }
     }
 
-	@Override
-	protected void onActivityResult (int requestCode, int resultCode, Intent data)
-	{
-		super.onActivityResult(requestCode, resultCode, data);
-		if (D) Log.d(TAG, "onActivityResult " + resultCode);
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (D) Log.d(TAG, "onActivityResult " + resultCode);
 
-		if (requestCode == MainActivity.REQUEST_ENABLE_BT)
-		{
-			if (resultCode == RESULT_OK)
-			{
-				setupConnector();
-			}
-			else
-			{
+        if (requestCode == MainActivity.REQUEST_ENABLE_BT)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                setupConnector();
+            }
+            else
+            {
                 Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                 finish();
-			}
-		}
-	}
+            }
+        }
+    }
 
-	private void setupConnector()
-	{
-		if (D) Log.d(TAG, "setupConnector");
+    private void setupConnector()
+    {
+        if (D) Log.d(TAG, "setupConnector");
 
-		if (connector != null)
-		{
-			if (D) Log.d(TAG, "setupConnector connector.stop(), state " + connector.getState());
-			connector.stop();
-			connector = null;
-		}
+        if (connector != null)
+        {
+            if (D) Log.d(TAG, "setupConnector connector.stop(), state " + connector.getState());
+            connector.stop();
+            connector = null;
+        }
 
-		BluetoothDevice connectedDevice = btAdapter.getRemoteDevice(connectedDeviceAddress);
-		String emptyName = getResources().getString(R.string.empty_device_name);
+        BluetoothDevice connectedDevice = btAdapter.getRemoteDevice(connectedDeviceAddress);
+        String emptyName = getResources().getString(R.string.empty_device_name);
 
-		DeviceData data = new DeviceData(connectedDevice, emptyName);
+        DeviceData data = new DeviceData(connectedDevice, emptyName);
 
-		connector = new DeviceConnector(this, data, mHandler);
-		connector.connect();
-	}
+        connector = new DeviceConnector(this, data, mHandler);
+        connector.connect();
+    }
 
     private void setupControls()
     {
@@ -329,10 +329,10 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void checkButtonLabels()
     {
-    	for (Button btn : padButtons)
-    	{
-   			btn.setEnabled(!btn.getText().equals(NOT_SET_TEXT) || isSettingsMode);
-    	}
+        for (Button btn : padButtons)
+        {
+            btn.setEnabled(!btn.getText().equals(NOT_SET_TEXT) || isSettingsMode);
+        }
     }
 
     private void sendCommand(String command)
@@ -345,87 +345,87 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private OnClickListener btnControlClick = new OnClickListener()
     {
-    	@Override
-    	public void onClick(View v)
-    	{
-    		Button btn = (Button)v;
-    		if (isSettingsMode)
-    		{
-    			showButtonActionDialog(btn);
-    		}
-    		else
-    		{
+        @Override
+        public void onClick(View v)
+        {
+            Button btn = (Button)v;
+            if (isSettingsMode)
+            {
+                showButtonActionDialog(btn);
+            }
+            else
+            {
                 sendCommand(btn.getText().toString());
-    		}
-    	}
+            }
+        }
     };
 
     private void showButtonActionDialog(Button btn)
     {
-    	ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString());
+        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString());
         newFragment.show(getFragmentManager(), "ButtonSetupDialog");
     }
 
     private OnClickListener btnSaveSettingsClick = new OnClickListener()
     {
-    	@Override
-    	public void onClick(View v)
-    	{
-    		setSettingsMode(false);
-    		checkButtonLabels();
+        @Override
+        public void onClick(View v)
+        {
+            setSettingsMode(false);
+            checkButtonLabels();
 
-    		for (int i = 0; i < padButtons.size(); i++)
-    		{
-    			Button btn = padButtons.get(i);
-    			String cmd = btn.getText().toString();
+            for (int i = 0; i < padButtons.size(); i++)
+            {
+                Button btn = padButtons.get(i);
+                String cmd = btn.getText().toString();
 
-    			MainActivity.buttonCommands.set(i, cmd);
-    		}
+                MainActivity.buttonCommands.set(i, cmd);
+            }
 
-    		saveSettings();
-    	}
+            saveSettings();
+        }
     };
 
-	private void saveSettings()
-	{
-		SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
-		SharedPreferences.Editor editor = settings.edit();
+    private void saveSettings()
+    {
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
 
-		for (int i = 0; i < padButtons.size(); i++)
-		{
-			String cmd = MainActivity.buttonCommands.get(i);
-			editor.putString(MainActivity.PREFS_KEY_COMMAND + i, cmd);
-		}
+        for (int i = 0; i < padButtons.size(); i++)
+        {
+            String cmd = MainActivity.buttonCommands.get(i);
+            editor.putString(MainActivity.PREFS_KEY_COMMAND + i, cmd);
+        }
 
-		editor.apply();
-	}
+        editor.apply();
+    }
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
-		super.onPrepareOptionsMenu(menu);
-		if (D) Log.d(TAG, "onPrepareOptionsMenu");
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        if (D) Log.d(TAG, "onPrepareOptionsMenu");
 
-		int state = DeviceConnector.STATE_NONE;
-		if (connector != null)
-		{
-			state = connector.getState();
-		}
+        int state = DeviceConnector.STATE_NONE;
+        if (connector != null)
+        {
+            state = connector.getState();
+        }
 
-		menu.findItem(R.id.menu_settings).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_CONNECTED));
-		menu.findItem(R.id.menu_connect).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_NONE));
-		menu.findItem(R.id.menu_disconnect).setEnabled(!isSettingsMode && (state != DeviceConnector.STATE_NONE));
+        menu.findItem(R.id.menu_settings).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_CONNECTED));
+        menu.findItem(R.id.menu_connect).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_NONE));
+        menu.findItem(R.id.menu_disconnect).setEnabled(!isSettingsMode && (state != DeviceConnector.STATE_NONE));
 
-		return true;
-	}
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-    	super.onCreateOptionsMenu(menu);
-    	if (D) Log.d(TAG, "onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu);
+        if (D) Log.d(TAG, "onCreateOptionsMenu");
 
-    	MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_device, menu);
 
         return true;
@@ -448,14 +448,14 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                 return true;
 
             case R.id.menu_connect:
-            	setupConnector();
+                setupConnector();
                 return true;
 
             case R.id.menu_disconnect:
-        		if (connector != null)
-        		{
-        			connector.stop();
-        		}
+                if (connector != null)
+                {
+                    connector.stop();
+                }
                 return true;
 
             default:
@@ -465,46 +465,46 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     public void updateButtonText(int btnId, String text)
     {
-    	for (Button btn : padButtons)
-    	{
-    		if (btn.getId() == btnId)
-    		{
-    			btn.setText(text);
-    			return;
-    		}
-    	}
+        for (Button btn : padButtons)
+        {
+            if (btn.getId() == btnId)
+            {
+                btn.setText(text);
+                return;
+            }
+        }
     }
 
-	private void enableControls()
-	{
-		boolean enable = false;
-		if (connector != null)
-		{
-			enable = connector.getState() == DeviceConnector.STATE_CONNECTED;
-		}
+    private void enableControls()
+    {
+        boolean enable = false;
+        if (connector != null)
+        {
+            enable = connector.getState() == DeviceConnector.STATE_CONNECTED;
+        }
 
-    	for (Button btn : padButtons)
-    	{
-    		if (!enable)
-    		{
-    			btn.setEnabled(false);
-    			continue;
-    		}
-   			btn.setEnabled(!btn.getText().equals(NOT_SET_TEXT) || isSettingsMode);
-    	}
-	}
+        for (Button btn : padButtons)
+        {
+            if (!enable)
+            {
+                btn.setEnabled(false);
+                continue;
+            }
+            btn.setEnabled(!btn.getText().equals(NOT_SET_TEXT) || isSettingsMode);
+        }
+    }
 
-	private void appendIncomingMessage(String message)
-	{
+    private void appendIncomingMessage(String message)
+    {
         if(D)
             Log.d(TAG, "Message received: " + message);
-	}
+    }
 
-	private void appendOutgoingMessage(String message)
-	{
+    private void appendOutgoingMessage(String message)
+    {
         if(D)
             Log.d(TAG, "Message sent: " + message);
-	}
+    }
 
     public void onSensorChanged(SensorEvent event)
     {
@@ -579,52 +579,52 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         {
             switch (msg.what)
             {
-	            case MESSAGE_STATE_CHANGE:
+                case MESSAGE_STATE_CHANGE:
 
-	            	if(D) Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-	            	String messageText = "";
+                    if(D) Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                    String messageText = "";
 
-	            	switch (msg.arg1)
-	                {
-		                case DeviceConnector.STATE_CONNECTED:
-		                	messageText = String.format(getResources().getString(R.string.connected_to), connectedDeviceName);
-		                	setTitle(messageText);
-		                    break;
-		                case DeviceConnector.STATE_CONNECTING:
-		                	messageText = String.format(getResources().getString(R.string.connecting_to), connectedDeviceName);
-		                	setTitle(messageText);
-		                    break;
-		                case DeviceConnector.STATE_NONE:
-		                	messageText = String.format(getResources().getString(R.string.is_not_connected), connectedDeviceName);
-		                	setTitle(messageText);
-		                    break;
-	                }
+                    switch (msg.arg1)
+                    {
+                        case DeviceConnector.STATE_CONNECTED:
+                            messageText = String.format(getResources().getString(R.string.connected_to), connectedDeviceName);
+                            setTitle(messageText);
+                            break;
+                        case DeviceConnector.STATE_CONNECTING:
+                            messageText = String.format(getResources().getString(R.string.connecting_to), connectedDeviceName);
+                            setTitle(messageText);
+                            break;
+                        case DeviceConnector.STATE_NONE:
+                            messageText = String.format(getResources().getString(R.string.is_not_connected), connectedDeviceName);
+                            setTitle(messageText);
+                            break;
+                    }
 
-	            	enableControls();
-	            	invalidateOptionsMenu();
-	            	appendOutgoingMessage(messageText);
-	                break;
+                    enableControls();
+                    invalidateOptionsMenu();
+                    appendOutgoingMessage(messageText);
+                    break;
 
-	            case MESSAGE_DEVICE_NAME:
-	                Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.successfully_connected_to), connectedDeviceName), Toast.LENGTH_SHORT).show();
-	                break;
+                case MESSAGE_DEVICE_NAME:
+                    Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.successfully_connected_to), connectedDeviceName), Toast.LENGTH_SHORT).show();
+                    break;
 
-	            case MESSAGE_WRITE:
-	                byte[] writeBuf = (byte[]) msg.obj;
-	                // construct a string from the buffer
-	                String writeMessage = new String(writeBuf);
-	                appendOutgoingMessage(writeMessage);
-	                break;
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+                    appendOutgoingMessage(writeMessage);
+                    break;
 
-	            case MESSAGE_READ:
-	                byte[] readBuf = (byte[]) msg.obj;
-	                String readMessage = new String(readBuf, 0, msg.arg1);
-	                appendIncomingMessage(readMessage);
-	                break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    appendIncomingMessage(readMessage);
+                    break;
 
-	            case MESSAGE_TOAST:
-	                Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
-	                break;
+                case MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };

@@ -69,5 +69,9 @@
     <string name="av_loudspeaker">AV (loudspeaker)</string>
     <string name="av_uncategorized">AV (Uncategorized)</string>
     <string name="av_display_loudspeaker">AV (display and loudspeaker)</string>
+    <string name="cancel">Cancel</string>
+    <string name="device_rename">Rename...</string>
+    <string name="ok">OK</string>
+    <string name="device_name">Device name</string>
 
 </resources>

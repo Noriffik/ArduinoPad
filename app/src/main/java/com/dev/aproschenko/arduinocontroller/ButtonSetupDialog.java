@@ -12,11 +12,11 @@ import android.widget.EditText;
 
 public class ButtonSetupDialog extends DialogFragment
 {
-	public static ButtonSetupDialog newInstance(int btnId, String text)
-	{
-		ButtonSetupDialog frag = new ButtonSetupDialog();
+    public static ButtonSetupDialog newInstance(int btnId, String text)
+    {
+        ButtonSetupDialog frag = new ButtonSetupDialog();
 
-		Bundle args = new Bundle();
+        Bundle args = new Bundle();
         args.putInt("id", btnId);
         args.putString("text", text);
 
@@ -31,41 +31,41 @@ public class ButtonSetupDialog extends DialogFragment
         final View textEntryView = factory.inflate(R.layout.button_setup_dialog, null);
 
         final EditText editor = (EditText)textEntryView.findViewById(R.id.button_message_edit);
-        
+
         final int id = getArguments().getInt("id");
         final String text = getArguments().getString("text");
-        
+
         if (text.trim().toLowerCase().equals(DeviceControlActivity.NOT_SET_TEXT.toLowerCase()))
-        	editor.setText("");
+            editor.setText("");
         else
-        	editor.setText(text.trim());
-        
+            editor.setText(text.trim());
+
         final Dialog dlg = new AlertDialog.Builder(getActivity())
-            .setTitle(R.string.button_message)
-            .setView(textEntryView)
-            .setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int whichButton)
+                .setTitle(R.string.button_message)
+                .setView(textEntryView)
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener()
                 {
-                	DeviceControlActivity activity = (DeviceControlActivity)getActivity();
-                	String textToSet = editor.getText().toString().trim();
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
+                        DeviceControlActivity activity = (DeviceControlActivity)getActivity();
+                        String textToSet = editor.getText().toString().trim();
 
-                	if (textToSet.equals(""))
-                		textToSet = DeviceControlActivity.NOT_SET_TEXT;
+                        if (textToSet.equals(""))
+                            textToSet = DeviceControlActivity.NOT_SET_TEXT;
 
-                	activity.updateButtonText(id, textToSet);
+                        activity.updateButtonText(id, textToSet);
 
-                	dialog.dismiss();
-                }
-            })
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int whichButton)
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener()
                 {
-                	dialog.dismiss();
-                }
-            }).create();
-        
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
+                        dialog.dismiss();
+                    }
+                }).create();
+
         editor.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
@@ -73,11 +73,11 @@ public class ButtonSetupDialog extends DialogFragment
             {
                 if (hasFocus)
                 {
-                	dlg.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    dlg.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 }
             }
         });
-        
+
         return dlg;
     }
 }

@@ -13,13 +13,14 @@ import java.util.ArrayList;
 
 public class DeviceInfoDialog extends DialogFragment
 {
-	public static DeviceInfoDialog newInstance(ArrayList<InfoData> services)
-	{
-		DeviceInfoDialog frag = new DeviceInfoDialog();
+    public static DeviceInfoDialog newInstance(ArrayList<InfoData> services, String deviceName)
+    {
+        DeviceInfoDialog frag = new DeviceInfoDialog();
 
-		Bundle args = new Bundle();
-		args.putSerializable("services", services);
-		frag.setArguments(args);
+        Bundle args = new Bundle();
+        args.putSerializable("services", services);
+        args.putString("name", deviceName);
+        frag.setArguments(args);
         return frag;
     }
 
@@ -30,22 +31,24 @@ public class DeviceInfoDialog extends DialogFragment
         final View textEntryView = factory.inflate(R.layout.device_info, null);
 
         final ListView infoView = (ListView)textEntryView.findViewById(R.id.devicesInfoView);
-        
+
         ArrayList<InfoData> services = (ArrayList<InfoData>)getArguments().getSerializable("services");
         DeviceInfoRowAdapter adapter = new DeviceInfoRowAdapter(getActivity(), services);
         infoView.setAdapter(adapter);
-        
+
+        String deviceName = getArguments().getString("name");
+
         final Dialog dlg = new AlertDialog.Builder(getActivity())
-            .setTitle(R.string.device_info)
-            .setView(textEntryView)
-            .setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int whichButton)
+                .setTitle(String.format("%s - %s", getResources().getString(R.string.device_info), deviceName))
+                .setView(textEntryView)
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener()
                 {
-                	dialog.dismiss();
-                }
-            }).create();
-        
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
+                        dialog.dismiss();
+                    }
+                }).create();
+
         return dlg;
     }
 }

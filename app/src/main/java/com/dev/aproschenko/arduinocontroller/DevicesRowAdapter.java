@@ -17,175 +17,175 @@ import java.util.Comparator;
 
 public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 {
-	private final Context context;
-	private final ArrayList<DeviceData> devices;
-	private final MainActivity.SortType sortType;
-	
-	public DevicesRowAdapter(Context context, ArrayList<DeviceData> devices, MainActivity.SortType sortBy)
-	{
-		super(context, R.layout.bt_device_row, devices);
+    private final Context context;
+    private final ArrayList<DeviceData> devices;
+    private final MainActivity.SortType sortType;
 
-		this.context = context;
-	    this.devices = devices;
-	    this.sortType = sortBy;
+    public DevicesRowAdapter(Context context, ArrayList<DeviceData> devices, MainActivity.SortType sortBy)
+    {
+        super(context, R.layout.bt_device_row, devices);
 
-	    Collections.sort(devices, new Comparator<DeviceData>()
-   		{
-	        @Override
-	        public int compare(DeviceData o1, DeviceData o2)
-	        {
-	        	if (sortType == SortType.SORT_BY_NAME)
-	        	{
-	        		return o1.getName().compareTo(o2.getName());
-	        	}
-	        	else if (sortType == SortType.SORT_BY_BONDED_STATE)
-	        	{
-	        		Integer i1 = o1.getBondState();
-	        		Integer i2 = o2.getBondState();
-	        		return i1.compareTo(i2) * (-1);
-	        	}
-	        	else //type
-	        	{
-	        		Integer i1 = o1.getDeviceClass();
-	        		Integer i2 = o2.getDeviceClass();
-	        		return i1.compareTo(i2);
-	        	}
-	        }
-	    });
-	}
+        this.context = context;
+        this.devices = devices;
+        this.sortType = sortBy;
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
-	    DeviceData device = devices.get(position);
-	    
-	    LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    View rowView = inflater.inflate(R.layout.bt_device_row, parent, false);
-	    
-	    TextView deviceName = (TextView) rowView.findViewById(R.id.deviceName);
+        Collections.sort(devices, new Comparator<DeviceData>()
+        {
+            @Override
+            public int compare(DeviceData o1, DeviceData o2)
+            {
+                if (sortType == SortType.SORT_BY_NAME)
+                {
+                    return o1.getName().compareTo(o2.getName());
+                }
+                else if (sortType == SortType.SORT_BY_BONDED_STATE)
+                {
+                    Integer i1 = o1.getBondState();
+                    Integer i2 = o2.getBondState();
+                    return i1.compareTo(i2) * (-1);
+                }
+                else //type
+                {
+                    Integer i1 = o1.getDeviceClass();
+                    Integer i2 = o2.getDeviceClass();
+                    return i1.compareTo(i2);
+                }
+            }
+        });
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        DeviceData device = devices.get(position);
+
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(R.layout.bt_device_row, parent, false);
+
+        TextView deviceName = (TextView) rowView.findViewById(R.id.deviceName);
         TextView deviceAddress = (TextView) rowView.findViewById(R.id.deviceAddress);
-	    TextView deviceDesc = (TextView) rowView.findViewById(R.id.deviceDesc);
-	    TextView deviceState = (TextView) rowView.findViewById(R.id.deviceState);
-	    ImageView deviceIcon = (ImageView) rowView.findViewById(R.id.deviceIcon);
-	    TextView deviceServices = (TextView) rowView.findViewById(R.id.deviceServices);
+        TextView deviceDesc = (TextView) rowView.findViewById(R.id.deviceDesc);
+        TextView deviceState = (TextView) rowView.findViewById(R.id.deviceState);
+        ImageView deviceIcon = (ImageView) rowView.findViewById(R.id.deviceIcon);
+        TextView deviceServices = (TextView) rowView.findViewById(R.id.deviceServices);
 
-	    String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getResources().getString(R.string.bonded) : "";
+        String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getResources().getString(R.string.bonded) : "";
 
-	    deviceName.setText(device.getName());
+        deviceName.setText(device.getCustomName() == "" ? device.getName() : device.getCustomName());
         deviceAddress.setText(String.format("- %s", device.getAddress()));
-	    deviceState.setText(bondedState);
-	    deviceServices.setText(device.getUuids().size() == 0 ? context.getResources().getString(R.string.no_services_string) : "");
-	    
-	    deviceServices.setVisibility(deviceServices.getText().length() == 0 ? View.INVISIBLE : View.VISIBLE);
-	    deviceState.setVisibility(deviceState.getText().length() == 0 ? View.INVISIBLE : View.VISIBLE);
+        deviceState.setText(bondedState);
+        deviceServices.setText(device.getUuids().size() == 0 ? context.getResources().getString(R.string.no_services_string) : "");
 
-	    if (deviceServices.getVisibility() == View.VISIBLE)
-	    {
-	    	deviceName.setTextColor(0xff666666);
-	    	deviceDesc.setTextColor(0xff666666);
-	    }
-	    
-	    int majorClass = device.getMajorDeviceClass();
-	    int deviceClass = device.getDeviceClass();
-	    
-	    switch (majorClass)
-	    {
-	    	case BluetoothClass.Device.Major.UNCATEGORIZED:
-	    		deviceDesc.setText(context.getResources().getString(R.string.uncategorized));
-	    		deviceIcon.setImageResource(R.drawable.icomisc);
-	    		break;
-	    	case BluetoothClass.Device.Major.HEALTH:
-	    		deviceDesc.setText(context.getResources().getString(R.string.health));
-	    		deviceIcon.setImageResource(R.drawable.icohealth);
-	    		break;
-	    	case BluetoothClass.Device.Major.TOY:
-	    		deviceDesc.setText(context.getResources().getString(R.string.toy));
-	    		deviceIcon.setImageResource(R.drawable.icotoy);
-	    		break;
-	    	case BluetoothClass.Device.Major.IMAGING:
-	    		deviceDesc.setText(context.getResources().getString(R.string.imaging));
-	    		deviceIcon.setImageResource(R.drawable.icomisc);
-	    		break;
-	    	case BluetoothClass.Device.Major.NETWORKING:
-	    		deviceDesc.setText(context.getResources().getString(R.string.networking));
-	    		deviceIcon.setImageResource(R.drawable.iconetworking);
-	    		break;
-	    	case BluetoothClass.Device.Major.PERIPHERAL:
-	    		deviceDesc.setText(context.getResources().getString(R.string.peripheral));
-	    		deviceIcon.setImageResource(R.drawable.icoperipheral);
-	    		break;
-	    	case BluetoothClass.Device.Major.MISC:
-	    		deviceDesc.setText(context.getResources().getString(R.string.misc));
-	    		deviceIcon.setImageResource(R.drawable.icomisc);
-	    		break;
-	    	case BluetoothClass.Device.Major.WEARABLE:
-	    		deviceDesc.setText(context.getResources().getString(R.string.wearable));
-	    		deviceIcon.setImageResource(R.drawable.icomisc);
-	    		break;
+        deviceServices.setVisibility(deviceServices.getText().length() == 0 ? View.INVISIBLE : View.VISIBLE);
+        deviceState.setVisibility(deviceState.getText().length() == 0 ? View.INVISIBLE : View.VISIBLE);
 
-	    	default:
-	    		switch (deviceClass)
-	    		{
-	    			case BluetoothClass.Device.PHONE_CELLULAR:
-	    				deviceDesc.setText(context.getResources().getString(R.string.phone_cellular));
-	    				deviceIcon.setImageResource(R.drawable.icophone);
-	    				break;
-	    			case BluetoothClass.Device.PHONE_CORDLESS:
-	    				deviceDesc.setText(context.getResources().getString(R.string.phone_cordless));
-	    				deviceIcon.setImageResource(R.drawable.icophone);
-	    				break;
-	    			case BluetoothClass.Device.PHONE_SMART:
-	    				deviceDesc.setText(context.getResources().getString(R.string.phone_smart));
-	    				deviceIcon.setImageResource(R.drawable.icosmart);
-	    				break;
-	    			case BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE:
-	    				deviceDesc.setText(context.getResources().getString(R.string.av_handsfree));
-	    				deviceIcon.setImageResource(R.drawable.icohandsfree);
-	    				break;
-	    			case BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET:
-	    				deviceDesc.setText(context.getResources().getString(R.string.av_headset));
-	    				deviceIcon.setImageResource(R.drawable.icoheadset);
-	    				break;
-	    			case BluetoothClass.Device.COMPUTER_LAPTOP:
-	    				deviceDesc.setText(context.getResources().getString(R.string.computer_laptop));
-	    				deviceIcon.setImageResource(R.drawable.icolaptop);
-	    				break;
-	    			case BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA:
-	    				deviceDesc.setText(context.getResources().getString(R.string.computer_palm_pda));
-	    				deviceIcon.setImageResource(R.drawable.icolaptop);
-	    				break;
-	    			case BluetoothClass.Device.COMPUTER_DESKTOP:
-	    				deviceDesc.setText(context.getResources().getString(R.string.computer_desktop));
-	    				deviceIcon.setImageResource(R.drawable.icocomputer);
-	    				break;
-	    			case BluetoothClass.Device.COMPUTER_SERVER:
-	    				deviceDesc.setText(context.getResources().getString(R.string.computer_server));
-	    				deviceIcon.setImageResource(R.drawable.icocomputer);
-	    				break;
-	    			case BluetoothClass.Device.AUDIO_VIDEO_PORTABLE_AUDIO:
-	    				deviceDesc.setText(context.getResources().getString(R.string.av_portable));
-	    				deviceIcon.setImageResource(R.drawable.icoportable);
-	    				break;
-	    			case BluetoothClass.Device.AUDIO_VIDEO_LOUDSPEAKER:
-	    				deviceDesc.setText(context.getResources().getString(R.string.av_loudspeaker));
-	    				deviceIcon.setImageResource(R.drawable.icoloudspeaker);
-	    				break;
-	    			case BluetoothClass.Device.AUDIO_VIDEO_UNCATEGORIZED:
-	    				deviceDesc.setText(context.getResources().getString(R.string.av_uncategorized));
-	    				deviceIcon.setImageResource(R.drawable.icomisc);
-	    				break;
-	    			case BluetoothClass.Device.AUDIO_VIDEO_VIDEO_DISPLAY_AND_LOUDSPEAKER:
-	    				deviceDesc.setText(context.getResources().getString(R.string.av_display_loudspeaker));
-	    				deviceIcon.setImageResource(R.drawable.icoloudspeakerdisplay);
-	    				break;
-	    			default:
-	    				deviceDesc.setText(context.getResources().getString(R.string.unknown));
-	    				deviceIcon.setImageResource(R.drawable.icomisc);
-	    				break;
-	    		}
-	    		break;
-	    }
-	    
-	    return rowView;
-	}
+        if (deviceServices.getVisibility() == View.VISIBLE)
+        {
+            deviceName.setTextColor(0xff666666);
+            deviceDesc.setTextColor(0xff666666);
+        }
+
+        int majorClass = device.getMajorDeviceClass();
+        int deviceClass = device.getDeviceClass();
+
+        switch (majorClass)
+        {
+            case BluetoothClass.Device.Major.UNCATEGORIZED:
+                deviceDesc.setText(context.getResources().getString(R.string.uncategorized));
+                deviceIcon.setImageResource(R.drawable.icomisc);
+                break;
+            case BluetoothClass.Device.Major.HEALTH:
+                deviceDesc.setText(context.getResources().getString(R.string.health));
+                deviceIcon.setImageResource(R.drawable.icohealth);
+                break;
+            case BluetoothClass.Device.Major.TOY:
+                deviceDesc.setText(context.getResources().getString(R.string.toy));
+                deviceIcon.setImageResource(R.drawable.icotoy);
+                break;
+            case BluetoothClass.Device.Major.IMAGING:
+                deviceDesc.setText(context.getResources().getString(R.string.imaging));
+                deviceIcon.setImageResource(R.drawable.icomisc);
+                break;
+            case BluetoothClass.Device.Major.NETWORKING:
+                deviceDesc.setText(context.getResources().getString(R.string.networking));
+                deviceIcon.setImageResource(R.drawable.iconetworking);
+                break;
+            case BluetoothClass.Device.Major.PERIPHERAL:
+                deviceDesc.setText(context.getResources().getString(R.string.peripheral));
+                deviceIcon.setImageResource(R.drawable.icoperipheral);
+                break;
+            case BluetoothClass.Device.Major.MISC:
+                deviceDesc.setText(context.getResources().getString(R.string.misc));
+                deviceIcon.setImageResource(R.drawable.icomisc);
+                break;
+            case BluetoothClass.Device.Major.WEARABLE:
+                deviceDesc.setText(context.getResources().getString(R.string.wearable));
+                deviceIcon.setImageResource(R.drawable.icomisc);
+                break;
+
+            default:
+                switch (deviceClass)
+                {
+                    case BluetoothClass.Device.PHONE_CELLULAR:
+                        deviceDesc.setText(context.getResources().getString(R.string.phone_cellular));
+                        deviceIcon.setImageResource(R.drawable.icophone);
+                        break;
+                    case BluetoothClass.Device.PHONE_CORDLESS:
+                        deviceDesc.setText(context.getResources().getString(R.string.phone_cordless));
+                        deviceIcon.setImageResource(R.drawable.icophone);
+                        break;
+                    case BluetoothClass.Device.PHONE_SMART:
+                        deviceDesc.setText(context.getResources().getString(R.string.phone_smart));
+                        deviceIcon.setImageResource(R.drawable.icosmart);
+                        break;
+                    case BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE:
+                        deviceDesc.setText(context.getResources().getString(R.string.av_handsfree));
+                        deviceIcon.setImageResource(R.drawable.icohandsfree);
+                        break;
+                    case BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET:
+                        deviceDesc.setText(context.getResources().getString(R.string.av_headset));
+                        deviceIcon.setImageResource(R.drawable.icoheadset);
+                        break;
+                    case BluetoothClass.Device.COMPUTER_LAPTOP:
+                        deviceDesc.setText(context.getResources().getString(R.string.computer_laptop));
+                        deviceIcon.setImageResource(R.drawable.icolaptop);
+                        break;
+                    case BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA:
+                        deviceDesc.setText(context.getResources().getString(R.string.computer_palm_pda));
+                        deviceIcon.setImageResource(R.drawable.icolaptop);
+                        break;
+                    case BluetoothClass.Device.COMPUTER_DESKTOP:
+                        deviceDesc.setText(context.getResources().getString(R.string.computer_desktop));
+                        deviceIcon.setImageResource(R.drawable.icocomputer);
+                        break;
+                    case BluetoothClass.Device.COMPUTER_SERVER:
+                        deviceDesc.setText(context.getResources().getString(R.string.computer_server));
+                        deviceIcon.setImageResource(R.drawable.icocomputer);
+                        break;
+                    case BluetoothClass.Device.AUDIO_VIDEO_PORTABLE_AUDIO:
+                        deviceDesc.setText(context.getResources().getString(R.string.av_portable));
+                        deviceIcon.setImageResource(R.drawable.icoportable);
+                        break;
+                    case BluetoothClass.Device.AUDIO_VIDEO_LOUDSPEAKER:
+                        deviceDesc.setText(context.getResources().getString(R.string.av_loudspeaker));
+                        deviceIcon.setImageResource(R.drawable.icoloudspeaker);
+                        break;
+                    case BluetoothClass.Device.AUDIO_VIDEO_UNCATEGORIZED:
+                        deviceDesc.setText(context.getResources().getString(R.string.av_uncategorized));
+                        deviceIcon.setImageResource(R.drawable.icomisc);
+                        break;
+                    case BluetoothClass.Device.AUDIO_VIDEO_VIDEO_DISPLAY_AND_LOUDSPEAKER:
+                        deviceDesc.setText(context.getResources().getString(R.string.av_display_loudspeaker));
+                        deviceIcon.setImageResource(R.drawable.icoloudspeakerdisplay);
+                        break;
+                    default:
+                        deviceDesc.setText(context.getResources().getString(R.string.unknown));
+                        deviceIcon.setImageResource(R.drawable.icomisc);
+                        break;
+                }
+                break;
+        }
+
+        return rowView;
+    }
 }
