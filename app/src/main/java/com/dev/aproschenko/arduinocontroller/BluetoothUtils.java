@@ -115,6 +115,22 @@ public class BluetoothUtils
         uuidsDescriptions.put("1204", "GenericTelephonyService");
     }
 
+    private static void fillParcelUuids(BluetoothDevice device, ArrayList<ParcelUuid> result, ParcelUuid[] phoneUuids)
+    {
+        if (phoneUuids != null && phoneUuids.length > 0)
+        {
+            for (ParcelUuid uuid : phoneUuids)
+            {
+                if (D) Log.d(TAG, device.getName() + ": " + uuid.toString());
+                result.add(uuid);
+            }
+        }
+        else
+        {
+            if (D) Log.d(TAG, "fillParcelUuids() with no uuids for " + device.getName());
+        }
+    }
+
     public static ArrayList<ParcelUuid> getDeviceUuids(BluetoothDevice device)
     {
         ArrayList<ParcelUuid> result = new ArrayList<ParcelUuid>();
@@ -123,14 +139,7 @@ public class BluetoothUtils
         {
             Method method = device.getClass().getMethod("getUuids", null);
             ParcelUuid[] phoneUuids = (ParcelUuid[]) method.invoke(device, null);
-            if (phoneUuids != null)
-            {
-                for (ParcelUuid uuid : phoneUuids)
-                {
-                    if (D) Log.d(TAG, device.getName() + ": " + uuid.toString());
-                    result.add(uuid);
-                }
-            }
+            fillParcelUuids(device, result, phoneUuids);
         }
         catch (NoSuchMethodException e)
         {
@@ -146,6 +155,12 @@ public class BluetoothUtils
         {
             e.printStackTrace();
             if (D) Log.e(TAG, "getDeviceUuids() failed", e);
+        }
+
+        if (result.size() == 0)
+        {
+            ParcelUuid[] phoneUuids = device.getUuids();
+            fillParcelUuids(device, result, phoneUuids);
         }
 
         return result;
