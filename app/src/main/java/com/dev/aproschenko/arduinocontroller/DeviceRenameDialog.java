@@ -37,6 +37,9 @@ public class DeviceRenameDialog extends DialogFragment
 
         editor.setText(name.trim());
 
+        int textLength = editor.getText().length();
+        editor.setSelection(textLength, textLength);
+
         final Dialog dlg = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.device_name)
                 .setView(textEntryView)

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class DeviceData
 {
     private String name = "";
-    private transient String customName = "";
+    private String customName = "";
     private String address = "";
     private int bondState = BluetoothDevice.BOND_NONE;
     private ArrayList<ParcelUuid> uuids = null;

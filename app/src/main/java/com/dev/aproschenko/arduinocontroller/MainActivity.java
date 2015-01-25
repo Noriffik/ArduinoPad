@@ -143,7 +143,6 @@ public class MainActivity extends Activity
         if (btAdapter == null)
         {
             showAlert(getResources().getString(R.string.no_bt_support));
-            return;
         }
     }
 
@@ -392,7 +391,7 @@ public class MainActivity extends Activity
             }
             else
             {
-                showAlert(getResources().getString(R.string.bt_not_enabled_leaving));
+                Toast.makeText(context, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -808,7 +807,7 @@ public class MainActivity extends Activity
         catch (Exception e)
         {
             if (D) Log.e(TAG, "addBluetoothDevice() failed", e);
-            Toast.makeText(context, "Error while adding device " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, String.format(getResources().getString(R.string.error_adding_device), e.getMessage()), Toast.LENGTH_SHORT).show();
         }
 
         if (deviceAddress == null || deviceAddress.isEmpty())

@@ -166,38 +166,6 @@ public class BluetoothUtils
         return result;
     }
 
-    public static ArrayList<String> getDeviceServices(ArrayList<ParcelUuid> uuids)
-    {
-        ArrayList<String> result = new ArrayList<String>();
-
-        for (ParcelUuid uuid : uuids)
-        {
-            String s = uuid.toString().toUpperCase();
-            boolean found = false;
-
-            for (Map.Entry<String, String> entry : uuidsDescriptions.entrySet())
-            {
-                String key = entry.getKey().toUpperCase();
-                String value = entry.getValue();
-
-                if (s.startsWith("0000" + key))
-                {
-                    found = true;
-                    result.add(value);
-                    break;
-                }
-            }
-
-            if (!found)
-            {
-                String desc = "Unknown service UUID 0x" + s.substring(4, 8);
-                result.add(desc);
-            }
-        }
-
-        return result;
-    }
-
     public static HashMap<String, String> getDeviceServicesMap(ArrayList<ParcelUuid> uuids)
     {
         HashMap<String, String> result = new HashMap<String, String>();
@@ -229,12 +197,6 @@ public class BluetoothUtils
         }
 
         return result;
-    }
-
-    public static ArrayList<String> getDeviceServices(BluetoothDevice device)
-    {
-        ArrayList<ParcelUuid> uuids = getDeviceUuids(device);
-        return getDeviceServices(uuids);
     }
 
     public static BluetoothSocket createRfcommSocket(BluetoothDevice device)
