@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class DeviceData
 {
     private String name = "";
-    private String customName = "";
     private String address = "";
     private int bondState = BluetoothDevice.BOND_NONE;
     private ArrayList<ParcelUuid> uuids = null;
@@ -68,15 +67,5 @@ public class DeviceData
     public int getBondState()
     {
         return bondState;
-    }
-
-    public String getCustomName()
-    {
-        return customName;
-    }
-
-    public void setCustomName(String deviceCustomName)
-    {
-        customName = deviceCustomName;
     }
 }

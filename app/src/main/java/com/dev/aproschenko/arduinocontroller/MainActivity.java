@@ -30,7 +30,7 @@ public class MainActivity extends Activity
     private static final String TAG = "MainActivity";
     private static final boolean D = true;
 
-    public static final String PREFS_NAME = "com.dev.aproschenko.arduinocontroller.txt";
+    public static final String PREFS_FOLDER_NAME = "com.dev.aproschenko.arduinocontroller";
     public static final String PREFS_KEY_COMMAND = "command";
     public static final String PREFS_KEY_SORTTYPE = "sorttype";
     public static final String PREFS_KEY_COLLECT_DEVICES = "collectdevices";
@@ -148,7 +148,7 @@ public class MainActivity extends Activity
 
     private void restoreSettings()
     {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
 
         String defaultCmd = DeviceControlActivity.NOT_SET_TEXT;
         for (int i = 0; i < DeviceControlActivity.BTN_COUNT; i++)
@@ -193,7 +193,7 @@ public class MainActivity extends Activity
 
     private void saveSettings()
     {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
 
         String sortValue = "SORT_BY_NAME";
@@ -312,19 +312,6 @@ public class MainActivity extends Activity
         return false;
     }
 
-    private String getCustomDeviceName(String address)
-    {
-        for (DeviceCustomName customName : settings.getCustomNames())
-        {
-            if (customName.getAddress() == address)
-            {
-                return customName.getName();
-            }
-        }
-
-        return "";
-    }
-
     private void fillDevicesView()
     {
         ArrayList<DeviceData> filtered = new ArrayList<>();
@@ -338,7 +325,6 @@ public class MainActivity extends Activity
             {
                 if (showNoServicesDevices)
                 {
-                    item.setCustomName(getCustomDeviceName(item.getAddress()));
                     filtered.add(item);
                 }
                 else
@@ -346,7 +332,6 @@ public class MainActivity extends Activity
                     boolean hasServices = item.getUuids().size() > 0;
                     if (hasServices)
                     {
-                        item.setCustomName(getCustomDeviceName(item.getAddress()));
                         filtered.add(item);
                     }
                 }
@@ -642,45 +627,9 @@ public class MainActivity extends Activity
                 showDeviceInfo(data);
                 return true;
 
-            case R.id.menu_device_rename:
-                renameDevice(data);
-                return true;
-
             default:
                 return super.onContextItemSelected(item);
         }
-    }
-
-    private void renameDevice(DeviceData itemData)
-    {
-        String address = itemData.getAddress();
-        String name = itemData.getName();
-        DeviceRenameDialog dialog = DeviceRenameDialog.newInstance(address, name);
-        dialog.show(getFragmentManager(), "dialog");
-    }
-
-    public void renameDeviceCallback(String address, String name)
-    {
-        DeviceCustomName customName = null;
-        for (DeviceCustomName item : settings.getCustomNames())
-        {
-            if (item.getAddress() == address)
-            {
-                customName = item;
-                break;
-            }
-        }
-
-        if (customName == null)
-        {
-            customName = new DeviceCustomName();
-            customName.setAddress(address);
-            customName.setName(name);
-
-            settings.getCustomNames().add(customName);
-        }
-
-        fillDevicesView();
     }
 
     private void showDeviceInfo(DeviceData itemData)
@@ -835,14 +784,66 @@ public class MainActivity extends Activity
             serializeDevices();
     }
 
+    private String getPrefsFileName(boolean createFolder)
+    {
+        String androidFolder = Environment.getExternalStorageDirectory().getPath() + "/Android";
+        String dataFolder = androidFolder + "/data";
+        String prefsFolder = dataFolder + "/" + PREFS_FOLDER_NAME;
+        String fileName = prefsFolder + "/devices.txt";
+
+        if (!createFolder)
+            return fileName;
+
+        boolean success = false;
+        File f = new File(androidFolder);
+        if (!f.exists() || !f.isDirectory())
+        {
+            success = f.mkdir();
+        }
+        else
+            success = true;
+
+        if (!success)
+            return "";
+
+        f = new File(dataFolder);
+        if (success && (!f.exists() || !f.isDirectory()))
+        {
+            success = f.mkdir();
+        }
+
+        if (!success)
+            return "";
+
+        f = new File(prefsFolder);
+        if (success && (!f.exists() || !f.isDirectory()))
+        {
+            success = f.mkdir();
+        }
+
+        if (!success)
+            return "";
+
+        return fileName;
+    }
+
     private void deserializeDevices()
     {
         String jsonData = "";
+        String fileName = getPrefsFileName(false);
 
         try
         {
-            String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + PREFS_NAME;
             File myFile = new File(fileName);
+            if (!myFile.exists())
+            {
+                if (D) Log.e(TAG, "deserializeDevices(): file " + fileName + " not found.");
+                return;
+            }
+
+            if (D)
+                Log.d(TAG, "deserializeDevices(): try load from " + fileName);
+
             FileInputStream fIn = new FileInputStream(myFile);
             BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
             String aDataRow;
@@ -853,6 +854,9 @@ public class MainActivity extends Activity
             }
             jsonData = aBuffer;
             myReader.close();
+
+            if (D)
+                Log.d(TAG, "deserializeDevices(): loaded from " + fileName);
         }
         catch (Exception e)
         {
@@ -890,10 +894,20 @@ public class MainActivity extends Activity
     private void serializeDevices()
     {
         String jsonData = DeviceSerializer.serialize(settings);
+        String fileName = getPrefsFileName(true);
+
+        if (fileName.equals(""))
+        {
+            if (D)
+                Log.d(TAG, "serializeDevices(): unable to prepare prefs folder.");
+            return;
+        }
+
+        if (D)
+            Log.d(TAG, "serializeDevices(): try save to " + fileName);
 
         try
         {
-            String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + PREFS_NAME;
             File myFile = new File(fileName);
 
             FileWriter filewriter = new FileWriter(myFile);

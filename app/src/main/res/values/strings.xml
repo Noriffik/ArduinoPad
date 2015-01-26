@@ -70,9 +70,9 @@
     <string name="av_uncategorized">AV (Uncategorized)</string>
     <string name="av_display_loudspeaker">AV (display and loudspeaker)</string>
     <string name="cancel">Cancel</string>
-    <string name="device_rename">Rename</string>
     <string name="ok">OK</string>
-    <string name="device_name">Device name</string>
     <string name="error_adding_device">Error while adding device: %s</string>
+    <string name="send">Send</string>
+    <string name="command_to_send">Command to send...</string>
 
 </resources>

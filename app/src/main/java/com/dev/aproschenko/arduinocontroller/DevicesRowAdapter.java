@@ -71,7 +71,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 
         String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getResources().getString(R.string.bonded) : "";
 
-        deviceName.setText(device.getCustomName() == "" ? device.getName() : device.getCustomName());
+        deviceName.setText(device.getName());
         deviceAddress.setText(String.format("- %s", device.getAddress()));
         deviceState.setText(bondedState);
         deviceServices.setText(device.getUuids().size() == 0 ? context.getResources().getString(R.string.no_services_string) : "");

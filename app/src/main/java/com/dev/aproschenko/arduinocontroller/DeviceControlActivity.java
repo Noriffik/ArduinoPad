@@ -337,7 +337,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void sendCommand(String command)
     {
-        if (connector != null)
+        if (connector != null && !isSettingsMode)
         {
             connector.write(command);
         }
@@ -388,7 +388,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void saveSettings()
     {
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
 
         for (int i = 0; i < padButtons.size(); i++)
@@ -553,8 +553,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                 backwardView.setValue(forward);
                 lastForwardCommand = forwardCommand;
                 sendCommand(String.valueOf(lastForwardCommand));
-                if (D)
-                    Log.d("commands to send", "f=" + forwardCommand);
             }
             if (lastLeftCommand != leftCommand)
             {
@@ -562,8 +560,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                 rightView.setValue(left);
                 lastLeftCommand = leftCommand;
                 sendCommand(String.valueOf(lastLeftCommand));
-                if (D)
-                    Log.d("commands to send", "l=" + leftCommand);
             }
         }
     }

@@ -157,12 +157,6 @@ public class BluetoothUtils
             if (D) Log.e(TAG, "getDeviceUuids() failed", e);
         }
 
-        if (result.size() == 0)
-        {
-            ParcelUuid[] phoneUuids = device.getUuids();
-            fillParcelUuids(device, result, phoneUuids);
-        }
-
         return result;
     }
 
