@@ -3,6 +3,7 @@ package com.dev.aproschenko.arduinocontroller;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -32,7 +33,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private String connectedDeviceName;
     private String connectedDeviceAddress;
 
-    private DeviceConnector connector;
+    private static DeviceConnector connector;
     private BluetoothAdapter btAdapter;
 
     // Message types sent from the DeviceConnector Handler
@@ -45,12 +46,13 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     public static final String TOAST = "toast";
     public static final String NOT_SET_TEXT = "-";
 
-    private ArrayList<Button> padButtons = new ArrayList<Button>();
-    private ArrayList<Integer> padButtonsIds = new ArrayList<Integer>();
-    private ArrayList<Rect> padButtonsRect = new ArrayList<Rect>();
+    private ArrayList<Button> padButtons = new ArrayList<>();
+    private ArrayList<Integer> padButtonsIds = new ArrayList<>();
+    private ArrayList<Rect> padButtonsRect = new ArrayList<>();
     public static final int BTN_COUNT = 16;
 
     private Button buttonSaveSettings;
+    private Button buttonOpenTerminal;
     private OrientationView forwardView;
     private OrientationView backwardView;
     private OrientationView leftView;
@@ -65,6 +67,10 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private char rightPrefix = (char)((int)leftPrefix + 6);
     private char lastForwardCommand = forwardPrefix;
     private char lastLeftCommand = leftPrefix;
+
+    final Context context = this;
+
+    public static DeviceConnector getConnector(){ return connector; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -299,9 +305,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         checkButtonLabels();
 
         buttonSaveSettings = (Button)findViewById(R.id.buttonSaveSettings);
-
         buttonSaveSettings.setOnClickListener(btnSaveSettingsClick);
         buttonSaveSettings.setVisibility(View.INVISIBLE);
+
+        buttonOpenTerminal = (Button)findViewById(R.id.buttonTerminal);
+        buttonOpenTerminal.setOnClickListener(buttonOpenTerminalClick);
+        buttonOpenTerminal.setVisibility(View.INVISIBLE);
 
         forwardView = (OrientationView)findViewById(R.id.forwardView);
         backwardView = (OrientationView)findViewById(R.id.backwardView);
@@ -386,6 +395,21 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         }
     };
 
+    private OnClickListener buttonOpenTerminalClick = new OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            openTerminal();
+        }
+    };
+
+    private void openTerminal()
+    {
+        Intent intent = new Intent(context, TerminalActivity.class);
+        startActivity(intent);
+    }
+
     private void saveSettings()
     {
         SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_FOLDER_NAME, 0);
@@ -435,6 +459,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         isSettingsMode = mode;
         buttonSaveSettings.setVisibility(isSettingsMode ? View.VISIBLE : View.INVISIBLE);
+        buttonOpenTerminal.setVisibility(isSettingsMode ? View.INVISIBLE : (connector.getState() == DeviceConnector.STATE_CONNECTED) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -482,6 +507,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         {
             enable = connector.getState() == DeviceConnector.STATE_CONNECTED;
         }
+
+        buttonOpenTerminal.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
 
         for (Button btn : padButtons)
         {

@@ -187,6 +187,14 @@
             </TableRow>
         </TableLayout>
 
+        <Button
+            android:id="@+id/buttonTerminal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/open_terminal" />
 
         <Button
             android:id="@+id/buttonSaveSettings"
