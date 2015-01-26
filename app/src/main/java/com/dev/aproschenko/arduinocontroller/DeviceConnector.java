@@ -31,6 +31,7 @@ public class DeviceConnector {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private final Handler mHandler;
+    private Handler mTerminalHandler;
     private DeviceData mDeviceData;
     private Context mContext;
 
@@ -43,6 +44,11 @@ public class DeviceConnector {
         connectedDevice = btAdapter.getRemoteDevice(mDeviceData.getAddress());
 
         mState = STATE_NONE;
+    }
+
+    public void setTerminalHandler(Handler terminalHandler)
+    {
+        mTerminalHandler = terminalHandler;
     }
 
     public synchronized void connect() {
@@ -295,6 +301,8 @@ public class DeviceConnector {
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(DeviceControlActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    if (mTerminalHandler != null)
+                        mTerminalHandler.obtainMessage(DeviceControlActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     if (D)
                         Log.e(TAG, "disconnected", e);
