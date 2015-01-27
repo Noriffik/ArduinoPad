@@ -13,16 +13,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DeviceConnector {
+public class DeviceConnector
+{
     private static final String TAG = "DeviceConnector";
     private static final boolean D = true;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0; // we're doing nothing
-    public static final int STATE_CONNECTING = 1; // now initiating an outgoing
-    // connection
-    public static final int STATE_CONNECTED = 2; // now connected to a remote
-    // device
+    public static final int STATE_CONNECTING = 1; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 2; // now connected to a remote device
 
     private int mState;
 
@@ -104,7 +103,7 @@ public class DeviceConnector {
             Log.d(TAG, "setState() " + mState + " -> " + state);
 
         mState = state;
-        mHandler.obtainMessage(DeviceControlActivity.MESSAGE_STATE_CHANGE,
+        mHandler.obtainMessage(Messages.MESSAGE_STATE_CHANGE,
                 state, -1).sendToTarget();
     }
 
@@ -133,7 +132,7 @@ public class DeviceConnector {
 
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler
-                .obtainMessage(DeviceControlActivity.MESSAGE_DEVICE_NAME);
+                .obtainMessage(Messages.MESSAGE_DEVICE_NAME);
         mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
@@ -162,7 +161,7 @@ public class DeviceConnector {
             Log.d(TAG, "connectionFailed");
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(DeviceControlActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(Messages.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(DeviceControlActivity.TOAST, String.format(mContext.getResources().getString(R.string.unable_connect_to), mDeviceData.getName()));
         msg.setData(bundle);
@@ -173,7 +172,7 @@ public class DeviceConnector {
 
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(DeviceControlActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(Messages.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(DeviceControlActivity.TOAST, String.format(mContext.getResources().getString(R.string.connection_was_lost), mDeviceData.getName()));
         msg.setData(bundle);
@@ -300,9 +299,9 @@ public class DeviceConnector {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(DeviceControlActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(Messages.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                     if (mTerminalHandler != null)
-                        mTerminalHandler.obtainMessage(DeviceControlActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                        mTerminalHandler.obtainMessage(Messages.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     if (D)
                         Log.e(TAG, "disconnected", e);
@@ -318,7 +317,7 @@ public class DeviceConnector {
             try {
                 mmOutStream.write(buffer);
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(DeviceControlActivity.MESSAGE_WRITE, -1,	-1, buffer).sendToTarget();
+                mHandler.obtainMessage(Messages.MESSAGE_WRITE, -1,	-1, buffer).sendToTarget();
             } catch (IOException e) {
                 if (D)
                     Log.e(TAG, "Exception during write", e);

@@ -36,13 +36,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private static DeviceConnector connector;
     private BluetoothAdapter btAdapter;
 
-    // Message types sent from the DeviceConnector Handler
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
-
     public static final String TOAST = "toast";
     public static final String NOT_SET_TEXT = "-";
 
@@ -407,6 +400,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private void openTerminal()
     {
         Intent intent = new Intent(context, TerminalActivity.class);
+        intent.putExtra(MainActivity.DEVICE_NAME, connectedDeviceName);
         startActivity(intent);
     }
 
@@ -602,7 +596,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         {
             switch (msg.what)
             {
-                case MESSAGE_STATE_CHANGE:
+                case Messages.MESSAGE_STATE_CHANGE:
 
                     if(D) Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     String messageText = "";
@@ -628,24 +622,24 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                     appendOutgoingMessage(messageText);
                     break;
 
-                case MESSAGE_DEVICE_NAME:
+                case Messages.MESSAGE_DEVICE_NAME:
                     Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.successfully_connected_to), connectedDeviceName), Toast.LENGTH_SHORT).show();
                     break;
 
-                case MESSAGE_WRITE:
+                case Messages.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
                     appendOutgoingMessage(writeMessage);
                     break;
 
-                case MESSAGE_READ:
+                case Messages.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     appendIncomingMessage(readMessage);
                     break;
 
-                case MESSAGE_TOAST:
+                case Messages.MESSAGE_TOAST:
                     Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
                     break;
             }

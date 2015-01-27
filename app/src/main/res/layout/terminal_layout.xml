@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000"
+    >
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
+    <EditText
+        android:id="@+id/commandBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@+id/buttonSend"
+        android:ems="10"
+        android:hint="@string/command_to_send"
+        android:drawableRight="@android:drawable/ic_menu_send"
+        android:inputType="text"
+        android:singleLine="true"
+        />
 
-        <EditText
-            android:id="@+id/commandBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:layout_toLeftOf="@+id/buttonSend"
-            android:ems="10"
-            android:hint="@string/command_to_send"
-            android:inputType="text"
-            android:singleLine="true"
-            />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:id="@+id/buttonSend"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            />
-
-    </RelativeLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send"
+        android:id="@+id/buttonSend"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        />
 
     <View
         android:layout_width="fill_parent"
         android:id="@+id/separator1"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_below="@id/buttonSend"
+        android:background="@android:color/darker_gray"
+        />
 
     <TextView
         android:id="@+id/commandsView"
+        android:textIsSelectable="true"
+        android:layout_marginLeft="10dp"
+        android:scrollbars = "vertical"
+        android:layout_below="@id/separator1"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        />
 
-</LinearLayout>
+</RelativeLayout>

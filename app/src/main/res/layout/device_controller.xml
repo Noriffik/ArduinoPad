@@ -1,7 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:background="#000"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -194,7 +196,9 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:text="@string/open_terminal" />
+            android:text="@string/open_terminal"
+            android:drawableRight="@android:drawable/ic_menu_send"
+            />
 
         <Button
             android:id="@+id/buttonSaveSettings"
@@ -203,7 +207,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:text="@string/save_settings" />
+            android:text="@string/save_settings"
+            />
 
     </RelativeLayout>
     

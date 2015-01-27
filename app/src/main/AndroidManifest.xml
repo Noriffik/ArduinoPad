@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dev.aproschenko.arduinocontroller" >
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dev.aproschenko.arduinocontroller"
+    >
 
     <uses-sdk android:minSdkVersion="17"/>
 
@@ -11,10 +13,11 @@
     <application
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
+        android:name=".MainApplication"
         >
 
         <activity
-                android:name="com.dev.aproschenko.arduinocontroller.MainActivity"
+                android:name=".MainActivity"
                 android:label="@string/app_name"
                 android:configChanges="orientation"
                 android:screenOrientation="portrait">
@@ -26,16 +29,16 @@
         </activity>
 
         <activity
-                android:name="com.dev.aproschenko.arduinocontroller.DeviceControlActivity"
-                android:parentActivityName="com.dev.aproschenko.arduinocontroller.MainActivity"
+                android:name=".DeviceControlActivity"
+                android:parentActivityName=".MainActivity"
                 android:configChanges="orientation"
                 android:screenOrientation="portrait">
                 >
         </activity>
 
         <activity
-            android:name="com.dev.aproschenko.arduinocontroller.TerminalActivity"
-            android:parentActivityName="com.dev.aproschenko.arduinocontroller.DeviceControlActivity"
+            android:name=".TerminalActivity"
+            android:parentActivityName=".DeviceControlActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             >

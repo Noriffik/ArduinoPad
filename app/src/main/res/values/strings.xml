@@ -74,6 +74,8 @@
     <string name="error_adding_device">Error while adding device: %s</string>
     <string name="send">Send</string>
     <string name="command_to_send">Command to send...</string>
-    <string name="open_terminal">Open terminal</string>
+    <string name="open_terminal">Bluetooth Terminal</string>
+    <string name="menu_copy_to_clipboard">Copy</string>
+    <string name="bluetooth_terminal">Bluetooth Terminal</string>
 
 </resources>

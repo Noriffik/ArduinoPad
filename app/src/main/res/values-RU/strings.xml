@@ -73,6 +73,10 @@
     <string name="ok">OK</string>
     <string name="device_name">Имя устройства</string>
     <string name="error_adding_device">Ошибка добавления устройства: %s</string>
-    <string name="send">Send</string>
+    <string name="send">Отправить</string>
+    <string name="menu_copy_to_clipboard">Копировать</string>
+    <string name="bluetooth_terminal">Bluetooth-терминал</string>
+    <string name="command_to_send">Команда для отправки...</string>
+    <string name="open_terminal">Bluetooth-терминал</string>
 
 </resources>
