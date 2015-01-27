@@ -39,7 +39,7 @@
     <string name="collect_devices">Сбор устройств</string>
     <string name="searching">Поиск...</string>
     <string name="stop">Прервать</string>
-    <string name="bonded">подключено</string>
+    <string name="bonded">связано</string>
     <string name="peripheral">Перифирия</string>
     <string name="uncategorized">Без категории</string>
     <string name="health">Здоровье</string>
@@ -78,5 +78,6 @@
     <string name="bluetooth_terminal">Bluetooth-терминал</string>
     <string name="command_to_send">Команда для отправки...</string>
     <string name="open_terminal">Bluetooth-терминал</string>
+    <string name="menu_close">Закрыть</string>
 
 </resources>

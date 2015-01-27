@@ -6,12 +6,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.Date;
 
 public class TerminalActivity extends Activity
 {
@@ -48,10 +55,54 @@ public class TerminalActivity extends Activity
         commandsView.setTextIsSelectable(true);
 
         DeviceConnector connector = DeviceControlActivity.getConnector();
-        if (connector != null && connector.getState() == DeviceConnector.STATE_CONNECTED)
+        if (connector != null)
         {
-            connector.setTerminalHandler(mHandler);
+            connector.getHandlers().add(mHandler);
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (D) Log.d(TAG, "--- ON DESTROY ---");
+
+        DeviceConnector connector = DeviceControlActivity.getConnector();
+        if (connector != null)
+        {
+            connector.getHandlers().remove(mHandler);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        super.onCreateOptionsMenu(menu);
+        if (D) Log.d(TAG, "onCreateOptionsMenu");
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_terminal, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_close:
+                closeTerminal();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void closeTerminal()
+    {
+        finish();
     }
 
     private View.OnClickListener buttonSendClick = new View.OnClickListener()
@@ -63,12 +114,19 @@ public class TerminalActivity extends Activity
         }
     };
 
+    private String getFormattedDateTime()
+    {
+        Date date = new Date();
+        return String.format("%s %s", DateFormat.getDateFormat(getApplicationContext()).format(date), DateFormat.format("H:mm:ss", date));
+    }
+
     private void appendCommand(String command, int messageType)
     {
         String color = messageType == Messages.MESSAGE_READ ? "blue" : "red";
         String author = messageType == Messages.MESSAGE_READ ? connectedDeviceName : "ME";
+        String date = getFormattedDateTime();
 
-        commandsCache = String.format("<font color='%s'>%s&gt; </font>%s<br/>", color, author, command) + commandsCache;
+        commandsCache = String.format("%s <font color='%s'>%s&gt; </font>%s<br/>", date, color, author, command) + commandsCache;
 
         commandsView.setText(Html.fromHtml(commandsCache), TextView.BufferType.SPANNABLE);
     }
@@ -79,10 +137,19 @@ public class TerminalActivity extends Activity
         if (connector != null && connector.getState() == DeviceConnector.STATE_CONNECTED)
         {
             String command = commandBox.getText().toString().trim();
-            connector.write(command);
-            appendCommand(command, Messages.MESSAGE_WRITE);
-
-            commandBox.setText("");
+            if (!command.equals(""))
+            {
+                connector.write(command);
+                appendCommand(command, Messages.MESSAGE_WRITE);
+                commandBox.setText("");
+            }
+            else
+            {
+                if(commandBox.requestFocus())
+                {
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
         }
     }
 
@@ -97,6 +164,12 @@ public class TerminalActivity extends Activity
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     appendCommand(readMessage, Messages.MESSAGE_READ);
+                    break;
+
+                case Messages.MESSAGE_CONNECTION_LOST:
+                    buttonSend.setEnabled(false);
+                    commandBox.setEnabled(false);
+                    appendCommand(String.format(getResources().getString(R.string.connection_was_lost), connectedDeviceName), Messages.MESSAGE_READ);
                     break;
             }
         }

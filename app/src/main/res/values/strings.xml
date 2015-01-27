@@ -77,5 +77,6 @@
     <string name="open_terminal">Bluetooth Terminal</string>
     <string name="menu_copy_to_clipboard">Copy</string>
     <string name="bluetooth_terminal">Bluetooth Terminal</string>
+    <string name="menu_close">Close</string>
 
 </resources>

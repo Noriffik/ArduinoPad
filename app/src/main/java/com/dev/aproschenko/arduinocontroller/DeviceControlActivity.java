@@ -36,7 +36,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private static DeviceConnector connector;
     private BluetoothAdapter btAdapter;
 
-    public static final String TOAST = "toast";
     public static final String NOT_SET_TEXT = "-";
 
     private ArrayList<Button> padButtons = new ArrayList<>();
@@ -275,7 +274,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         DeviceData data = new DeviceData(connectedDevice, emptyName);
 
-        connector = new DeviceConnector(this, data, mHandler);
+        connector = new DeviceConnector(data.getAddress());
+        connector.getHandlers().add(mHandler);
         connector.connect();
     }
 
@@ -433,6 +433,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         menu.findItem(R.id.menu_settings).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_CONNECTED));
         menu.findItem(R.id.menu_connect).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_NONE));
         menu.findItem(R.id.menu_disconnect).setEnabled(!isSettingsMode && (state != DeviceConnector.STATE_NONE));
+        menu.findItem(R.id.menu_open_terminal).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_CONNECTED));
 
         return true;
     }
@@ -468,6 +469,10 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
             case R.id.menu_connect:
                 setupConnector();
+                return true;
+
+            case R.id.menu_open_terminal:
+                openTerminal();
                 return true;
 
             case R.id.menu_disconnect:
@@ -639,8 +644,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                     appendIncomingMessage(readMessage);
                     break;
 
-                case Messages.MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
+                case Messages.MESSAGE_CONNECTION_FAILED:
+                    Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.unable_connect_to), connectedDeviceName), Toast.LENGTH_SHORT).show();
+                    break;
+
+                case Messages.MESSAGE_CONNECTION_LOST:
+                    Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.connection_was_lost), connectedDeviceName), Toast.LENGTH_SHORT).show();
                     break;
             }
         }
