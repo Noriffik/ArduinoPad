@@ -44,6 +44,14 @@
             >
         </activity>
 
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+            >
+        </activity>
+
     </application>
 
 </manifest>

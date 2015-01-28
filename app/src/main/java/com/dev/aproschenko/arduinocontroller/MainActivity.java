@@ -6,21 +6,33 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -30,23 +42,6 @@ public class MainActivity extends Activity
     private static final String TAG = "MainActivity";
     private static final boolean D = true;
 
-    public static final String PREFS_FOLDER_NAME = "com.dev.aproschenko.arduinocontroller";
-    public static final String PREFS_KEY_COMMAND = "command";
-    public static final String PREFS_KEY_SORTTYPE = "sorttype";
-    public static final String PREFS_KEY_COLLECT_DEVICES = "collectdevices";
-    public static final String PREFS_KEY_SHOW_NO_SERVICES = "noservices";
-    public static final String PREFS_KEY_SHOW_AUDIOVIDEO = "audiovideo";
-    public static final String PREFS_KEY_SHOW_COMPUTER = "computer";
-    public static final String PREFS_KEY_SHOW_HEALTH = "health";
-    public static final String PREFS_KEY_SHOW_MISC = "misc";
-    public static final String PREFS_KEY_SHOW_IMAGING = "imaging";
-    public static final String PREFS_KEY_SHOW_NETWORKING = "networking";
-    public static final String PREFS_KEY_SHOW_PERIPHERAL = "peripheral";
-    public static final String PREFS_KEY_SHOW_PHONE = "phone";
-    public static final String PREFS_KEY_SHOW_TOY = "toy";
-    public static final String PREFS_KEY_SHOW_WEARABLE = "wearable";
-    public static final String PREFS_KEY_SHOW_UNCATEGORIZED = "uncategorized";
-
     final Context context = this;
 
     private ListView devicesView;
@@ -54,40 +49,14 @@ public class MainActivity extends Activity
     private Button btnSearchDevices;
     private ImageButton btnClearSearchBox;
     private ImageButton btnFilter;
-    private BluetoothAdapter btAdapter;
-    private SettingEntity settings;
-    private BroadcastReceiver broadcastReceiver;
     private boolean isReceiverRegistered = false;
     private ProgressDialog loadingDialog;
     private String searchFilter = "";
-
-    private boolean showNoServicesDevices = true;
-    private boolean showAudioVideo = true;
-    private boolean showComputer = true;
-    private boolean showHealth = true;
-    private boolean showMisc = true;
-    private boolean showImaging = true;
-    private boolean showNetworking = true;
-    private boolean showPeripheral = true;
-    private boolean showPhone = true;
-    private boolean showToy = true;
-    private boolean showWearable = true;
-    private boolean showUncategorized = true;
-
-    private boolean collectDevicesStat = false;
+    private BroadcastReceiver broadcastReceiver;
 
     public static int REQUEST_ENABLE_BT = 1;
     public static String DEVICE_ADDRESS = "DEVICE_ADDRESS";
     public static String DEVICE_NAME = "DEVICE_NAME";
-
-    public enum SortType
-    {
-        SORT_BY_NAME,
-        SORT_BY_TYPE,
-        SORT_BY_BONDED_STATE
-    }
-
-    public static ArrayList<String> buttonCommands = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -96,9 +65,6 @@ public class MainActivity extends Activity
         if (D) Log.d(TAG, "+++ ON CREATE +++");
 
         setContentView(R.layout.activity_main);
-
-        settings = new SettingEntity();
-        restoreSettings();
 
         devicesView = (ListView)findViewById(R.id.devicesView);
         btnSearchDevices = (Button)findViewById(R.id.btnSearchDevices);
@@ -119,9 +85,6 @@ public class MainActivity extends Activity
         btnSearchDevices.setEnabled(false);
         btnSearchDevices.setOnClickListener(btnSearchDevicesClick);
 
-        if (collectDevicesStat)
-            deserializeDevices();
-
         loadingDialog = new ProgressDialog(context);
         loadingDialog.setMessage(getResources().getString(R.string.searching));
         loadingDialog.setCancelable(false);
@@ -131,102 +94,17 @@ public class MainActivity extends Activity
             public void onClick(DialogInterface dialog, int which)
             {
                 dialog.dismiss();
-
-                if (btAdapter.isDiscovering())
-                {
-                    btAdapter.cancelDiscovery();
-                }
+                getApp().cancelDiscovery();
             }
         });
 
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter == null)
+        if (getApp().getAdapter() == null)
         {
             showAlert(getResources().getString(R.string.no_bt_support));
         }
     }
 
-    private void restoreSettings()
-    {
-        SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
-
-        String defaultCmd = DeviceControlActivity.NOT_SET_TEXT;
-        for (int i = 0; i < DeviceControlActivity.BTN_COUNT; i++)
-        {
-            String cmd = settings.getString(PREFS_KEY_COMMAND + i, "");
-            if (cmd.isEmpty())
-                cmd = defaultCmd;
-
-            buttonCommands.add(cmd);
-        }
-
-        String sortValue = settings.getString(PREFS_KEY_SORTTYPE, "SORT_BY_NAME");
-
-        switch (sortValue)
-        {
-            case "SORT_BY_TYPE":
-                this.settings.setSortType(SortType.SORT_BY_TYPE);
-                break;
-            case "SORT_BY_BONDED_STATE":
-                this.settings.setSortType(SortType.SORT_BY_BONDED_STATE);
-                break;
-            default:
-                this.settings.setSortType(SortType.SORT_BY_NAME);
-                break;
-        }
-
-        showNoServicesDevices = settings.getBoolean(PREFS_KEY_SHOW_NO_SERVICES, true);
-        showAudioVideo = settings.getBoolean(PREFS_KEY_SHOW_AUDIOVIDEO, true);
-        showComputer = settings.getBoolean(PREFS_KEY_SHOW_COMPUTER, true);
-        showHealth = settings.getBoolean(PREFS_KEY_SHOW_HEALTH, true);
-        showMisc = settings.getBoolean(PREFS_KEY_SHOW_MISC, true);
-        showImaging = settings.getBoolean(PREFS_KEY_SHOW_IMAGING, true);
-        showNetworking = settings.getBoolean(PREFS_KEY_SHOW_NETWORKING, true);
-        showPeripheral = settings.getBoolean(PREFS_KEY_SHOW_PERIPHERAL, true);
-        showPhone = settings.getBoolean(PREFS_KEY_SHOW_PHONE, true);
-        showToy = settings.getBoolean(PREFS_KEY_SHOW_TOY, true);
-        showWearable = settings.getBoolean(PREFS_KEY_SHOW_WEARABLE, true);
-        showUncategorized = settings.getBoolean(PREFS_KEY_SHOW_UNCATEGORIZED, true);
-
-        collectDevicesStat = settings.getBoolean(PREFS_KEY_COLLECT_DEVICES, false);
-    }
-
-    private void saveSettings()
-    {
-        SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-
-        String sortValue = "SORT_BY_NAME";
-        switch (this.settings.getSortType())
-        {
-            case SORT_BY_TYPE:
-                sortValue = "SORT_BY_TYPE";
-                break;
-            case SORT_BY_BONDED_STATE:
-                sortValue = "SORT_BY_BONDED_STATE";
-                break;
-            default: //name
-                break;
-        }
-        editor.putString(PREFS_KEY_SORTTYPE, sortValue);
-
-        editor.putBoolean(PREFS_KEY_SHOW_NO_SERVICES, showNoServicesDevices);
-        editor.putBoolean(PREFS_KEY_SHOW_AUDIOVIDEO, showAudioVideo);
-        editor.putBoolean(PREFS_KEY_SHOW_COMPUTER, showComputer);
-        editor.putBoolean(PREFS_KEY_SHOW_HEALTH, showHealth);
-        editor.putBoolean(PREFS_KEY_SHOW_MISC, showMisc);
-        editor.putBoolean(PREFS_KEY_SHOW_IMAGING, showImaging);
-        editor.putBoolean(PREFS_KEY_SHOW_NETWORKING, showNetworking);
-        editor.putBoolean(PREFS_KEY_SHOW_PERIPHERAL, showPeripheral);
-        editor.putBoolean(PREFS_KEY_SHOW_PHONE, showPhone);
-        editor.putBoolean(PREFS_KEY_SHOW_TOY, showToy);
-        editor.putBoolean(PREFS_KEY_SHOW_WEARABLE, showWearable);
-        editor.putBoolean(PREFS_KEY_SHOW_UNCATEGORIZED, showUncategorized);
-
-        editor.putBoolean(PREFS_KEY_COLLECT_DEVICES, collectDevicesStat);
-
-        editor.commit();
-    }
+    private MainApplication getApp() { return (MainApplication) getApplication(); }
 
     private void searchDevices()
     {
@@ -272,7 +150,7 @@ public class MainActivity extends Activity
     private void getPairedDevices()
     {
         // Get a set of currently paired devices
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedDevices = getApp().getBondedDevices();
         if (pairedDevices.size() > 0)
         {
             for (BluetoothDevice device : pairedDevices)
@@ -286,27 +164,27 @@ public class MainActivity extends Activity
 
     private boolean needAddToFiltered(DeviceData item)
     {
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.AUDIO_VIDEO && showAudioVideo)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.AUDIO_VIDEO && getApp().showAudioVideo)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.COMPUTER && showComputer)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.COMPUTER && getApp().showComputer)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.HEALTH && showHealth)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.HEALTH && getApp().showHealth)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING && showImaging)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING && getApp().showImaging)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.MISC && showMisc)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.MISC && getApp().showMisc)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.NETWORKING && showNetworking)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.NETWORKING && getApp().showNetworking)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.PERIPHERAL && showPeripheral)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.PERIPHERAL && getApp().showPeripheral)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.PHONE && showPhone)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.PHONE && getApp().showPhone)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.TOY && showToy)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.TOY && getApp().showToy)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.UNCATEGORIZED && showUncategorized)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.UNCATEGORIZED && getApp().showUncategorized)
             return true;
-        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.WEARABLE && showWearable)
+        if (item.getMajorDeviceClass() == BluetoothClass.Device.Major.WEARABLE && getApp().showWearable)
             return true;
 
         return false;
@@ -315,7 +193,7 @@ public class MainActivity extends Activity
     private void fillDevicesView()
     {
         ArrayList<DeviceData> filtered = new ArrayList<>();
-        for (DeviceData item : settings.getDevices())
+        for (DeviceData item : getApp().getSettings().getDevices())
         {
             if (!needAddToFiltered(item))
                 continue;
@@ -323,7 +201,7 @@ public class MainActivity extends Activity
             String name = item.getName() + "";
             if (searchFilter == null || searchFilter.isEmpty() || name.toLowerCase().contains(searchFilter.toLowerCase()))
             {
-                if (showNoServicesDevices)
+                if (getApp().showNoServicesDevices)
                 {
                     filtered.add(item);
                 }
@@ -338,26 +216,26 @@ public class MainActivity extends Activity
             }
         }
 
-        DevicesRowAdapter adapter = new DevicesRowAdapter(this, filtered, settings.getSortType());
+        DevicesRowAdapter adapter = new DevicesRowAdapter(this, filtered, getApp().getSettings().getSortType());
         devicesView.setAdapter(adapter);
 
-        String title = String.format("%s, %d/%d", getResources().getString(R.string.app_name), filtered.size(), settings.getDevices().size());
+        String title = String.format("%s, %d/%d", getResources().getString(R.string.app_name), filtered.size(), getApp().getSettings().getDevices().size());
         setTitle(title);
 
-        saveSettings();
+        getApp().saveSettings();
     }
 
     private void scanForDevices()
     {
         // If we're already discovering, stop it
-        if (btAdapter.isDiscovering())
+        if (getApp().getAdapter().isDiscovering())
         {
-            btAdapter.cancelDiscovery();
+            getApp().getAdapter().cancelDiscovery();
             loadingDialog.dismiss();
             return;
         }
 
-        btAdapter.startDiscovery();
+        getApp().getAdapter().startDiscovery();
         loadingDialog.show();
     }
 
@@ -387,7 +265,7 @@ public class MainActivity extends Activity
         super.onStart();
         if (D) Log.d(TAG, "++ ON START ++");
 
-        if (!btAdapter.isEnabled())
+        if (!getApp().getAdapter().isEnabled())
         {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -411,16 +289,8 @@ public class MainActivity extends Activity
         super.onDestroy();
         if (D) Log.d(TAG, "--- ON DESTROY ---");
 
-        if (btAdapter != null && btAdapter.isDiscovering())
-        {
-            btAdapter.cancelDiscovery();
-        }
-
-        if (isReceiverRegistered)
-        {
-            unregisterReceiver(broadcastReceiver);
-            isReceiverRegistered = false;
-        }
+        getApp().cancelDiscovery();
+        unregisterBroadcastReceiver();
     }
 
     @Override
@@ -428,12 +298,7 @@ public class MainActivity extends Activity
     {
         super.onPause();
         if (D) Log.d(TAG, "- ON PAUSE -");
-
-        if (isReceiverRegistered)
-        {
-            unregisterReceiver(broadcastReceiver);
-            isReceiverRegistered = false;
-        }
+        unregisterBroadcastReceiver();
     }
 
     @Override
@@ -441,7 +306,11 @@ public class MainActivity extends Activity
     {
         super.onStop();
         if (D) Log.d(TAG, "-- ON STOP --");
+        unregisterBroadcastReceiver();
+    }
 
+    private void unregisterBroadcastReceiver()
+    {
         if (isReceiverRegistered)
         {
             unregisterReceiver(broadcastReceiver);
@@ -522,18 +391,18 @@ public class MainActivity extends Activity
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.filter_popup, menu);
 
-            menu.findItem(R.id.menu_show_without_services).setChecked(showNoServicesDevices);
-            menu.findItem(R.id.menu_filter_av).setChecked(showAudioVideo);
-            menu.findItem(R.id.menu_filter_computer).setChecked(showComputer);
-            menu.findItem(R.id.menu_filter_health).setChecked(showHealth);
-            menu.findItem(R.id.menu_filter_imaging).setChecked(showImaging);
-            menu.findItem(R.id.menu_filter_misc).setChecked(showMisc);
-            menu.findItem(R.id.menu_filter_networking).setChecked(showNetworking);
-            menu.findItem(R.id.menu_filter_peripheral).setChecked(showPeripheral);
-            menu.findItem(R.id.menu_filter_phone).setChecked(showPhone);
-            menu.findItem(R.id.menu_filter_toy).setChecked(showToy);
-            menu.findItem(R.id.menu_filter_uncategorized).setChecked(showUncategorized);
-            menu.findItem(R.id.menu_filter_wearable).setChecked(showWearable);
+            menu.findItem(R.id.menu_show_without_services).setChecked(getApp().showNoServicesDevices);
+            menu.findItem(R.id.menu_filter_av).setChecked(getApp().showAudioVideo);
+            menu.findItem(R.id.menu_filter_computer).setChecked(getApp().showComputer);
+            menu.findItem(R.id.menu_filter_health).setChecked(getApp().showHealth);
+            menu.findItem(R.id.menu_filter_imaging).setChecked(getApp().showImaging);
+            menu.findItem(R.id.menu_filter_misc).setChecked(getApp().showMisc);
+            menu.findItem(R.id.menu_filter_networking).setChecked(getApp().showNetworking);
+            menu.findItem(R.id.menu_filter_peripheral).setChecked(getApp().showPeripheral);
+            menu.findItem(R.id.menu_filter_phone).setChecked(getApp().showPhone);
+            menu.findItem(R.id.menu_filter_toy).setChecked(getApp().showToy);
+            menu.findItem(R.id.menu_filter_uncategorized).setChecked(getApp().showUncategorized);
+            menu.findItem(R.id.menu_filter_wearable).setChecked(getApp().showWearable);
         }
     }
 
@@ -542,73 +411,73 @@ public class MainActivity extends Activity
     {
         if (item.getItemId() == R.id.menu_show_without_services)
         {
-            showNoServicesDevices = !showNoServicesDevices;
+            getApp().showNoServicesDevices = !getApp().showNoServicesDevices;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_av)
         {
-            showAudioVideo = !showAudioVideo;
+            getApp().showAudioVideo = !getApp().showAudioVideo;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_computer)
         {
-            showComputer = !showComputer;
+            getApp().showComputer = !getApp().showComputer;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_health)
         {
-            showHealth = !showHealth;
+            getApp().showHealth = !getApp().showHealth;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_imaging)
         {
-            showImaging = !showImaging;
+            getApp().showImaging = !getApp().showImaging;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_misc)
         {
-            showMisc = !showMisc;
+            getApp().showMisc = !getApp().showMisc;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_networking)
         {
-            showNetworking = !showNetworking;
+            getApp().showNetworking = !getApp().showNetworking;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_peripheral)
         {
-            showPeripheral = !showPeripheral;
+            getApp().showPeripheral = !getApp().showPeripheral;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_phone)
         {
-            showPhone = !showPhone;
+            getApp().showPhone = !getApp().showPhone;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_toy)
         {
-            showToy = !showToy;
+            getApp().showToy = !getApp().showToy;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_uncategorized)
         {
-            showUncategorized = !showUncategorized;
+            getApp().showUncategorized = !getApp().showUncategorized;
             fillDevicesView();
             return true;
         }
         if (item.getItemId() == R.id.menu_filter_wearable)
         {
-            showWearable = !showWearable;
+            getApp().showWearable = !getApp().showWearable;
             fillDevicesView();
             return true;
         }
@@ -655,9 +524,9 @@ public class MainActivity extends Activity
     private void connectToDevice(DeviceData itemData)
     {
         // If we're already discovering, stop it
-        if (btAdapter.isDiscovering())
+        if (getApp().getAdapter().isDiscovering())
         {
-            btAdapter.cancelDiscovery();
+            getApp().getAdapter().cancelDiscovery();
             loadingDialog.dismiss();
         }
 
@@ -681,16 +550,14 @@ public class MainActivity extends Activity
     @Override
     public boolean onPrepareOptionsMenu (Menu menu)
     {
-        menu.findItem(R.id.menu_enable_bt).setEnabled(!btAdapter.isEnabled());
+        menu.findItem(R.id.menu_enable_bt).setEnabled(!getApp().getAdapter().isEnabled());
 
-        if (settings.getSortType() == SortType.SORT_BY_NAME)
+        if (getApp().getSettings().getSortType() == MainApplication.SortType.SORT_BY_NAME)
             menu.findItem(R.id.menu_sort_by_name).setChecked(true);
-        if (settings.getSortType() == SortType.SORT_BY_TYPE)
+        if (getApp().getSettings().getSortType() == MainApplication.SortType.SORT_BY_TYPE)
             menu.findItem(R.id.menu_sort_by_type).setChecked(true);
-        if (settings.getSortType() == SortType.SORT_BY_BONDED_STATE)
+        if (getApp().getSettings().getSortType() == MainApplication.SortType.SORT_BY_BONDED_STATE)
             menu.findItem(R.id.menu_sort_by_bonded_state).setChecked(true);
-
-        menu.findItem(R.id.menu_collect_devices).setChecked(collectDevicesStat);
 
         return true;
     }
@@ -700,29 +567,24 @@ public class MainActivity extends Activity
     {
         switch (item.getItemId())
         {
-            case R.id.menu_collect_devices:
-                collectDevicesStat = !collectDevicesStat;
-                saveSettings();
-                return true;
-
             case R.id.menu_sort_by_name:
-                settings.setSortType(SortType.SORT_BY_NAME);
+                getApp().getSettings().setSortType(MainApplication.SortType.SORT_BY_NAME);
                 fillDevicesView();
                 return true;
 
             case R.id.menu_sort_by_type:
-                settings.setSortType(SortType.SORT_BY_TYPE);
+                getApp().getSettings().setSortType(MainApplication.SortType.SORT_BY_TYPE);
                 fillDevicesView();
                 return true;
 
             case R.id.menu_sort_by_bonded_state:
-                settings.setSortType(SortType.SORT_BY_BONDED_STATE);
+                getApp().getSettings().setSortType(MainApplication.SortType.SORT_BY_BONDED_STATE);
                 fillDevicesView();
                 return true;
 
             case R.id.menu_enable_bt:
 
-                if (!btAdapter.isEnabled())
+                if (!getApp().getAdapter().isEnabled())
                 {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -730,9 +592,19 @@ public class MainActivity extends Activity
 
                 return true;
 
+            case R.id.menu_settings:
+                showSettings();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showSettings()
+    {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -766,7 +638,7 @@ public class MainActivity extends Activity
         if (deviceName == null || deviceName.isEmpty())
             deviceName = emptyName;
 
-        for (DeviceData item : settings.getDevices())
+        for (DeviceData item : getApp().getSettings().getDevices())
         {
             String name = item.getName() + "";
             String addr = item.getAddress() + "";
@@ -778,149 +650,10 @@ public class MainActivity extends Activity
         }
 
         DeviceData dataToAdd = new DeviceData(device, emptyName);
-        settings.getDevices().add(dataToAdd);
+        getApp().getSettings().getDevices().add(dataToAdd);
 
-        if (collectDevicesStat)
-            serializeDevices();
-    }
-
-    private String getPrefsFileName(boolean createFolder)
-    {
-        String androidFolder = Environment.getExternalStorageDirectory().getPath() + "/Android";
-        String dataFolder = androidFolder + "/data";
-        String prefsFolder = dataFolder + "/" + PREFS_FOLDER_NAME;
-        String fileName = prefsFolder + "/devices.txt";
-
-        if (!createFolder)
-            return fileName;
-
-        boolean success = false;
-        File f = new File(androidFolder);
-        if (!f.exists() || !f.isDirectory())
-        {
-            success = f.mkdir();
-        }
-        else
-            success = true;
-
-        if (!success)
-            return "";
-
-        f = new File(dataFolder);
-        if (success && (!f.exists() || !f.isDirectory()))
-        {
-            success = f.mkdir();
-        }
-
-        if (!success)
-            return "";
-
-        f = new File(prefsFolder);
-        if (success && (!f.exists() || !f.isDirectory()))
-        {
-            success = f.mkdir();
-        }
-
-        if (!success)
-            return "";
-
-        return fileName;
-    }
-
-    private void deserializeDevices()
-    {
-        String jsonData = "";
-        String fileName = getPrefsFileName(false);
-
-        try
-        {
-            File myFile = new File(fileName);
-            if (!myFile.exists())
-            {
-                if (D) Log.e(TAG, "deserializeDevices(): file " + fileName + " not found.");
-                return;
-            }
-
-            if (D)
-                Log.d(TAG, "deserializeDevices(): try load from " + fileName);
-
-            FileInputStream fIn = new FileInputStream(myFile);
-            BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
-            String aDataRow;
-            String aBuffer = "";
-            while ((aDataRow = myReader.readLine()) != null)
-            {
-                aBuffer += aDataRow + "\n";
-            }
-            jsonData = aBuffer;
-            myReader.close();
-
-            if (D)
-                Log.d(TAG, "deserializeDevices(): loaded from " + fileName);
-        }
-        catch (Exception e)
-        {
-            if (D) Log.e(TAG, "deserializeDevices() failed", e);
-        }
-
-        String emptyName = getResources().getString(R.string.empty_device_name);
-        SettingEntity tmp = DeviceSerializer.deserialize(jsonData);
-
-        SortType st = SortType.SORT_BY_NAME;
-        if (settings != null)
-        {
-            st = settings.getSortType();
-        }
-
-        if (tmp != null)
-        {
-            settings = tmp;
-            settings.setSortType(st);
-
-            for (DeviceData item : settings.getDevices())
-            {
-                String deviceName = item.getName();
-                if (deviceName == null || deviceName.isEmpty())
-                    item.setName(emptyName);
-            }
-        }
-        else
-        {
-            settings = new SettingEntity();
-            settings.setSortType(st);
-        }
-    }
-
-    private void serializeDevices()
-    {
-        String jsonData = DeviceSerializer.serialize(settings);
-        String fileName = getPrefsFileName(true);
-
-        if (fileName.equals(""))
-        {
-            if (D)
-                Log.d(TAG, "serializeDevices(): unable to prepare prefs folder.");
-            return;
-        }
-
-        if (D)
-            Log.d(TAG, "serializeDevices(): try save to " + fileName);
-
-        try
-        {
-            File myFile = new File(fileName);
-
-            FileWriter filewriter = new FileWriter(myFile);
-            BufferedWriter out = new BufferedWriter(filewriter);
-
-            out.write(jsonData);
-
-            out.close();
-        }
-        catch (Exception e)
-        {
-            if (D) Log.e(TAG, "serializeDevices() failed", e);
-        }
+        if (getApp().collectDevicesStat)
+            getApp().serializeDevices();
     }
 
     @Override

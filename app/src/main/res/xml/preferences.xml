@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/collect_devices_statistics"
+        android:key="collect_devices_category"
+        >
+        <CheckBoxPreference
+            android:title="@string/collect_devices_statistics"
+            android:key="collect_devices"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>

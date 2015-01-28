@@ -6,6 +6,6 @@
         <item android:id="@+id/menu_sort_by_type" android:title="@string/sort_by_type"></item>
         <item android:id="@+id/menu_sort_by_bonded_state" android:title="@string/sort_by_bonded_state"></item>
     </group>
-    <item android:id="@+id/menu_collect_devices" android:checkable="true" android:title="@string/collect_devices"></item>
+    <item android:id="@+id/menu_settings" android:title="@string/settings" />
 
 </menu>

@@ -36,8 +36,8 @@
     <string name="log_dlg_title">Log</string>
     <string name="save_settings">Save settings</string>
     <string name="show_log">Show log</string>
-    <string name="collect_devices">Collect devices</string>
-    <string name="searching">Searching...</string>
+    <string name="collect_devices_statistics">Collect devices statistics</string>
+    <string name="searching">Searching…</string>
     <string name="stop">Stop</string>
     <string name="bonded">bonded</string>
     <string name="peripheral">Peripheral</string>
@@ -73,10 +73,11 @@
     <string name="ok">OK</string>
     <string name="error_adding_device">Error while adding device: %s</string>
     <string name="send">Send</string>
-    <string name="command_to_send">Command to send...</string>
+    <string name="command_to_send">Command to send…</string>
     <string name="open_terminal">Bluetooth Terminal</string>
     <string name="menu_copy_to_clipboard">Copy</string>
     <string name="bluetooth_terminal">Bluetooth Terminal</string>
     <string name="menu_close">Close</string>
+    <string name="settings">Settings</string>
 
 </resources>

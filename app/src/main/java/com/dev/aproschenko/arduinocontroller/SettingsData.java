@@ -1,26 +1,25 @@
 package com.dev.aproschenko.arduinocontroller;
 
-import com.dev.aproschenko.arduinocontroller.MainActivity.SortType;
-
 import java.util.ArrayList;
+import com.dev.aproschenko.arduinocontroller.MainApplication.SortType;
 
-public class SettingEntity
+public class SettingsData
 {
     private ArrayList<DeviceData> devices = new ArrayList<>();
 
-    private MainActivity.SortType sortType = SortType.SORT_BY_NAME;
+    private SortType sortType = SortType.SORT_BY_NAME;
 
     public ArrayList<DeviceData> getDevices()
     {
         return devices;
     }
 
-    public void setSortType(MainActivity.SortType value)
+    public void setSortType(SortType value)
     {
         sortType = value;
     }
 
-    public MainActivity.SortType getSortType()
+    public SortType getSortType()
     {
         return sortType;
     }

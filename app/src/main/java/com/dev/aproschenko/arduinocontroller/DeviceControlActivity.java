@@ -33,9 +33,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private String connectedDeviceName;
     private String connectedDeviceAddress;
 
-    private static DeviceConnector connector;
-    private BluetoothAdapter btAdapter;
-
     public static final String NOT_SET_TEXT = "-";
 
     private ArrayList<Button> padButtons = new ArrayList<>();
@@ -62,7 +59,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     final Context context = this;
 
-    public static DeviceConnector getConnector(){ return connector; }
+    private MainApplication getApp() { return (MainApplication) getApplication(); }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -87,15 +84,13 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         setTitle(connectedDeviceName + " not connected");
 
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-
         setupControls();
         setupSensors();
         enableControls();
 
-        if (connector != null)
+        if (getApp().getConnector() != null)
         {
-            if (D) Log.d(TAG, "+++ ON CREATE +++, connector state " + connector.getState());
+            if (D) Log.d(TAG, "+++ ON CREATE +++, connector state " + getApp().getConnector().getState());
         }
     }
 
@@ -105,7 +100,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         super.onStart();
         if (D) Log.d(TAG, "++ ON START ++");
 
-        if (!btAdapter.isEnabled())
+        if (!getApp().getAdapter().isEnabled())
         {
             if (D) Log.d(TAG, "++ ON START BT disabled ++");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -114,14 +109,14 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         else // Otherwise, setup the chat session
         {
             if (D) Log.d(TAG, "++ ON START BT enabled ++");
-            if (connector == null)
+            if (getApp().getConnector() == null)
             {
                 if (D) Log.d(TAG, "++ ON START setupConnector() ++");
                 setupConnector();
             }
             else
             {
-                if (D) Log.d(TAG, "++ ON START ++, connector state " + connector.getState());
+                if (D) Log.d(TAG, "++ ON START ++, connector state " + getApp().getConnector().getState());
             }
         }
     }
@@ -134,9 +129,9 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         sensorManager.registerListener(this, rotationVectorSensor, 10000);
 
-        if (connector != null)
+        if (getApp().getConnector() != null)
         {
-            if (D) Log.d(TAG, "+ ON RESUME +, connector state " + connector.getState());
+            if (D) Log.d(TAG, "+ ON RESUME +, connector state " + getApp().getConnector().getState());
         }
     }
 
@@ -204,11 +199,11 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         super.onDestroy();
         if (D) Log.d(TAG, "--- ON DESTROY ---");
 
-        if (connector != null)
+        if (getApp().getConnector() != null)
         {
-            if (D) Log.d(TAG, "--- ON DESTROY ---, connector state " + connector.getState());
-            connector.stop();
-            connector = null;
+            if (D) Log.d(TAG, "--- ON DESTROY ---, connector state " + getApp().getConnector().getState());
+            getApp().getConnector().stop();
+            getApp().deleteConnector();
         }
     }
 
@@ -220,9 +215,9 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         sensorManager.unregisterListener(this);
 
-        if (connector != null)
+        if (getApp().getConnector() != null)
         {
-            if (D) Log.d(TAG, "- ON PAUSE -, connector state " + connector.getState());
+            if (D) Log.d(TAG, "- ON PAUSE -, connector state " + getApp().getConnector().getState());
         }
     }
 
@@ -232,9 +227,9 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         super.onStop();
         if (D) Log.d(TAG, "-- ON STOP --");
 
-        if (connector != null)
+        if (getApp().getConnector() != null)
         {
-            if (D) Log.d(TAG, "-- ON STOP --, connector state " + connector.getState());
+            if (D) Log.d(TAG, "-- ON STOP --, connector state " + getApp().getConnector().getState());
         }
     }
 
@@ -262,21 +257,21 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         if (D) Log.d(TAG, "setupConnector");
 
-        if (connector != null)
+        if (getApp().getConnector() != null)
         {
-            if (D) Log.d(TAG, "setupConnector connector.stop(), state " + connector.getState());
-            connector.stop();
-            connector = null;
+            if (D) Log.d(TAG, "setupConnector connector.stop(), state " + getApp().getConnector().getState());
+            getApp().getConnector().stop();
+            getApp().deleteConnector();
         }
 
-        BluetoothDevice connectedDevice = btAdapter.getRemoteDevice(connectedDeviceAddress);
+        BluetoothDevice connectedDevice = getApp().getAdapter().getRemoteDevice(connectedDeviceAddress);
         String emptyName = getResources().getString(R.string.empty_device_name);
 
         DeviceData data = new DeviceData(connectedDevice, emptyName);
 
-        connector = new DeviceConnector(data.getAddress());
-        connector.getHandlers().add(mHandler);
-        connector.connect();
+        getApp().createConnector(data.getAddress());
+        getApp().getConnector().getHandlers().add(mHandler);
+        getApp().getConnector().connect();
     }
 
     private void setupControls()
@@ -291,7 +286,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         for (int i = 0; i < padButtons.size(); i++)
         {
             Button btn = padButtons.get(i);
-            String cmd = MainActivity.buttonCommands.get(i);
+            String cmd = getApp().getButtonCommands().get(i);
             btn.setText(cmd);
         }
 
@@ -339,9 +334,9 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void sendCommand(String command)
     {
-        if (connector != null && !isSettingsMode)
+        if (getApp().getConnector() != null && !isSettingsMode)
         {
-            connector.write(command);
+            getApp().getConnector().write(command);
         }
     }
 
@@ -381,7 +376,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                 Button btn = padButtons.get(i);
                 String cmd = btn.getText().toString();
 
-                MainActivity.buttonCommands.set(i, cmd);
+                getApp().getButtonCommands().set(i, cmd);
             }
 
             saveSettings();
@@ -406,13 +401,13 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void saveSettings()
     {
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_FOLDER_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(MainApplication.PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
 
         for (int i = 0; i < padButtons.size(); i++)
         {
-            String cmd = MainActivity.buttonCommands.get(i);
-            editor.putString(MainActivity.PREFS_KEY_COMMAND + i, cmd);
+            String cmd = getApp().getButtonCommands().get(i);
+            editor.putString(MainApplication.PREFS_KEY_COMMAND + i, cmd);
         }
 
         editor.apply();
@@ -424,11 +419,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         super.onPrepareOptionsMenu(menu);
         if (D) Log.d(TAG, "onPrepareOptionsMenu");
 
-        int state = DeviceConnector.STATE_NONE;
-        if (connector != null)
-        {
-            state = connector.getState();
-        }
+        int state = getApp().getConnectorState();
 
         menu.findItem(R.id.menu_settings).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_CONNECTED));
         menu.findItem(R.id.menu_connect).setEnabled(!isSettingsMode && (state == DeviceConnector.STATE_NONE));
@@ -454,7 +445,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         isSettingsMode = mode;
         buttonSaveSettings.setVisibility(isSettingsMode ? View.VISIBLE : View.INVISIBLE);
-        buttonOpenTerminal.setVisibility(isSettingsMode ? View.INVISIBLE : (connector.getState() == DeviceConnector.STATE_CONNECTED) ? View.VISIBLE : View.INVISIBLE);
+        buttonOpenTerminal.setVisibility(isSettingsMode ? View.INVISIBLE : (getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -476,10 +467,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
                 return true;
 
             case R.id.menu_disconnect:
-                if (connector != null)
-                {
-                    connector.stop();
-                }
+                getApp().disconnect();
                 return true;
 
             default:
@@ -501,11 +489,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void enableControls()
     {
-        boolean enable = false;
-        if (connector != null)
-        {
-            enable = connector.getState() == DeviceConnector.STATE_CONNECTED;
-        }
+        boolean enable = getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED;
 
         buttonOpenTerminal.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
 

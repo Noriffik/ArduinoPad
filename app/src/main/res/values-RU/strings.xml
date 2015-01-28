@@ -19,7 +19,7 @@
     <string name="sort_by_services">Сортировка по сервисам</string>
     <string name="sort_by_type">Сортировка по типу</string>
     <string name="sort_by_name">Сортировка по имени</string>
-    <string name="device_name_to_search">Имя для поиска...</string>
+    <string name="device_name_to_search">Имя для поиска…</string>
     <string name="no_services">Устройства без сервисов</string>
     <string name="filter_av">Аудио-Видео</string>
     <string name="filter_computer">Компьютер</string>
@@ -36,8 +36,8 @@
     <string name="log_dlg_title">Журнал</string>
     <string name="save_settings">Сохранить настройки</string>
     <string name="show_log">Показать журнал</string>
-    <string name="collect_devices">Сбор устройств</string>
-    <string name="searching">Поиск...</string>
+    <string name="collect_devices_statistics">Сбор статистики по устройствам</string>
+    <string name="searching">Поиск…</string>
     <string name="stop">Прервать</string>
     <string name="bonded">связано</string>
     <string name="peripheral">Перифирия</string>
@@ -76,8 +76,9 @@
     <string name="send">Отправить</string>
     <string name="menu_copy_to_clipboard">Копировать</string>
     <string name="bluetooth_terminal">Bluetooth-терминал</string>
-    <string name="command_to_send">Команда для отправки...</string>
+    <string name="command_to_send">Команда для отправки…</string>
     <string name="open_terminal">Bluetooth-терминал</string>
     <string name="menu_close">Закрыть</string>
+    <string name="settings">Настройки</string>
 
 </resources>

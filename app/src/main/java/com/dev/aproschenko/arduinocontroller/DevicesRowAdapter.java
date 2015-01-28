@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.dev.aproschenko.arduinocontroller.MainActivity.SortType;
+import com.dev.aproschenko.arduinocontroller.MainApplication.SortType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +19,9 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 {
     private final Context context;
     private final ArrayList<DeviceData> devices;
-    private final MainActivity.SortType sortType;
+    private final MainApplication.SortType sortType;
 
-    public DevicesRowAdapter(Context context, ArrayList<DeviceData> devices, MainActivity.SortType sortBy)
+    public DevicesRowAdapter(Context context, ArrayList<DeviceData> devices, MainApplication.SortType sortBy)
     {
         super(context, R.layout.bt_device_row, devices);
 

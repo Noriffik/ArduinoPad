@@ -33,6 +33,8 @@ public class TerminalActivity extends Activity
 
     private String commandsCache = "";
 
+    private MainApplication getApp() { return (MainApplication) getApplication(); }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -54,11 +56,7 @@ public class TerminalActivity extends Activity
         commandsView.setMovementMethod(new ScrollingMovementMethod());
         commandsView.setTextIsSelectable(true);
 
-        DeviceConnector connector = DeviceControlActivity.getConnector();
-        if (connector != null)
-        {
-            connector.getHandlers().add(mHandler);
-        }
+        getApp().addHandler(mHandler);
     }
 
     @Override
@@ -66,12 +64,7 @@ public class TerminalActivity extends Activity
     {
         super.onDestroy();
         if (D) Log.d(TAG, "--- ON DESTROY ---");
-
-        DeviceConnector connector = DeviceControlActivity.getConnector();
-        if (connector != null)
-        {
-            connector.getHandlers().remove(mHandler);
-        }
+        getApp().removeHandler(mHandler);
     }
 
     @Override
@@ -133,13 +126,12 @@ public class TerminalActivity extends Activity
 
     private void sendCommand()
     {
-        DeviceConnector connector = DeviceControlActivity.getConnector();
-        if (connector != null && connector.getState() == DeviceConnector.STATE_CONNECTED)
+        if (getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED)
         {
             String command = commandBox.getText().toString().trim();
             if (!command.equals(""))
             {
-                connector.write(command);
+                getApp().getConnector().write(command);
                 appendCommand(command, Messages.MESSAGE_WRITE);
                 commandBox.setText("");
             }
