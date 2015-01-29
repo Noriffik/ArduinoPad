@@ -43,6 +43,7 @@ public class MainApplication extends Application
     public static final String PREFS_KEY_SHOW_TOY = "toy";
     public static final String PREFS_KEY_SHOW_WEARABLE = "wearable";
     public static final String PREFS_KEY_SHOW_UNCATEGORIZED = "uncategorized";
+    public static final String PREFS_KEY_SHOW_DATETIME_LABELS = "showdatetime";
 
     public boolean showNoServicesDevices = true;
     public boolean showAudioVideo = true;
@@ -56,7 +57,9 @@ public class MainApplication extends Application
     public boolean showToy = true;
     public boolean showWearable = true;
     public boolean showUncategorized = true;
+
     public boolean collectDevicesStat = false;
+    public boolean showDateTimeLabels = true;
 
     private ArrayList<String> buttonCommands = new ArrayList<>();
 
@@ -74,18 +77,13 @@ public class MainApplication extends Application
         if (D) Log.d(TAG, "onCreate");
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
-        createSettings();
-        restoreSettings();
-
-        if (collectDevicesStat)
-            deserializeDevices();
+        loadSettings();
     }
 
     public BluetoothAdapter getAdapter() { return btAdapter; }
     public DeviceConnector getConnector() { return connector; }
     public SettingsData getSettings() { return settings; }
     public ArrayList<String> getButtonCommands() { return buttonCommands; }
-    public void setSettings(SettingsData settings) { this.settings = settings; }
     Set<BluetoothDevice> getBondedDevices() { return btAdapter.getBondedDevices(); }
 
     public void cancelDiscovery()
@@ -145,6 +143,15 @@ public class MainApplication extends Application
         settings = new SettingsData();
     }
 
+    public void loadSettings()
+    {
+        createSettings();
+        restoreSettings();
+
+        if (collectDevicesStat)
+            deserializeDevices();
+    }
+
     private String getPrefsFileName(boolean createFolder)
     {
         String androidFolder = Environment.getExternalStorageDirectory().getPath() + "/Android";
@@ -155,7 +162,7 @@ public class MainApplication extends Application
         if (!createFolder)
             return fileName;
 
-        boolean success = false;
+        boolean success;
         File f = new File(androidFolder);
         if (!f.exists() || !f.isDirectory())
         {
@@ -165,7 +172,7 @@ public class MainApplication extends Application
             success = true;
 
         if (!success)
-            return "";
+            return null;
 
         f = new File(dataFolder);
         if (success && (!f.exists() || !f.isDirectory()))
@@ -174,7 +181,7 @@ public class MainApplication extends Application
         }
 
         if (!success)
-            return "";
+            return null;
 
         f = new File(prefsFolder);
         if (success && (!f.exists() || !f.isDirectory()))
@@ -183,7 +190,7 @@ public class MainApplication extends Application
         }
 
         if (!success)
-            return "";
+            return null;
 
         return fileName;
     }
@@ -231,6 +238,7 @@ public class MainApplication extends Application
         showUncategorized = settings.getBoolean(PREFS_KEY_SHOW_UNCATEGORIZED, true);
 
         collectDevicesStat = settings.getBoolean(PREFS_KEY_COLLECT_DEVICES, false);
+        showDateTimeLabels = settings.getBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, true);
     }
 
     public void saveSettings()
@@ -271,6 +279,7 @@ public class MainApplication extends Application
         editor.putBoolean(PREFS_KEY_SHOW_UNCATEGORIZED, showUncategorized);
 
         editor.putBoolean(PREFS_KEY_COLLECT_DEVICES, collectDevicesStat);
+        editor.putBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, showDateTimeLabels);
 
         editor.commit();
     }
@@ -349,7 +358,7 @@ public class MainApplication extends Application
         String jsonData = DeviceSerializer.serialize(settings);
         String fileName = getPrefsFileName(true);
 
-        if (fileName.equals(""))
+        if (fileName == null || fileName.isEmpty())
         {
             if (D)
                 Log.d(TAG, "serializeDevices(): unable to prepare prefs folder.");

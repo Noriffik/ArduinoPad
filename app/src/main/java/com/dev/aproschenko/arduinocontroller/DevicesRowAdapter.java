@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.dev.aproschenko.arduinocontroller.MainApplication.SortType;
 
 import java.util.ArrayList;
@@ -69,7 +70,11 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
         ImageView deviceIcon = (ImageView) rowView.findViewById(R.id.deviceIcon);
         TextView deviceServices = (TextView) rowView.findViewById(R.id.deviceServices);
 
-        String bondedState = device.getBondState() == BluetoothDevice.BOND_BONDED ? context.getResources().getString(R.string.bonded) : "";
+        boolean isBonded = device.getBondState() == BluetoothDevice.BOND_BONDED;
+        String bondedState = isBonded ? context.getResources().getString(R.string.bonded) : "";
+
+        if (isBonded)
+            rowView.setBackgroundColor(0x2200FF00);
 
         deviceName.setText(device.getName());
         deviceAddress.setText(String.format("- %s", device.getAddress()));

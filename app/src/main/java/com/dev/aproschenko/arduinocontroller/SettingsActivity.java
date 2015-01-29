@@ -2,12 +2,13 @@ package com.dev.aproschenko.arduinocontroller;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    CheckBoxPreference collectDevicesPreference;
+    SwitchPreference collectDevicesPreference;
+    SwitchPreference showDatetimeLabelPreference;
 
     private MainApplication getApp() { return (MainApplication) getApplication(); }
 
@@ -18,7 +19,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         setTitle(R.string.settings);
         addPreferencesFromResource(R.xml.preferences);
 
-        collectDevicesPreference = (CheckBoxPreference)getPreferenceScreen().findPreference("collect_devices");
+        collectDevicesPreference = (SwitchPreference)getPreferenceScreen().findPreference("collect_devices");
+        showDatetimeLabelPreference = (SwitchPreference)getPreferenceScreen().findPreference("show_datetime_label");
     }
 
     @Override
@@ -28,6 +30,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         // Setup the initial values
         collectDevicesPreference.setChecked(getApp().collectDevicesStat);
+        showDatetimeLabelPreference.setChecked(getApp().showDateTimeLabels);
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -45,6 +48,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         if (key.equals("collect_devices"))
         {
             getApp().collectDevicesStat = collectDevicesPreference.isChecked();
+        }
+        if (key.equals("show_datetime_label"))
+        {
+            getApp().showDateTimeLabels = showDatetimeLabelPreference.isChecked();
         }
 
         getApp().saveSettings();

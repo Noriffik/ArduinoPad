@@ -119,8 +119,11 @@ public class TerminalActivity extends Activity
         String author = messageType == Messages.MESSAGE_READ ? connectedDeviceName : "ME";
         String date = getFormattedDateTime();
 
-        commandsCache = String.format("%s <font color='%s'>%s&gt; </font>%s<br/>", date, color, author, command) + commandsCache;
+        String textToAdd = String.format("<font color='%s'>%s&gt; </font>%s<br/>", color, author, command);
+        if (getApp().showDateTimeLabels)
+            textToAdd = String.format("%s %s", date, textToAdd);
 
+        commandsCache = textToAdd + commandsCache;
         commandsView.setText(Html.fromHtml(commandsCache), TextView.BufferType.SPANNABLE);
     }
 

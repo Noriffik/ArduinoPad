@@ -85,6 +85,24 @@ public class MainActivity extends Activity
         btnSearchDevices.setEnabled(false);
         btnSearchDevices.setOnClickListener(btnSearchDevicesClick);
 
+        createLoadingDialog();
+        loadSettings();
+
+        if (getApp().getAdapter() == null)
+        {
+            showAlert(getResources().getString(R.string.no_bt_support));
+        }
+    }
+
+    private MainApplication getApp() { return (MainApplication) getApplication(); }
+
+    private void loadSettings()
+    {
+        getApp().loadSettings();
+    }
+
+    private void createLoadingDialog()
+    {
         loadingDialog = new ProgressDialog(context);
         loadingDialog.setMessage(getResources().getString(R.string.searching));
         loadingDialog.setCancelable(false);
@@ -97,14 +115,7 @@ public class MainActivity extends Activity
                 getApp().cancelDiscovery();
             }
         });
-
-        if (getApp().getAdapter() == null)
-        {
-            showAlert(getResources().getString(R.string.no_bt_support));
-        }
     }
-
-    private MainApplication getApp() { return (MainApplication) getApplication(); }
 
     private void searchDevices()
     {
@@ -151,15 +162,16 @@ public class MainActivity extends Activity
     {
         // Get a set of currently paired devices
         Set<BluetoothDevice> pairedDevices = getApp().getBondedDevices();
-        if (pairedDevices.size() > 0)
-        {
-            for (BluetoothDevice device : pairedDevices)
-            {
-                addBluetoothDevice(device);
-            }
 
-            fillDevicesView();
+        if (D)
+            Log.d(TAG, "getPairedDevices: getBondedDevices returned " + pairedDevices.size() + " devices");
+
+        for (BluetoothDevice device : pairedDevices)
+        {
+            addBluetoothDevice(device);
         }
+
+        fillDevicesView();
     }
 
     private boolean needAddToFiltered(DeviceData item)
@@ -641,8 +653,8 @@ public class MainActivity extends Activity
         for (DeviceData item : getApp().getSettings().getDevices())
         {
             String name = item.getName() + "";
-            String addr = item.getAddress() + "";
-            if (name.equals(deviceName) && addr.equals(deviceAddress))
+            String address = item.getAddress() + "";
+            if (name.equals(deviceName) && address.equals(deviceAddress))
             {
                 item.setBondState(device.getBondState());
                 return;

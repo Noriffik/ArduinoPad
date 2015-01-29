@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
+    <SwitchPreference
         android:title="@string/collect_devices_statistics"
-        android:key="collect_devices_category"
-        >
-        <CheckBoxPreference
-            android:title="@string/collect_devices_statistics"
-            android:key="collect_devices"
-            android:defaultValue="false"
-            />
-    </PreferenceCategory>
+        android:key="collect_devices"
+        android:defaultValue="false"
+        android:summaryOn="@string/enabled"
+        android:summaryOff="@string/disabled"
+        />
+
+    <SwitchPreference
+        android:title="@string/show_datetime_label"
+        android:key="show_datetime_label"
+        android:defaultValue="false"
+        android:summaryOn="@string/enabled"
+        android:summaryOff="@string/disabled"
+        />
 
 </PreferenceScreen>

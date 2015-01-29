@@ -11,6 +11,7 @@ public class DeviceData
     private String address = "";
     private int bondState = BluetoothDevice.BOND_NONE;
     private ArrayList<ParcelUuid> uuids = null;
+    private ArrayList<Integer> services = new ArrayList<>();
     private int deviceClass;
     private int majorDeviceClass;
 
@@ -63,6 +64,8 @@ public class DeviceData
     {
         return uuids;
     }
+
+    public ArrayList<Integer> getServices() { return services; }
 
     public int getBondState()
     {
