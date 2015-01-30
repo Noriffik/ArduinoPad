@@ -93,5 +93,6 @@
     <string name="services">Службы</string>
     <string name="rssi">RSSI</string>
     <string name="rssi_label">RSSI:</string>
+    <string name="unbonded">отключено</string>
 
 </resources>

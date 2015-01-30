@@ -94,5 +94,6 @@
     <string name="services">Services</string>
     <string name="rssi">RSSI</string>
     <string name="rssi_label">RSSI:</string>
+    <string name="unbonded">unbonded</string>
 
 </resources>

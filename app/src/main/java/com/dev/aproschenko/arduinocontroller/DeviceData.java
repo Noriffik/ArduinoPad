@@ -4,21 +4,30 @@ import android.bluetooth.BluetoothDevice;
 import android.os.ParcelUuid;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DeviceData
 {
     private String name = "";
     private String address = "";
+    private String vendor = "";
     private int bondState = BluetoothDevice.BOND_NONE;
     private ArrayList<ParcelUuid> uuids = null;
-    private ArrayList<Integer> services = new ArrayList<>();
     private int deviceClass;
+    private int rssi = -1;
+    private Date timestamp;
     private int majorDeviceClass;
 
-    public DeviceData(BluetoothDevice device, String emptyName)
+    public DeviceData(BluetoothDevice device, int rssi, String emptyName)
+    {
+        address = device.getAddress();
+        updateData(device, rssi, emptyName);
+    }
+
+    //update all data except address
+    public void updateData(BluetoothDevice device, int rssi, String emptyName)
     {
         name = device.getName();
-        address = device.getAddress();
         bondState = device.getBondState();
 
         if (name == null || name.isEmpty())
@@ -28,6 +37,10 @@ public class DeviceData
         majorDeviceClass = device.getBluetoothClass().getMajorDeviceClass();
 
         uuids = BluetoothUtils.getDeviceUuids(device);
+
+        this.rssi = rssi;
+        timestamp = new Date();
+        vendor = "";
     }
 
     public int getDeviceClass()
@@ -50,11 +63,6 @@ public class DeviceData
         name = deviceName;
     }
 
-    public void setBondState(int state)
-    {
-        bondState = state;
-    }
-
     public String getAddress()
     {
         return address;
@@ -65,10 +73,14 @@ public class DeviceData
         return uuids;
     }
 
-    public ArrayList<Integer> getServices() { return services; }
-
     public int getBondState()
     {
         return bondState;
     }
+
+    public int getRssi() { return rssi; }
+
+    public Date getTimestamp() { return timestamp; }
+
+    public String getVendor() { return vendor; }
 }

@@ -33,7 +33,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends Activity
@@ -129,10 +128,11 @@ public class MainActivity extends Activity
                 {
                     // Get the BluetoothDevice object from the Intent
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 
                     if (device != null)
                     {
-                        addBluetoothDevice(device);
+                        addBluetoothDevice(device, rssi);
                         fillDevicesView();
                     }
                 }
@@ -165,7 +165,7 @@ public class MainActivity extends Activity
 
         for (BluetoothDevice device : pairedDevices)
         {
-            addBluetoothDevice(device);
+            addBluetoothDevice(device, -1);
         }
 
         fillDevicesView();
@@ -579,14 +579,12 @@ public class MainActivity extends Activity
         return true;
     }
 
-    private void addBluetoothDevice(BluetoothDevice device)
+    private void addBluetoothDevice(BluetoothDevice device, int rssi)
     {
-        String deviceName = null;
         String deviceAddress = null;
 
         try
         {
-            deviceName = device.getName();
             deviceAddress = device.getAddress();
         }
         catch (Exception e)
@@ -599,21 +597,17 @@ public class MainActivity extends Activity
             return;
 
         String emptyName = getResources().getString(R.string.empty_device_name);
-        if (deviceName == null || deviceName.isEmpty())
-            deviceName = emptyName;
-
         for (DeviceData item : getApp().getSettings().getDevices())
         {
-            String name = item.getName() + "";
             String address = item.getAddress() + "";
-            if (name.equals(deviceName) && address.equals(deviceAddress))
+            if (address.equals(deviceAddress))
             {
-                item.setBondState(device.getBondState());
+                item.updateData(device, rssi, emptyName);
                 return;
             }
         }
 
-        DeviceData dataToAdd = new DeviceData(device, emptyName);
+        DeviceData dataToAdd = new DeviceData(device, rssi, emptyName);
         getApp().getSettings().getDevices().add(dataToAdd);
 
         if (getApp().collectDevicesStat)

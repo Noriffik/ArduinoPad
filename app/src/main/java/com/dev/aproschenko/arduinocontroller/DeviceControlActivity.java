@@ -265,11 +265,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         }
 
         BluetoothDevice connectedDevice = getApp().getAdapter().getRemoteDevice(connectedDeviceAddress);
-        String emptyName = getResources().getString(R.string.empty_device_name);
 
-        DeviceData data = new DeviceData(connectedDevice, emptyName);
-
-        getApp().createConnector(data.getAddress());
+        getApp().createConnector(connectedDevice.getAddress());
         getApp().getConnector().getHandlers().add(mHandler);
         getApp().getConnector().connect();
     }

@@ -3,7 +3,9 @@
     <words>
       <w>arduinocontroller</w>
       <w>arduinopad</w>
+      <w>rssi</w>
       <w>unsynchronized</w>
+      <w>uuids</w>
     </words>
   </dictionary>
 </component>
