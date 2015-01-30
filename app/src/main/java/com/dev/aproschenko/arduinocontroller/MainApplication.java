@@ -241,6 +241,17 @@ public class MainApplication extends Application
         showDateTimeLabels = settings.getBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, true);
     }
 
+    public DeviceData getDeviceDataByAddress(String address)
+    {
+        for (DeviceData data : settings.getDevices())
+        {
+            if (data.getAddress().equals(address))
+                return data;
+        }
+
+        return null;
+    }
+
     public void saveSettings()
     {
         saveSettingsInternal();

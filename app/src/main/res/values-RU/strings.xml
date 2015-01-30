@@ -82,5 +82,16 @@
     <string name="enabled">Включено</string>
     <string name="disabled">Выключено</string>
     <string name="show_datetime_label">Показывать дату-время в Терминале</string>
+    <string name="device">Об устройстве</string>
+    <string name="device_name_label">Имя:</string>
+    <string name="device_address_label">MAC-адрес:</string>
+    <string name="device_class_label">Класс:</string>
+    <string name="device_major_class_label">М-класс:</string>
+    <string name="bonding_state_label">Статус:</string>
+    <string name="vendor_label">Производитель:</string>
+    <string name="timestamp_label">Дата-время:</string>
+    <string name="services">Службы</string>
+    <string name="rssi">RSSI</string>
+    <string name="rssi_label">RSSI:</string>
 
 </resources>

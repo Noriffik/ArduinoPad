@@ -3,10 +3,12 @@ package com.dev.aproschenko.arduinocontroller;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,11 +20,13 @@ import java.util.Comparator;
 
 public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
 {
-    private final Context context;
+    private final MainActivity context;
     private final ArrayList<DeviceData> devices;
     private final MainApplication.SortType sortType;
 
-    public DevicesRowAdapter(Context context, ArrayList<DeviceData> devices, MainApplication.SortType sortBy)
+    private MainApplication getApp() { return (MainApplication) context.getApplication(); }
+
+    public DevicesRowAdapter(MainActivity context, ArrayList<DeviceData> devices, SortType sortBy)
     {
         super(context, R.layout.bt_device_row, devices);
 
@@ -55,6 +59,26 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
         });
     }
 
+    private View.OnClickListener onDeviceInfoButtonClick = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            String address = (String)v.getTag();
+            deviceInfoButtonClick(address);
+        }
+    };
+
+    private void deviceInfoButtonClick(String address)
+    {
+        DeviceData deviceData = getApp().getDeviceDataByAddress(address);
+
+        Intent intent = new Intent(context, DeviceInfoActivity.class);
+        intent.putExtra(MainActivity.DEVICE_NAME, deviceData.getName());
+        intent.putExtra(MainActivity.DEVICE_ADDRESS, deviceData.getAddress());
+        context.startActivity(intent);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
@@ -69,6 +93,11 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
         TextView deviceState = (TextView) rowView.findViewById(R.id.deviceState);
         ImageView deviceIcon = (ImageView) rowView.findViewById(R.id.deviceIcon);
         TextView deviceServices = (TextView) rowView.findViewById(R.id.deviceServices);
+
+        ImageButton showDeviceInfoButton = (ImageButton) rowView.findViewById(R.id.showDeviceInfoButton);
+        showDeviceInfoButton.setTag(device.getAddress());
+
+        showDeviceInfoButton.setOnClickListener(onDeviceInfoButtonClick);
 
         boolean isBonded = device.getBondState() == BluetoothDevice.BOND_BONDED;
         String bondedState = isBonded ? context.getResources().getString(R.string.bonded) : "";

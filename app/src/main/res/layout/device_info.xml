@@ -1,17 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    >
 
-    <ListView
-        android:id="@+id/devicesInfoView"
-        android:layout_marginTop="10dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
+        android:padding="10dp"
         >
-    </ListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/device"
+                android:id="@+id/deviceHeader"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                android:textColor="#0695CA"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="fill_parent"
+                android:id="@+id/separator1"
+                android:layout_height="1dp"
+                android:layout_below="@+id/deviceHeader"
+                android:background="#0695CA"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator1"
+                android:orientation="horizontal"
+                android:id="@+id/deviceName"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device_name_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceName1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deviceName"
+                android:orientation="horizontal"
+                android:id="@+id/deviceAddress"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device_address_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceAddress1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deviceAddress"
+                android:orientation="horizontal"
+                android:id="@+id/deviceClass"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device_class_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceClass1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deviceClass"
+                android:orientation="horizontal"
+                android:id="@+id/deviceMajorClass"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device_major_class_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceMajorClass1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deviceMajorClass"
+                android:orientation="horizontal"
+                android:id="@+id/deviceState"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bonding_state_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceState1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deviceState"
+                android:orientation="horizontal"
+                android:id="@+id/deviceVendor"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vendor_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceVendor1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deviceVendor"
+                android:orientation="horizontal"
+                android:id="@+id/deviceTimestamp"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timestamp_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceTimestamp1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/services"
+                android:id="@+id/servicesHeader"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                android:textColor="#0695CA"
+                android:layout_below="@+id/deviceTimestamp"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="fill_parent"
+                android:id="@+id/separator2"
+                android:layout_height="1dp"
+                android:layout_below="@+id/servicesHeader"
+                android:background="#0695CA"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                />
+
+            <TextView
+                android:id="@+id/deviceServicesInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Services list will be here"
+                android:layout_below="@+id/separator2"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/rssi"
+                android:id="@+id/rssiHeader"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                android:textColor="#0695CA"
+                android:layout_below="@+id/deviceServicesInfo"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="fill_parent"
+                android:id="@+id/separator3"
+                android:layout_height="1dp"
+                android:layout_below="@+id/rssiHeader"
+                android:background="#0695CA"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator3"
+                android:orientation="horizontal"
+                android:id="@+id/deviceRSSI"
+                >
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rssi_label"
+                    />
+
+                <TextView
+                    android:id="@+id/deviceRSSI1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Text"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,8 +46,6 @@ public class MainActivity extends Activity
     private ListView devicesView;
     private EditText searchBox;
     private Button btnSearchDevices;
-    private ImageButton btnClearSearchBox;
-    private ImageButton btnFilter;
     private boolean isReceiverRegistered = false;
     private ProgressDialog loadingDialog;
     private String searchFilter = "";
@@ -69,10 +66,10 @@ public class MainActivity extends Activity
         devicesView = (ListView)findViewById(R.id.devicesView);
         btnSearchDevices = (Button)findViewById(R.id.btnSearchDevices);
 
-        btnClearSearchBox = (ImageButton)findViewById(R.id.btnClearSearchBox);
+        ImageButton btnClearSearchBox = (ImageButton) findViewById(R.id.btnClearSearchBox);
         btnClearSearchBox.setOnClickListener(btnClearSearchBoxClick);
 
-        btnFilter = (ImageButton)findViewById(R.id.btnFilter);
+        ImageButton btnFilter = (ImageButton) findViewById(R.id.btnFilter);
         btnFilter.setOnClickListener(btnFilterClick);
         registerForContextMenu(btnFilter);
 
@@ -388,17 +385,8 @@ public class MainActivity extends Activity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.devicesView)
-        {
-            MenuInflater inflater = getMenuInflater();
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            ListAdapter adapter = devicesView.getAdapter();
-            DeviceData data = (DeviceData) adapter.getItem(info.position);
 
-            menu.setHeaderTitle(data.getName());
-            inflater.inflate(R.menu.activity_main_context, menu);
-        }
-        else if (v.getId() == R.id.btnFilter)
+        if (v.getId() == R.id.btnFilter)
         {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.filter_popup, menu);
@@ -494,43 +482,7 @@ public class MainActivity extends Activity
             return true;
         }
 
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        ListAdapter adapter = devicesView.getAdapter();
-        DeviceData data = (DeviceData) adapter.getItem(info.position);
-
-        switch (item.getItemId())
-        {
-            case R.id.menu_connect:
-                connectToDevice(data);
-                return true;
-
-            case R.id.menu_device_info:
-                showDeviceInfo(data);
-                return true;
-
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
-
-    private void showDeviceInfo(DeviceData itemData)
-    {
-        Map<String, String> services = BluetoothUtils.getDeviceServicesMap(itemData.getUuids());
-
-        ArrayList<InfoData> data = new ArrayList<>();
-
-        for (Map.Entry<String, String> entry : services.entrySet())
-        {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            InfoData id = new InfoData(key, value, !value.startsWith("Unknown"));
-            data.add(id);
-        }
-
-        String deviceName = itemData.getName();
-        DeviceInfoDialog dialog = DeviceInfoDialog.newInstance(data, deviceName);
-        dialog.show(getFragmentManager(), "dialog");
+        return super.onContextItemSelected(item);
     }
 
     private void connectToDevice(DeviceData itemData)
