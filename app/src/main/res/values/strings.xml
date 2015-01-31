@@ -95,5 +95,11 @@
     <string name="rssi">RSSI</string>
     <string name="rssi_label">RSSI:</string>
     <string name="unbonded">unbonded</string>
+    <string name="press_color_to_apply">Press on Color to apply</string>
+    <string name="dialog_color_picker">Select color</string>
+    <string name="colors">Colors</string>
+    <string name="bonded_device_background">Bonded device background</string>
+    <string name="sent_message_color">Sent message color</string>
+    <string name="received_message_color">Received message color</string>
 
 </resources>

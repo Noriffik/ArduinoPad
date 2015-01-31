@@ -308,6 +308,7 @@ public class MainActivity extends Activity
         super.onPause();
         if (D) Log.d(TAG, "- ON PAUSE -");
         unregisterBroadcastReceiver();
+        getApp().saveSettings();
     }
 
     @Override

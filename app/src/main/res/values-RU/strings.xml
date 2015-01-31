@@ -94,5 +94,11 @@
     <string name="rssi">RSSI</string>
     <string name="rssi_label">RSSI:</string>
     <string name="unbonded">отключено</string>
+    <string name="press_color_to_apply">Выберите цвет нажатием</string>
+    <string name="dialog_color_picker">Выбор цвета</string>
+    <string name="colors">Цвета</string>
+    <string name="bonded_device_background">Подключенное устройство</string>
+    <string name="sent_message_color">Отправленная команда</string>
+    <string name="received_message_color">Принятая команда</string>
 
 </resources>

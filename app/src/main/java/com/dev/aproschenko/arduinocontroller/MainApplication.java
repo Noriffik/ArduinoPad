@@ -4,6 +4,7 @@ import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -21,6 +22,10 @@ public class MainApplication extends Application
 {
     private static final String TAG = "MainApplication";
     private static final boolean D = true;
+
+    public static int bondedBgColorDefault = 0x2200FF00;
+    public static int sentMessageColorDefault = Color.GREEN;
+    public static int receivedMessageColorDefault = Color.RED;
 
     private BluetoothAdapter btAdapter;
     private DeviceConnector connector;
@@ -44,6 +49,9 @@ public class MainApplication extends Application
     public static final String PREFS_KEY_SHOW_WEARABLE = "wearable";
     public static final String PREFS_KEY_SHOW_UNCATEGORIZED = "uncategorized";
     public static final String PREFS_KEY_SHOW_DATETIME_LABELS = "showdatetime";
+    public static final String PREFS_KEY_BONDED_COLOR = "bondedcolor";
+    public static final String PREFS_KEY_SENT_COLOR = "sentcolor";
+    public static final String PREFS_KEY_RECEIVED_COLOR = "receivedcolor";
 
     public boolean showNoServicesDevices = true;
     public boolean showAudioVideo = true;
@@ -60,6 +68,10 @@ public class MainApplication extends Application
 
     public boolean collectDevicesStat = false;
     public boolean showDateTimeLabels = true;
+
+    public int bondedBgColor = bondedBgColorDefault;
+    public int sentMessageColor = sentMessageColorDefault;
+    public int receivedMessageColor = receivedMessageColorDefault;
 
     private ArrayList<String> buttonCommands = new ArrayList<>();
 
@@ -239,6 +251,10 @@ public class MainApplication extends Application
 
         collectDevicesStat = settings.getBoolean(PREFS_KEY_COLLECT_DEVICES, false);
         showDateTimeLabels = settings.getBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, true);
+
+        bondedBgColor = settings.getInt(PREFS_KEY_BONDED_COLOR, bondedBgColorDefault);
+        sentMessageColor = settings.getInt(PREFS_KEY_SENT_COLOR, sentMessageColorDefault);
+        receivedMessageColor = settings.getInt(PREFS_KEY_RECEIVED_COLOR, receivedMessageColorDefault);
     }
 
     public DeviceData getDeviceDataByAddress(String address)
@@ -291,6 +307,10 @@ public class MainApplication extends Application
 
         editor.putBoolean(PREFS_KEY_COLLECT_DEVICES, collectDevicesStat);
         editor.putBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, showDateTimeLabels);
+
+        editor.putInt(PREFS_KEY_BONDED_COLOR, bondedBgColor);
+        editor.putInt(PREFS_KEY_SENT_COLOR, sentMessageColor);
+        editor.putInt(PREFS_KEY_RECEIVED_COLOR, receivedMessageColor);
 
         editor.commit();
     }

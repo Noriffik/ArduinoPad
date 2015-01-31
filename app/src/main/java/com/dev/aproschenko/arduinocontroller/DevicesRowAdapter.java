@@ -103,7 +103,7 @@ public class DevicesRowAdapter extends ArrayAdapter<DeviceData>
         String bondedState = isBonded ? context.getResources().getString(R.string.bonded) : "";
 
         if (isBonded)
-            rowView.setBackgroundColor(0x2200FF00);
+            rowView.setBackgroundColor(getApp().bondedBgColor);
 
         deviceName.setText(device.getName());
         deviceAddress.setText(String.format("- %s", device.getAddress()));

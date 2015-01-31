@@ -115,7 +115,8 @@ public class TerminalActivity extends Activity
 
     private void appendCommand(String command, int messageType)
     {
-        String color = messageType == Messages.MESSAGE_READ ? "blue" : "red";
+        int intColor = messageType == Messages.MESSAGE_READ ? getApp().receivedMessageColor : getApp().sentMessageColor;
+        String color = String.format("#%06X", (0xFFFFFF & intColor));
         String author = messageType == Messages.MESSAGE_READ ? connectedDeviceName : "ME";
         String date = getFormattedDateTime();
 
