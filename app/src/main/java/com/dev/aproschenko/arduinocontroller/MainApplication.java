@@ -76,6 +76,7 @@ public class MainApplication extends Application
     public int receivedMessageColor = receivedMessageColorDefault;
 
     private ArrayList<String> buttonCommands = new ArrayList<>();
+    ArrayList<MacData> macs = new ArrayList<>();
 
     public enum SortType
     {
@@ -99,6 +100,7 @@ public class MainApplication extends Application
     public SettingsData getSettings() { return settings; }
     public ArrayList<String> getButtonCommands() { return buttonCommands; }
     Set<BluetoothDevice> getBondedDevices() { return btAdapter.getBondedDevices(); }
+    public ArrayList<MacData> getMACs() { return macs; }
 
     public void cancelDiscovery()
     {
@@ -321,22 +323,22 @@ public class MainApplication extends Application
         editor.commit();
     }
 
-    private void deserializeDevices()
+    public String readFile(String fileName)
     {
+        String fileNamePath = getPrefsFileName(false, fileName);
         String jsonData = "";
-        String fileName = getPrefsFileName(false, PREFS_DEVICES_FILE);
 
         try
         {
-            File myFile = new File(fileName);
+            File myFile = new File(fileNamePath);
             if (!myFile.exists())
             {
-                if (D) Log.e(TAG, "deserializeDevices(): file " + fileName + " not found.");
-                return;
+                if (D) Log.e(TAG, "readFile(): file " + fileNamePath + " not found.");
+                return "";
             }
 
             if (D)
-                Log.d(TAG, "deserializeDevices(): try load from " + fileName);
+                Log.d(TAG, "readFile(): try load from " + fileNamePath);
 
             FileInputStream fIn = new FileInputStream(myFile);
             BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
@@ -350,12 +352,19 @@ public class MainApplication extends Application
             myReader.close();
 
             if (D)
-                Log.d(TAG, "deserializeDevices(): loaded from " + fileName);
+                Log.d(TAG, "readFile(): loaded from " + fileNamePath);
         }
         catch (Exception e)
         {
-            if (D) Log.e(TAG, "deserializeDevices() failed", e);
+            if (D) Log.e(TAG, "readFile() failed", e);
         }
+
+        return jsonData;
+    }
+
+    private void deserializeDevices()
+    {
+        String jsonData = readFile(PREFS_DEVICES_FILE);
 
         String emptyName = getResources().getString(R.string.empty_device_name);
         SettingsData tmp = DeviceSerializer.deserialize(jsonData);
@@ -393,21 +402,26 @@ public class MainApplication extends Application
     private void serializeDevicesInternal()
     {
         String jsonData = DeviceSerializer.serialize(settings);
-        String fileName = getPrefsFileName(true, PREFS_DEVICES_FILE);
+        writeFile(jsonData, PREFS_DEVICES_FILE);
+    }
 
-        if (fileName == null || fileName.isEmpty())
+    public void writeFile(String jsonData, String fileName)
+    {
+        String fileNamePath = getPrefsFileName(true, fileName);
+
+        if (fileNamePath == null || fileNamePath.isEmpty())
         {
             if (D)
-                Log.d(TAG, "serializeDevices(): unable to prepare prefs folder.");
+                Log.d(TAG, "writeFile(): unable to prepare prefs folder.");
             return;
         }
 
         if (D)
-            Log.d(TAG, "serializeDevices(): try save to " + fileName);
+            Log.d(TAG, "writeFile(): try save to " + fileNamePath);
 
         try
         {
-            File myFile = new File(fileName);
+            File myFile = new File(fileNamePath);
 
             FileWriter filewriter = new FileWriter(myFile);
             BufferedWriter out = new BufferedWriter(filewriter);
@@ -418,7 +432,10 @@ public class MainApplication extends Application
         }
         catch (Exception e)
         {
-            if (D) Log.e(TAG, "serializeDevices() failed", e);
+            if (D) Log.e(TAG, "writeFile() failed", e);
         }
+
+        if (D)
+            Log.d(TAG, "writeFile(): save to " + fileNamePath + " successful");
     }
 }

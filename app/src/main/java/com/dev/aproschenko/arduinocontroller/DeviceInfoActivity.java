@@ -3,14 +3,11 @@ package com.dev.aproschenko.arduinocontroller;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -26,6 +23,8 @@ public class DeviceInfoActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         if (D) Log.d(TAG, "+++ ON CREATE +++");
+
+        initMACs();
 
         Intent intent = getIntent();
         String connectedDeviceName = intent.getStringExtra(MainActivity.DEVICE_NAME);
@@ -62,9 +61,12 @@ public class DeviceInfoActivity extends Activity
         String bondedState = isBonded ? getResources().getString(R.string.bonded) : getResources().getString(R.string.unbonded);
         final TextView deviceState = (TextView) findViewById(R.id.deviceState);
         deviceState.setText(bondedState);
+        if (isBonded)
+            deviceState.setTextColor(Color.GREEN);
 
+        String vendor = MacUtil.getVendorByAddress(deviceData.getAddress(), getApp().getMACs());
         final TextView deviceVendor = (TextView) findViewById(R.id.deviceVendor);
-        deviceVendor.setText(deviceData.getVendor());
+        deviceVendor.setText(vendor);
 
         final TextView deviceTimestamp = (TextView) findViewById(R.id.deviceTimestamp);
         deviceTimestamp.setText(deviceData.getTimestamp().toString());
@@ -72,92 +74,24 @@ public class DeviceInfoActivity extends Activity
         String rssi = deviceData.getRssi() == -1 ? "-" : String.format("%d dBm", deviceData.getRssi());
         final TextView deviceRSSI = (TextView) findViewById(R.id.deviceRSSI);
         deviceRSSI.setText(rssi);
-
-        infoView.setText(convertFile());
     }
 
-    private String convertFile()
+    private void initMACs()
     {
-        if (D) Log.d(TAG, "convertFile");
-
-        ArrayList<MacData> macs = new ArrayList<>();
-
-        InputStream inputStream = getResources().openRawResource(R.raw.mac);
-
-        if (D) Log.d(TAG, "convertFile openRawResource");
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-        if (D) Log.d(TAG, "convertFile create BufferedReader");
-
-        String line = null;
-
-        try
+        if (getApp().getMACs().size() == 0)
         {
-            line = reader.readLine();
-
-            int counter = 0;
-            while (line != null)
+            String macJson = MacConverter.readMacsJson(R.raw.vendors, this);
+            ArrayList<MacData> macs = MacUtil.deserializeMacs(macJson);
+            for (MacData macData : macs)
             {
-                if (D) Log.d(TAG, "convertFile line='" + line + "'");
-
-                if (counter > 40)
-                    break;
-
-                if (line.startsWith("  ")) //skip vendor address
-                {
-                    if (line.length() >= 3)
-                    {
-                        if (line.charAt(2) == '\t')
-                        {
-
-                        }
-                        else
-                        {
-                            line = line.trim();
-
-                            if (D) Log.d(TAG, "convertFile line1='" + line + "', char(2)=" + line.charAt(2));
-
-                            if (line.charAt(2) != '-') //skip 00-00-00 lines
-                            {
-                                MacData mac = new MacData();
-                                mac.address = line.substring(0, 6);
-
-                                int lastTab = line.lastIndexOf("\t");
-                                mac.vendor = line.substring(lastTab + 1);
-
-                                macs.add(mac);
-
-                                counter++;
-                            }
-                        }
-                    }
-                }
-
-                line = reader.readLine();
+                getApp().getMACs().add(macData);
             }
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        try
-        {
-            inputStream.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        String json = DeviceSerializer.serializeMacs(macs);
-        return json;
     }
 
     private String getDeviceServices(DeviceData itemData)
     {
-        String text = "";
+        String text = "-";
 
         Map<String, String> services = BluetoothUtils.getDeviceServicesMap(itemData.getUuids());
         for (Map.Entry<String, String> entry : services.entrySet())

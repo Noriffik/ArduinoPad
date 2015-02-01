@@ -10,7 +10,6 @@ public class DeviceData
 {
     private String name = "";
     private String address = "";
-    private String vendor = "";
     private int bondState = BluetoothDevice.BOND_NONE;
     private ArrayList<ParcelUuid> uuids = null;
     private int deviceClass;
@@ -40,7 +39,6 @@ public class DeviceData
 
         this.rssi = rssi;
         timestamp = new Date();
-        vendor = "";
     }
 
     public int getDeviceClass()
@@ -81,6 +79,4 @@ public class DeviceData
     public int getRssi() { return rssi; }
 
     public Date getTimestamp() { return timestamp; }
-
-    public String getVendor() { return vendor; }
 }
