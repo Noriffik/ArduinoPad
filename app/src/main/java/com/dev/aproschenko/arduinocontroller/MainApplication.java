@@ -33,6 +33,8 @@ public class MainApplication extends Application
     private SettingsData settings;
 
     public static final String PREFS_FOLDER_NAME = "com.dev.aproschenko.arduinocontroller";
+    public static final String PREFS_DEVICES_FILE = "devices.txt";
+
     public static final String PREFS_KEY_COMMAND = "command";
     public static final String PREFS_KEY_SORTTYPE = "sorttype";
     public static final String PREFS_KEY_COLLECT_DEVICES = "collectdevices";
@@ -157,6 +159,8 @@ public class MainApplication extends Application
 
     public void loadSettings()
     {
+        if (D) Log.d(TAG, "loadSettings");
+
         createSettings();
         restoreSettings();
 
@@ -164,12 +168,12 @@ public class MainApplication extends Application
             deserializeDevices();
     }
 
-    private String getPrefsFileName(boolean createFolder)
+    private String getPrefsFileName(boolean createFolder, String fileToCreateName)
     {
         String androidFolder = Environment.getExternalStorageDirectory().getPath() + "/Android";
         String dataFolder = androidFolder + "/data";
         String prefsFolder = dataFolder + "/" + PREFS_FOLDER_NAME;
-        String fileName = prefsFolder + "/devices.txt";
+        String fileName = prefsFolder + "/" + fileToCreateName;
 
         if (!createFolder)
             return fileName;
@@ -275,6 +279,8 @@ public class MainApplication extends Application
 
     private void saveSettingsInternal()
     {
+        if (D) Log.d(TAG, "saveSettingsInternal");
+
         SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
 
@@ -318,7 +324,7 @@ public class MainApplication extends Application
     private void deserializeDevices()
     {
         String jsonData = "";
-        String fileName = getPrefsFileName(false);
+        String fileName = getPrefsFileName(false, PREFS_DEVICES_FILE);
 
         try
         {
@@ -387,7 +393,7 @@ public class MainApplication extends Application
     private void serializeDevicesInternal()
     {
         String jsonData = DeviceSerializer.serialize(settings);
-        String fileName = getPrefsFileName(true);
+        String fileName = getPrefsFileName(true, PREFS_DEVICES_FILE);
 
         if (fileName == null || fileName.isEmpty())
         {
