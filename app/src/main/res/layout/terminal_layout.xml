@@ -44,8 +44,66 @@
         android:layout_marginLeft="10dp"
         android:scrollbars = "vertical"
         android:layout_below="@id/separator1"
+        android:layout_above="@id/separator2"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/buttonsPanel"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:text="-" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.00"
+            android:textAllCaps="false"
+            android:text="-" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.00"
+            android:textAllCaps="false"
+            android:text="-" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.00"
+            android:textAllCaps="false"
+            android:text="-" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.00"
+            android:textAllCaps="false"
+            android:text="-" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:id="@+id/separator2"
+        android:layout_height="1dp"
+        android:layout_above="@id/buttonsPanel"
+        android:background="@android:color/darker_gray"
         />
 
 </RelativeLayout>

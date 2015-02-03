@@ -94,8 +94,8 @@
         />
 
     <ImageButton
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="7dp"
+        android:padding="5dp"
+        android:layout_marginRight="2dp"
         android:id="@+id/showDeviceInfoButton"
         android:background="@android:color/transparent"
         android:layout_width="wrap_content"

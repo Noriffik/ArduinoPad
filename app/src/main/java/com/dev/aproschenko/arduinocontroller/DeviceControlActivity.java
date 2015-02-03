@@ -356,7 +356,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void showButtonActionDialog(Button btn)
     {
-        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString());
+        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString(), false);
         newFragment.show(getFragmentManager(), "ButtonSetupDialog");
     }
 

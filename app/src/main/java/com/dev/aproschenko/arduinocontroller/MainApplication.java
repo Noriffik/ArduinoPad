@@ -23,9 +23,14 @@ public class MainApplication extends Application
     private static final String TAG = "MainApplication";
     private static final boolean D = true;
 
-    public static int bondedBgColorDefault = 0x2200FF00;
-    public static int sentMessageColorDefault = Color.GREEN;
-    public static int receivedMessageColorDefault = Color.RED;
+    public static final int bondedBgColorDefault = 0x2200FF00;
+    public static final int sentMessageColorDefault = Color.GREEN;
+    public static final int receivedMessageColorDefault = Color.RED;
+
+    public static final int LINE_ENDING_NONE = 0;
+    public static final int LINE_ENDING_CR = 1;
+    public static final int LINE_ENDING_LF = 2;
+    public static final int LINE_ENDING_CRLF = 3;
 
     private BluetoothAdapter btAdapter;
     private DeviceConnector connector;
@@ -36,6 +41,7 @@ public class MainApplication extends Application
     public static final String PREFS_DEVICES_FILE = "devices.txt";
 
     public static final String PREFS_KEY_COMMAND = "command";
+    public static final String PREFS_KEY_TERMINAL_COMMAND = "terminalcommand";
     public static final String PREFS_KEY_SORTTYPE = "sorttype";
     public static final String PREFS_KEY_COLLECT_DEVICES = "collectdevices";
     public static final String PREFS_KEY_SHOW_NO_SERVICES = "noservices";
@@ -54,6 +60,8 @@ public class MainApplication extends Application
     public static final String PREFS_KEY_BONDED_COLOR = "bondedcolor";
     public static final String PREFS_KEY_SENT_COLOR = "sentcolor";
     public static final String PREFS_KEY_RECEIVED_COLOR = "receivedcolor";
+    public static final String PREFS_KEY_SENT_ENDING = "sentending";
+    public static final String PREFS_KEY_RECEIVED_ENDING = "receivedending";
 
     public boolean showNoServicesDevices = true;
     public boolean showAudioVideo = true;
@@ -69,13 +77,16 @@ public class MainApplication extends Application
     public boolean showUncategorized = true;
 
     public boolean collectDevicesStat = false;
-    public boolean showDateTimeLabels = true;
+    public boolean showDateTimeLabels = false;
 
     public int bondedBgColor = bondedBgColorDefault;
     public int sentMessageColor = sentMessageColorDefault;
     public int receivedMessageColor = receivedMessageColorDefault;
+    public int sentMessageEnding = LINE_ENDING_NONE;
+    public int receivedMessageEnding = LINE_ENDING_NONE;
 
     private ArrayList<String> buttonCommands = new ArrayList<>();
+    private ArrayList<String> terminalCommands = new ArrayList<>();
     ArrayList<MacData> macs = new ArrayList<>();
 
     public enum SortType
@@ -99,6 +110,7 @@ public class MainApplication extends Application
     public DeviceConnector getConnector() { return connector; }
     public SettingsData getSettings() { return settings; }
     public ArrayList<String> getButtonCommands() { return buttonCommands; }
+    public ArrayList<String> getTerminalCommands() { return terminalCommands; }
     Set<BluetoothDevice> getBondedDevices() { return btAdapter.getBondedDevices(); }
     public ArrayList<MacData> getMACs() { return macs; }
 
@@ -227,6 +239,15 @@ public class MainApplication extends Application
             buttonCommands.add(cmd);
         }
 
+        for (int i = 0; i < TerminalActivity.BTN_COUNT; i++)
+        {
+            String cmd = settings.getString(PREFS_KEY_TERMINAL_COMMAND + i, "");
+            if (cmd.isEmpty())
+                cmd = defaultCmd;
+
+            terminalCommands.add(cmd);
+        }
+
         String sortValue = settings.getString(PREFS_KEY_SORTTYPE, "SORT_BY_NAME");
 
         switch (sortValue)
@@ -256,11 +277,13 @@ public class MainApplication extends Application
         showUncategorized = settings.getBoolean(PREFS_KEY_SHOW_UNCATEGORIZED, true);
 
         collectDevicesStat = settings.getBoolean(PREFS_KEY_COLLECT_DEVICES, false);
-        showDateTimeLabels = settings.getBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, true);
+        showDateTimeLabels = settings.getBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, false);
 
         bondedBgColor = settings.getInt(PREFS_KEY_BONDED_COLOR, bondedBgColorDefault);
         sentMessageColor = settings.getInt(PREFS_KEY_SENT_COLOR, sentMessageColorDefault);
         receivedMessageColor = settings.getInt(PREFS_KEY_RECEIVED_COLOR, receivedMessageColorDefault);
+        sentMessageEnding = settings.getInt(PREFS_KEY_SENT_ENDING, LINE_ENDING_NONE);
+        receivedMessageEnding = settings.getInt(PREFS_KEY_RECEIVED_ENDING, LINE_ENDING_NONE);
     }
 
     public DeviceData getDeviceDataByAddress(String address)
@@ -319,6 +342,8 @@ public class MainApplication extends Application
         editor.putInt(PREFS_KEY_BONDED_COLOR, bondedBgColor);
         editor.putInt(PREFS_KEY_SENT_COLOR, sentMessageColor);
         editor.putInt(PREFS_KEY_RECEIVED_COLOR, receivedMessageColor);
+        editor.putInt(PREFS_KEY_SENT_ENDING, sentMessageEnding);
+        editor.putInt(PREFS_KEY_RECEIVED_ENDING, receivedMessageEnding);
 
         editor.commit();
     }

@@ -2,6 +2,8 @@ package com.dev.aproschenko.arduinocontroller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dev.aproschenko.arduinocontroller.colorpicker.ColorPickerPreference;
+
 import java.util.Date;
 
 public class TerminalActivity extends Activity
@@ -32,8 +36,14 @@ public class TerminalActivity extends Activity
     private TextView commandsView;
 
     private String commandsCache = "";
+    Integer ids[] = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5};
 
-    private MainApplication getApp() { return (MainApplication) getApplication(); }
+    public static final int BTN_COUNT = 5;
+
+    private MainApplication getApp()
+    {
+        return (MainApplication) getApplication();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,17 +57,88 @@ public class TerminalActivity extends Activity
         setContentView(R.layout.terminal_layout);
         setTitle(R.string.bluetooth_terminal);
 
-        buttonSend = (Button)findViewById(R.id.buttonSend);
+        buttonSend = (Button) findViewById(R.id.buttonSend);
         buttonSend.setOnClickListener(buttonSendClick);
 
-        commandBox = (EditText)findViewById(R.id.commandBox);
-        commandsView = (TextView)findViewById(R.id.commandsView);
+        commandBox = (EditText) findViewById(R.id.commandBox);
+        commandsView = (TextView) findViewById(R.id.commandsView);
 
         commandsView.setMovementMethod(new ScrollingMovementMethod());
         commandsView.setTextIsSelectable(true);
 
+        int i = 0;
+        for (int id : ids)
+        {
+            Button btn = (Button) findViewById(id);
+            btn.setText(getApp().getTerminalCommands().get(i));
+            btn.setOnLongClickListener(btnPredefinedCommandLongControlClick);
+            btn.setOnClickListener(btnPredefinedCommandControlClick);
+            i++;
+        }
+
         getApp().addHandler(mHandler);
     }
+
+    public void updateButtonText(int btnId, String text)
+    {
+        int i = 0;
+        for (int id : ids)
+        {
+            Button btn = (Button) findViewById(id);
+            if (btn.getId() == btnId)
+            {
+                btn.setText(text);
+                getApp().getTerminalCommands().set(i, text);
+                return;
+            }
+            i++;
+        }
+
+        saveSettings();
+    }
+
+    private void saveSettings()
+    {
+        SharedPreferences settings = getSharedPreferences(MainApplication.PREFS_FOLDER_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        for (int i = 0; i < BTN_COUNT; i++)
+        {
+            String cmd = getApp().getTerminalCommands().get(i);
+            editor.putString(MainApplication.PREFS_KEY_TERMINAL_COMMAND + i, cmd);
+        }
+
+        editor.apply();
+    }
+
+    private View.OnLongClickListener btnPredefinedCommandLongControlClick = new View.OnLongClickListener()
+    {
+        @Override
+        public boolean onLongClick(View v)
+        {
+            Button btn = (Button)v;
+            showButtonActionDialog(btn);
+            return true;
+        }
+    };
+
+    private void showButtonActionDialog(Button btn)
+    {
+        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString(), true);
+        newFragment.show(getFragmentManager(), "ButtonSetupDialog");
+    }
+
+    private View.OnClickListener btnPredefinedCommandControlClick = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            Button btn = (Button)v;
+            String command = btn.getText().toString();
+            if (!command.equals(DeviceControlActivity.NOT_SET_TEXT))
+                sendCommand(command);
+        }
+    };
 
     @Override
     protected void onDestroy()
@@ -103,7 +184,8 @@ public class TerminalActivity extends Activity
         @Override
         public void onClick(View v)
         {
-            sendCommand();
+            String command = commandBox.getText().toString().trim();
+            sendCommand(command);
         }
     };
 
@@ -115,12 +197,35 @@ public class TerminalActivity extends Activity
 
     private void appendCommand(String command, int messageType)
     {
+        String postfix = "";
+        if (command.endsWith("\r\n"))
+            postfix = " CR+LF";
+        else if (command.endsWith("\r"))
+            postfix = " CR";
+        else if (command.endsWith("\n"))
+            postfix = " LF";
+
+        int commandIntColor = 0;
+        String trimmedCommand = command.trim();
+        if (trimmedCommand.equals("OK"))
+            commandIntColor = Color.GREEN;
+        if (trimmedCommand.equals("ERROR"))
+            commandIntColor = Color.RED;
+        String commandColor = "";
+        if (commandIntColor != 0)
+            commandColor = ColorPickerPreference.convertToRGB(commandIntColor);
+
         int intColor = messageType == Messages.MESSAGE_READ ? getApp().receivedMessageColor : getApp().sentMessageColor;
-        String color = String.format("#%06X", (0xFFFFFF & intColor));
+        String color = ColorPickerPreference.convertToRGB(intColor);
+        int postfixIntColor = Color.CYAN;
+        String postfixColor = ColorPickerPreference.convertToRGB(postfixIntColor);
         String author = messageType == Messages.MESSAGE_READ ? connectedDeviceName : "ME";
         String date = getFormattedDateTime();
 
-        String textToAdd = String.format("<font color='%s'>%s&gt; </font>%s<br/>", color, author, command);
+        String coloredCommand = command;
+        if (!commandColor.equals(""))
+            coloredCommand = String.format("<font color='%s'>%s</font>", commandColor, command);
+        String textToAdd = String.format("<font color='%s'>%s&gt; </font>%s<font color='%s'>%s</font><br/>", color, author, coloredCommand, postfixColor, postfix);
         if (getApp().showDateTimeLabels)
             textToAdd = String.format("%s %s", date, textToAdd);
 
@@ -128,20 +233,32 @@ public class TerminalActivity extends Activity
         commandsView.setText(Html.fromHtml(commandsCache), TextView.BufferType.SPANNABLE);
     }
 
-    private void sendCommand()
+    private void sendCommand(String command)
     {
         if (getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED)
         {
-            String command = commandBox.getText().toString().trim();
             if (!command.equals(""))
             {
+                switch (getApp().sentMessageEnding)
+                {
+                    case MainApplication.LINE_ENDING_CR:
+                        command = command.concat("\r");
+                        break;
+                    case MainApplication.LINE_ENDING_LF:
+                        command = command.concat("\n");
+                        break;
+                    case MainApplication.LINE_ENDING_CRLF:
+                        command = command.concat("\r\n");
+                        break;
+                    default: //NONE
+                        break;
+                }
                 getApp().getConnector().write(command);
                 appendCommand(command, Messages.MESSAGE_WRITE);
                 commandBox.setText("");
-            }
-            else
+            } else
             {
-                if(commandBox.requestFocus())
+                if (commandBox.requestFocus())
                 {
                     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 }
@@ -169,4 +286,6 @@ public class TerminalActivity extends Activity
                     break;
             }
         }
-    };}
+    };
+
+}

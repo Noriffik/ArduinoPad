@@ -38,4 +38,23 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/bluetooth_terminal">
+
+        <ListPreference
+            android:key="terminal_self_ending"
+            android:title="@string/sent_command_ending_char"
+            android:entries="@array/crlfentries"
+            android:entryValues="@array/crlfvalues"
+            />
+
+        <ListPreference
+            android:key="terminal_their_ending"
+            android:title="@string/received_command_ending_char"
+            android:entries="@array/crlfentries"
+            android:entryValues="@array/crlfvalues"
+            />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

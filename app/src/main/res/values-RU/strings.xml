@@ -100,5 +100,11 @@
     <string name="bonded_device_background">Подключенное устройство</string>
     <string name="sent_message_color">Отправленная команда</string>
     <string name="received_message_color">Принятая команда</string>
+    <string name="sent_command_ending_char">Окончание отправленной команды</string>
+    <string name="received_command_ending_char">Окончание принятой команды</string>
+    <string name="none">Нет</string>
+    <string name="cr">CR</string>
+    <string name="lf">LF</string>
+    <string name="crlf">CR+LF</string>
 
 </resources>

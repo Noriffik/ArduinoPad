@@ -12,13 +12,14 @@ import android.widget.EditText;
 
 public class ButtonSetupDialog extends DialogFragment
 {
-    public static ButtonSetupDialog newInstance(int btnId, String text)
+    public static ButtonSetupDialog newInstance(int btnId, String text, boolean fromTerminal)
     {
         ButtonSetupDialog frag = new ButtonSetupDialog();
 
         Bundle args = new Bundle();
         args.putInt("id", btnId);
         args.putString("text", text);
+        args.putBoolean("terminal", fromTerminal);
 
         frag.setArguments(args);
         return frag;
@@ -34,6 +35,7 @@ public class ButtonSetupDialog extends DialogFragment
 
         final int id = getArguments().getInt("id");
         final String text = getArguments().getString("text");
+        final boolean fromTerminal = getArguments().getBoolean("terminal");
 
         if (text.trim().toLowerCase().equals(DeviceControlActivity.NOT_SET_TEXT.toLowerCase()))
             editor.setText("");
@@ -47,13 +49,20 @@ public class ButtonSetupDialog extends DialogFragment
                 {
                     public void onClick(DialogInterface dialog, int whichButton)
                     {
-                        DeviceControlActivity activity = (DeviceControlActivity)getActivity();
                         String textToSet = editor.getText().toString().trim();
-
                         if (textToSet.equals(""))
                             textToSet = DeviceControlActivity.NOT_SET_TEXT;
 
-                        activity.updateButtonText(id, textToSet);
+                        if (fromTerminal)
+                        {
+                            TerminalActivity activity = (TerminalActivity)getActivity();
+                            activity.updateButtonText(id, textToSet);
+                        }
+                        else
+                        {
+                            DeviceControlActivity activity = (DeviceControlActivity)getActivity();
+                            activity.updateButtonText(id, textToSet);
+                        }
 
                         dialog.dismiss();
                     }

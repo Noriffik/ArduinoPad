@@ -2,6 +2,7 @@ package com.dev.aproschenko.arduinocontroller;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
 import android.util.Log;
@@ -18,6 +19,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     ColorPickerPreference bondedDeviceBgPreference;
     ColorPickerPreference sentMessagePreference;
     ColorPickerPreference receivedMessagePreference;
+    ListPreference sentMessageEndingPreference;
+    ListPreference receivedMessageEndingPreference;
 
     private MainApplication getApp() { return (MainApplication) getApplication(); }
 
@@ -35,6 +38,23 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         bondedDeviceBgPreference = (ColorPickerPreference)getPreferenceScreen().findPreference("bonded_device_color");
         sentMessagePreference = (ColorPickerPreference)getPreferenceScreen().findPreference("terminal_self_message");
         receivedMessagePreference = (ColorPickerPreference)getPreferenceScreen().findPreference("terminal_their_message");
+        sentMessageEndingPreference = (ListPreference)getPreferenceScreen().findPreference("terminal_self_ending");
+        receivedMessageEndingPreference = (ListPreference)getPreferenceScreen().findPreference("terminal_their_ending");
+    }
+
+    private String getCRLFDescription(int setting)
+    {
+        switch (setting)
+        {
+            case MainApplication.LINE_ENDING_CR:
+                return getString(R.string.cr);
+            case MainApplication.LINE_ENDING_LF:
+                return getString(R.string.lf);
+            case MainApplication.LINE_ENDING_CRLF:
+                return getString(R.string.crlf);
+            default:
+                return getResources().getString(R.string.none);
+        }
     }
 
     @Override
@@ -54,6 +74,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         receivedMessagePreference.setColor(getApp().receivedMessageColor);
         receivedMessagePreference.setSummary(ColorPickerPreference.convertToARGB(getApp().receivedMessageColor));
+
+        sentMessageEndingPreference.setValueIndex(getApp().sentMessageEnding);
+        sentMessageEndingPreference.setSummary(getCRLFDescription(getApp().sentMessageEnding));
+
+        receivedMessageEndingPreference.setValueIndex(getApp().receivedMessageEnding);
+        receivedMessageEndingPreference.setSummary(getCRLFDescription(getApp().receivedMessageEnding));
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -92,6 +118,20 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         {
             getApp().receivedMessageColor = receivedMessagePreference.getColor();
             receivedMessagePreference.setSummary(ColorPickerPreference.convertToARGB(getApp().receivedMessageColor));
+        }
+
+        if (key.equals("terminal_self_ending"))
+        {
+            String value = sentMessageEndingPreference.getValue();
+            getApp().sentMessageEnding = Integer.parseInt(value);
+            sentMessageEndingPreference.setSummary(getCRLFDescription(getApp().sentMessageEnding));
+        }
+
+        if (key.equals("terminal_their_ending"))
+        {
+            String value = receivedMessageEndingPreference.getValue();
+            getApp().receivedMessageEnding = Integer.parseInt(value);
+            receivedMessageEndingPreference.setSummary(getCRLFDescription(getApp().receivedMessageEnding));
         }
 
         getApp().saveSettings();

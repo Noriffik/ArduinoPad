@@ -101,5 +101,11 @@
     <string name="bonded_device_background">Bonded device background</string>
     <string name="sent_message_color">Sent message color</string>
     <string name="received_message_color">Received message color</string>
+    <string name="sent_command_ending_char">Sent command ending char</string>
+    <string name="received_command_ending_char">Received command ending char</string>
+    <string name="none">None</string>
+    <string name="cr">CR</string>
+    <string name="lf">LF</string>
+    <string name="crlf">CR+LF</string>
 
 </resources>
