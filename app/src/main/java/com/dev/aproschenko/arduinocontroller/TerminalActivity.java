@@ -1,12 +1,14 @@
 package com.dev.aproschenko.arduinocontroller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.ClipboardManager;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.text.method.ScrollingMovementMethod;
@@ -19,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dev.aproschenko.arduinocontroller.colorpicker.ColorPickerPreference;
 
@@ -39,6 +42,7 @@ public class TerminalActivity extends Activity
     Integer ids[] = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5};
 
     public static final int BTN_COUNT = 5;
+    final Context context = this;
 
     private MainApplication getApp()
     {
@@ -89,12 +93,12 @@ public class TerminalActivity extends Activity
             {
                 btn.setText(text);
                 getApp().getTerminalCommands().set(i, text);
+
+                saveSettings();
                 return;
             }
             i++;
         }
-
-        saveSettings();
     }
 
     private void saveSettings()
@@ -104,11 +108,15 @@ public class TerminalActivity extends Activity
 
         for (int i = 0; i < BTN_COUNT; i++)
         {
+            String key = MainApplication.PREFS_KEY_TERMINAL_COMMAND + i;
             String cmd = getApp().getTerminalCommands().get(i);
-            editor.putString(MainApplication.PREFS_KEY_TERMINAL_COMMAND + i, cmd);
+            editor.putString(key, cmd);
+
+            if (D)
+                Log.d(TAG, "save terminal key " + key + ":" + cmd);
         }
 
-        editor.apply();
+        editor.commit();
     }
 
     private View.OnLongClickListener btnPredefinedCommandLongControlClick = new View.OnLongClickListener()
@@ -135,7 +143,10 @@ public class TerminalActivity extends Activity
         {
             Button btn = (Button)v;
             String command = btn.getText().toString();
-            if (!command.equals(DeviceControlActivity.NOT_SET_TEXT))
+
+            if (command.equals(DeviceControlActivity.NOT_SET_TEXT))
+                Toast.makeText(context, getResources().getString(R.string.set_command_using_long_tap), Toast.LENGTH_SHORT).show();
+            else
                 sendCommand(command);
         }
     };
@@ -165,13 +176,33 @@ public class TerminalActivity extends Activity
     {
         switch (item.getItemId())
         {
-            case R.id.menu_close:
+            case R.id.menu_close_terminal:
                 closeTerminal();
+                return true;
+            case R.id.menu_copy_terminal:
+                copyLog();
+                return true;
+            case R.id.menu_clear_terminal:
+                clearLog();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void clearLog()
+    {
+        commandsView.setText("");
+        commandsCache = "";
+        Toast.makeText(this, getResources().getString(R.string.terminal_cleared), Toast.LENGTH_SHORT).show();
+    }
+
+    private void copyLog()
+    {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        clipboard.setText(commandsView.getText());
+        Toast.makeText(this, getResources().getString(R.string.terminal_copied), Toast.LENGTH_SHORT).show();
     }
 
     private void closeTerminal()

@@ -26,6 +26,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.Preference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,13 +36,10 @@ import android.widget.LinearLayout;
  *
  * @author Sergey Margaritov
  */
-public class ColorPickerPreference
-        extends
-        Preference
-        implements
-        Preference.OnPreferenceClickListener,
-        ColorPickerDialog.OnColorChangedListener
+public class ColorPickerPreference extends Preference implements Preference.OnPreferenceClickListener, ColorPickerDialog.OnColorChangedListener
 {
+    private static final String TAG = "ColorPickerPreference";
+    private static final boolean D = true;
 
     View mView;
     ColorPickerDialog mDialog;
@@ -154,18 +152,29 @@ public class ColorPickerPreference
     @Override
     public void onColorChanged(int color)
     {
+        if (D)
+            Log.d(TAG, "onColorChanged " + convertToARGB(color));
+
         if (isPersistent())
         {
             persistInt(color);
         }
         mValue = color;
         setPreviewColor();
+
         try
         {
-            getOnPreferenceChangeListener().onPreferenceChange(this, color);
-        } catch (NullPointerException e)
+            if (getOnPreferenceChangeListener() != null)
+            {
+                getOnPreferenceChangeListener().onPreferenceChange(this, color);
+                if (D)
+                    Log.d(TAG, "onColorChanged call onPreferenceChange for " + convertToARGB(color));
+            }
+        }
+        catch (NullPointerException e)
         {
-
+            if (D)
+                Log.e(TAG, "onColorChanged", e);
         }
     }
 

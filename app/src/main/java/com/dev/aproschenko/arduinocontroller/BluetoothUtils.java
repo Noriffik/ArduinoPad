@@ -10,13 +10,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class BluetoothUtils
 {
     private static final String TAG = "BluetoothUtils";
     private static final boolean D = true;
 
-    private static Map<String, String> uuidsDescriptions = new HashMap<String, String>();
+    private static Map<String, String> uuidsDescriptions = new HashMap<>();
 
     // Static constructor
     static
@@ -133,7 +135,7 @@ public class BluetoothUtils
 
     public static ArrayList<ParcelUuid> getDeviceUuids(BluetoothDevice device)
     {
-        ArrayList<ParcelUuid> result = new ArrayList<ParcelUuid>();
+        ArrayList<ParcelUuid> result = new ArrayList<>();
 
         try
         {
@@ -160,9 +162,9 @@ public class BluetoothUtils
         return result;
     }
 
-    public static HashMap<String, String> getDeviceServicesMap(ArrayList<ParcelUuid> uuids)
+    public static SortedMap<Integer, String> getDeviceServicesMap(ArrayList<ParcelUuid> uuids)
     {
-        HashMap<String, String> result = new HashMap<String, String>();
+        SortedMap<Integer, String> result = new TreeMap<>();
 
         for (ParcelUuid uuid : uuids)
         {
@@ -177,7 +179,8 @@ public class BluetoothUtils
                 if (s.startsWith("0000" + key))
                 {
                     found = true;
-                    result.put(key, value);
+                    int intKey = Integer.parseInt(key, 16);
+                    result.put(intKey, value);
                     break;
                 }
             }
@@ -186,7 +189,8 @@ public class BluetoothUtils
             {
                 String key = s.substring(4, 8);
                 String desc = "Unknown service UUID 0x" + key;
-                result.put(key, desc);
+                int intKey = Integer.parseInt(key, 16);
+                result.put(intKey, desc);
             }
         }
 

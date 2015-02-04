@@ -4,7 +4,6 @@ import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -24,8 +23,8 @@ public class MainApplication extends Application
     private static final boolean D = true;
 
     public static final int bondedBgColorDefault = 0x2200FF00;
-    public static final int sentMessageColorDefault = Color.GREEN;
-    public static final int receivedMessageColorDefault = Color.RED;
+    public static final int sentMessageColorDefault = 0xFF6F00FF;
+    public static final int receivedMessageColorDefault = 0xFF0062FF;
 
     public static final int LINE_ENDING_NONE = 0;
     public static final int LINE_ENDING_CR = 1;
@@ -205,7 +204,7 @@ public class MainApplication extends Application
             return null;
 
         f = new File(dataFolder);
-        if (success && (!f.exists() || !f.isDirectory()))
+        if (!f.exists() || !f.isDirectory())
         {
             success = f.mkdir();
         }
@@ -214,7 +213,7 @@ public class MainApplication extends Application
             return null;
 
         f = new File(prefsFolder);
-        if (success && (!f.exists() || !f.isDirectory()))
+        if (!f.exists() || !f.isDirectory())
         {
             success = f.mkdir();
         }
@@ -232,18 +231,26 @@ public class MainApplication extends Application
         String defaultCmd = DeviceControlActivity.NOT_SET_TEXT;
         for (int i = 0; i < DeviceControlActivity.BTN_COUNT; i++)
         {
-            String cmd = settings.getString(PREFS_KEY_COMMAND + i, "");
+            String key = PREFS_KEY_COMMAND + i;
+            String cmd = settings.getString(key, "");
             if (cmd.isEmpty())
                 cmd = defaultCmd;
+
+            if (D)
+                Log.d(TAG, "restored cmd key " + key + ":" + cmd);
 
             buttonCommands.add(cmd);
         }
 
         for (int i = 0; i < TerminalActivity.BTN_COUNT; i++)
         {
-            String cmd = settings.getString(PREFS_KEY_TERMINAL_COMMAND + i, "");
+            String key = PREFS_KEY_TERMINAL_COMMAND + i;
+            String cmd = settings.getString(key, "");
             if (cmd.isEmpty())
                 cmd = defaultCmd;
+
+            if (D)
+                Log.d(TAG, "restored terminal key " + key + ":" + cmd);
 
             terminalCommands.add(cmd);
         }

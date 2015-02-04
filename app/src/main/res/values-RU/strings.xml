@@ -77,7 +77,7 @@
     <string name="bluetooth_terminal">Bluetooth-терминал</string>
     <string name="command_to_send">Команда для отправки…</string>
     <string name="open_terminal">Bluetooth-терминал</string>
-    <string name="menu_close">Закрыть</string>
+    <string name="menu_close_terminal">Закрыть терминал</string>
     <string name="settings">Настройки</string>
     <string name="enabled">Включено</string>
     <string name="disabled">Выключено</string>
@@ -93,7 +93,7 @@
     <string name="services">Службы</string>
     <string name="rssi">RSSI</string>
     <string name="rssi_label">RSSI:</string>
-    <string name="unbonded">отключено</string>
+    <string name="unbonded">не подключено</string>
     <string name="press_color_to_apply">Выберите цвет нажатием</string>
     <string name="dialog_color_picker">Выбор цвета</string>
     <string name="colors">Цвета</string>
@@ -106,5 +106,10 @@
     <string name="cr">CR</string>
     <string name="lf">LF</string>
     <string name="crlf">CR+LF</string>
+    <string name="menu_clear_terminal">Очистить лог</string>
+    <string name="menu_copy_terminal">Копировать лог</string>
+    <string name="terminal_cleared">Лог очищен</string>
+    <string name="terminal_copied">Лог скопирован</string>
+    <string name="set_command_using_long_tap">Установите команду долгим нажатием</string>
 
 </resources>

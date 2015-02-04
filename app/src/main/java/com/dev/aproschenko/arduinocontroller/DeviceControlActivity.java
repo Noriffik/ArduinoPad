@@ -403,8 +403,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         for (int i = 0; i < padButtons.size(); i++)
         {
+            String key = MainApplication.PREFS_KEY_COMMAND + i;
             String cmd = getApp().getButtonCommands().get(i);
-            editor.putString(MainApplication.PREFS_KEY_COMMAND + i, cmd);
+            editor.putString(key, cmd);
+
+            if (D)
+                Log.d(TAG, "save cmd key " + key + ":" + cmd);
         }
 
         editor.apply();

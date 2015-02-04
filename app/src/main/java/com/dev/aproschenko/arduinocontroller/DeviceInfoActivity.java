@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.SortedMap;
 
 public class DeviceInfoActivity extends Activity
 {
@@ -91,14 +92,20 @@ public class DeviceInfoActivity extends Activity
 
     private String getDeviceServices(DeviceData itemData)
     {
-        String text = "-";
+        String text = "";
 
-        Map<String, String> services = BluetoothUtils.getDeviceServicesMap(itemData.getUuids());
-        for (Map.Entry<String, String> entry : services.entrySet())
+        SortedMap<Integer, String> services = BluetoothUtils.getDeviceServicesMap(itemData.getUuids());
+        for (Map.Entry<Integer, String> entry : services.entrySet())
         {
-            String key = entry.getKey();
+            String key = Integer.toHexString(entry.getKey());
+            if (key.length() == 1)
+                key = "000" + key;
+            else if (key.length() == 2)
+                key = "00" + key;
+            else if (key.length() == 3)
+                key = "0" + key;
             String value = entry.getValue();
-            text += String.format("%s - %s\r\n", key, value);
+            text += String.format("0x%s - %s\r\n", key.toUpperCase(), value);
         }
 
         return text;

@@ -26,6 +26,7 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,13 +38,10 @@ import android.widget.TextView;
 
 import com.dev.aproschenko.arduinocontroller.R;
 
-public class ColorPickerDialog
-        extends
-        Dialog
-        implements
-        ColorPickerView.OnColorChangedListener,
-        View.OnClickListener
+public class ColorPickerDialog extends Dialog implements ColorPickerView.OnColorChangedListener, View.OnClickListener
 {
+    private static final String TAG = "ColorPickerDialog";
+    private static final boolean D = true;
 
     private ColorPickerView mColorPicker;
 
@@ -64,7 +62,6 @@ public class ColorPickerDialog
     public ColorPickerDialog(Context context, int initialColor)
     {
         super(context);
-
         init(initialColor);
     }
 
@@ -72,14 +69,11 @@ public class ColorPickerDialog
     {
         // To fight color banding.
         getWindow().setFormat(PixelFormat.RGBA_8888);
-
         setUp(color);
-
     }
 
     private void setUp(int color)
     {
-
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View layout = inflater.inflate(R.layout.dialog_color_picker, null);
@@ -111,14 +105,16 @@ public class ColorPickerDialog
                     {
                         try
                         {
-                            int c = ColorPickerPreference.convertToColorInt(s.toString());
+                            int c = ColorPickerPreference.convertToColorInt(s);
                             mColorPicker.setColor(c, true);
                             mHexVal.setTextColor(mHexDefaultTextColor);
-                        } catch (IllegalArgumentException e)
+                        }
+                        catch (IllegalArgumentException e)
                         {
                             mHexVal.setTextColor(Color.RED);
                         }
-                    } else
+                    }
+                    else
                     {
                         mHexVal.setTextColor(Color.RED);
                     }
@@ -140,17 +136,18 @@ public class ColorPickerDialog
         mColorPicker.setOnColorChangedListener(this);
         mOldColor.setColor(color);
         mColorPicker.setColor(color, true);
-
     }
 
     @Override
     public void onColorChanged(int color)
     {
-
         mNewColor.setColor(color);
 
         if (mHexValueEnabled)
             updateHexValue(color);
+
+        if (D)
+            Log.d(TAG, "onColorChanged " + ColorPickerPreference.convertToARGB(color));
 
 		/*
         if (mListener != null) {
@@ -168,7 +165,8 @@ public class ColorPickerDialog
             mHexVal.setVisibility(View.VISIBLE);
             updateHexLengthFilter();
             updateHexValue(getColor());
-        } else
+        }
+        else
             mHexVal.setVisibility(View.GONE);
     }
 
@@ -190,7 +188,8 @@ public class ColorPickerDialog
         if (getAlphaSliderVisible())
         {
             mHexVal.setText(ColorPickerPreference.convertToARGB(color).toUpperCase(Locale.getDefault()));
-        } else
+        }
+        else
         {
             mHexVal.setText(ColorPickerPreference.convertToRGB(color).toUpperCase(Locale.getDefault()));
         }
@@ -235,7 +234,10 @@ public class ColorPickerDialog
         {
             if (mListener != null)
             {
-                mListener.onColorChanged(mNewColor.getColor());
+                int color = mNewColor.getColor();
+                if (D)
+                    Log.d(TAG, "onClick " + ColorPickerPreference.convertToARGB(color));
+                mListener.onColorChanged(color);
             }
         }
         dismiss();

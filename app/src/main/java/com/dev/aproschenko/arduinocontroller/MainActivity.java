@@ -50,6 +50,11 @@ public class MainActivity extends Activity
     private String searchFilter = "";
     private BroadcastReceiver broadcastReceiver;
 
+    private IntentFilter actionFoundFilter;
+    private IntentFilter actionServicesFoundFilter;
+    private IntentFilter actionDiscoveryStartedFilter;
+    private IntentFilter actionDiscoveryFinishedFilter;
+
     public static int REQUEST_ENABLE_BT = 1;
     public static String DEVICE_ADDRESS = "DEVICE_ADDRESS";
     public static String DEVICE_NAME = "DEVICE_NAME";
@@ -136,6 +141,14 @@ public class MainActivity extends Activity
                         fillDevicesView();
                     }
                 }
+                else if (BluetoothDevice.ACTION_UUID.equals(action))
+                {
+                    if (D) Log.d(TAG, "action uuid");
+                }
+                else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action))
+                {
+                    if (D) Log.d(TAG, "action discovery started");
+                }
                 else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))
                 {
                     loadingDialog.dismiss();
@@ -146,11 +159,17 @@ public class MainActivity extends Activity
         };
 
         // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(broadcastReceiver, filter);
+        actionFoundFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(broadcastReceiver, actionFoundFilter);
 
-        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(broadcastReceiver, filter);
+        actionDiscoveryStartedFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        registerReceiver(broadcastReceiver, actionDiscoveryStartedFilter);
+
+        actionDiscoveryFinishedFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(broadcastReceiver, actionDiscoveryFinishedFilter);
+
+        actionServicesFoundFilter = new IntentFilter(BluetoothDevice.ACTION_UUID);
+        registerReceiver(broadcastReceiver, actionServicesFoundFilter);
 
         isReceiverRegistered = true;
     }
