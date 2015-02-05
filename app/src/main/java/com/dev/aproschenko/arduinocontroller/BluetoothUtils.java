@@ -8,6 +8,7 @@ import android.util.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
@@ -121,11 +122,7 @@ public class BluetoothUtils
     {
         if (phoneUuids != null && phoneUuids.length > 0)
         {
-            for (ParcelUuid uuid : phoneUuids)
-            {
-                if (D) Log.d(TAG, device.getName() + ": " + uuid.toString());
-                result.add(uuid);
-            }
+            Collections.addAll(result, phoneUuids);
         }
         else
         {

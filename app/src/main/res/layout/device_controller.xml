@@ -46,6 +46,10 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-" />
 
                 <Button
@@ -54,8 +58,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginRight="20dp"/>
+                        android:layout_marginEnd="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button3"
@@ -63,8 +70,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1.00"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_marginStart="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button4"
@@ -72,6 +82,10 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-" />
             </TableRow>
             <TableRow>
@@ -81,8 +95,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginBottom="20dp"/>
+                        android:layout_marginBottom="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button6"
@@ -90,9 +107,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="20dp"/>
+                        android:layout_marginEnd="@dimen/button_gap"
+                        android:layout_marginBottom="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button7"
@@ -100,9 +119,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_marginBottom="@dimen/button_gap"
+                        android:layout_marginStart="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button8"
@@ -110,8 +131,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginBottom="20dp"/>
+                        android:layout_marginBottom="@dimen/button_gap"/>
             </TableRow>
             <TableRow>
                 <Button
@@ -120,8 +144,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1.00"
                         android:textAllCaps="false"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginTop="20dp"/>
+                        android:layout_marginTop="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button10"
@@ -129,9 +156,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="20dp"/>
+                        android:layout_marginEnd="@dimen/button_gap"
+                        android:layout_marginTop="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button11"
@@ -139,9 +168,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="20dp"/>
+                        android:layout_marginStart="@dimen/button_gap"
+                        android:layout_marginTop="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button12"
@@ -149,8 +180,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginTop="20dp"/>
+                        android:layout_marginTop="@dimen/button_gap"/>
             </TableRow>
             <TableRow>
                 <Button
@@ -159,6 +193,10 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-" />
 
                 <Button
@@ -167,8 +205,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginRight="20dp"/>
+                        android:layout_marginEnd="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button15"
@@ -176,8 +217,11 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
                         android:text="-"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_marginStart="@dimen/button_gap"/>
 
                 <Button
                         android:id="@+id/button16"
@@ -185,6 +229,10 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:textAllCaps="false"
+                        android:layout_marginTop="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/button_margin"
+                        android:layout_marginEnd="@dimen/button_margin"
+                        android:layout_marginStart="@dimen/button_margin"
                         android:text="-" />
             </TableRow>
         </TableLayout>

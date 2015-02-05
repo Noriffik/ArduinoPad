@@ -112,5 +112,6 @@
     <string name="terminal_cleared">Log cleared</string>
     <string name="terminal_copied">Log copied</string>
     <string name="set_command_using_long_tap">Set command using long tap</string>
+    <string name="no_color">No color</string>
 
 </resources>

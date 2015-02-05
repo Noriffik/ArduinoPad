@@ -15,14 +15,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DeviceControlActivity extends Activity implements SensorEventListener
 {
@@ -35,11 +40,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     public static final String NOT_SET_TEXT = "-";
 
-    private ArrayList<Button> padButtons = new ArrayList<>();
-    private ArrayList<Integer> padButtonsIds = new ArrayList<>();
-    private ArrayList<Rect> padButtonsRect = new ArrayList<>();
-    public static final int BTN_COUNT = 16;
-
     private Button buttonSaveSettings;
     private Button buttonOpenTerminal;
     private OrientationView forwardView;
@@ -47,13 +47,23 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private OrientationView leftView;
     private OrientationView rightView;
 
+    private Integer buttonIds[] = {
+            R.id.button1, R.id.button2, R.id.button3, R.id.button4,
+            R.id.button5, R.id.button6, R.id.button7, R.id.button8,
+            R.id.button9, R.id.button10, R.id.button11, R.id.button12,
+            R.id.button13, R.id.button14, R.id.button15, R.id.button16
+    };
+    private ArrayList<Button> padButtons = new ArrayList<>();
+    private ArrayList<Rect> padButtonsRect = new ArrayList<>();
+    public static final int BTN_COUNT = 16;
+
     private SensorManager sensorManager;
     private Sensor rotationVectorSensor;
 
-    private char forwardPrefix = 'A';
-    private char backwardPrefix = (char)((int)forwardPrefix + 6);
-    private char leftPrefix = (char)((int)backwardPrefix + 6);
-    private char rightPrefix = (char)((int)leftPrefix + 6);
+    private char forwardPrefix = 'A';                               // A B C D E F
+    private char backwardPrefix = (char)((int)forwardPrefix + 6);   // G H I J K L
+    private char leftPrefix = (char)((int)backwardPrefix + 6);      // M N O P Q R
+    private char rightPrefix = (char)((int)leftPrefix + 6);         // S T U V W X
     private char lastForwardCommand = forwardPrefix;
     private char lastLeftCommand = leftPrefix;
 
@@ -73,16 +83,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         connectedDeviceName = intent.getStringExtra(MainActivity.DEVICE_NAME);
         connectedDeviceAddress = intent.getStringExtra(MainActivity.DEVICE_ADDRESS);
 
-        Integer ids[] = {
-                R.id.button1, R.id.button2, R.id.button3, R.id.button4,
-                R.id.button5, R.id.button6, R.id.button7, R.id.button8,
-                R.id.button9, R.id.button10, R.id.button11, R.id.button12,
-                R.id.button13, R.id.button14, R.id.button15, R.id.button16
-        };
-
-        padButtonsIds.addAll(Arrays.asList(ids));
-
-        setTitle(connectedDeviceName + " not connected");
+        String title = String.format(getResources().getString(R.string.is_not_connected), connectedDeviceName);
+        setTitle(title);
 
         setupControls();
         setupSensors();
@@ -149,8 +151,14 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         super.onWindowFocusChanged(hasFocus);
 
+        int marginSize = (int)getResources().getDimension(R.dimen.button_margin);
         int buttonHeight = padButtonsRect.get(1).height();
         int buttonWidth = padButtonsRect.get(1).width();
+
+        forwardView.setMarginSize(marginSize);
+        backwardView.setMarginSize(marginSize);
+        leftView.setMarginSize(marginSize);
+        rightView.setMarginSize(marginSize);
 
         Rect r2 = padButtonsRect.get(1);
         Rect r3 = padButtonsRect.get(2);
@@ -159,38 +167,51 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         Rect r14 = padButtonsRect.get(13);
 
         ViewGroup.LayoutParams params = forwardView.getLayoutParams();
-        params.height = buttonHeight * 2;
+        params.height = buttonHeight * 2 + marginSize * 2;
         params.width = r3.left - r2.right;
         forwardView.setLayoutParams(params);
         forwardView.setX(r2.right);
+        forwardView.setY(marginSize);
         forwardView.setGravity(Gravity.RIGHT);
         forwardView.setOrientation(LinearLayout.VERTICAL);
 
         params = backwardView.getLayoutParams();
-        params.height = buttonHeight * 2;
+        params.height = buttonHeight * 2 + marginSize * 2;
         params.width = r3.left - r2.right;
         backwardView.setLayoutParams(params);
         backwardView.setX(r2.right);
-        backwardView.setY(2 * r10.top + buttonHeight * 2);
+        backwardView.setY(2 * r10.top + buttonHeight * 2 + marginSize * 3);
         backwardView.setGravity(Gravity.LEFT);
         backwardView.setOrientation(LinearLayout.VERTICAL);
 
         params = leftView.getLayoutParams();
         params.height = 2 * r10.top;
-        params.width = buttonWidth * 2;
+        params.width = buttonWidth * 2 + marginSize * 2;
         leftView.setLayoutParams(params);
-        leftView.setY(buttonHeight * 2);
+        leftView.setX(marginSize);
+        leftView.setY(buttonHeight * 2 + marginSize * 3);
         leftView.setGravity(Gravity.RIGHT);
         leftView.setOrientation(LinearLayout.HORIZONTAL);
 
         params = rightView.getLayoutParams();
         params.height = 2 * r10.top;
-        params.width = buttonWidth * 2;
+        params.width = buttonWidth * 2 + marginSize * 2;
         rightView.setLayoutParams(params);
-        rightView.setX(buttonWidth * 2 + 2 * r10.top);
-        rightView.setY(buttonHeight * 2);
+        rightView.setX(buttonWidth * 2 + 2 * r10.top + marginSize * 3);
+        rightView.setY(buttonHeight * 2 + marginSize * 3);
         rightView.setGravity(Gravity.LEFT);
         rightView.setOrientation(LinearLayout.HORIZONTAL);
+
+        logDimensions(forwardView, "forward");
+        logDimensions(backwardView, "back");
+        logDimensions(rightView, "right");
+        logDimensions(leftView, "left");
+    }
+
+    private void logDimensions(View view, String name)
+    {
+        if (D)
+            Log.d(TAG, String.format("%s - x=%f y=%f w=%d h=%d", name, view.getX(), view.getY(), view.getWidth(), view.getHeight()));
     }
 
     @Override
@@ -273,18 +294,16 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void setupControls()
     {
-        for (int id : padButtonsIds)
+        for (int i = 0; i < buttonIds.length; i++)
         {
+            int id = buttonIds[i];
             Button btn = (Button)findViewById(id);
-            btn.setOnClickListener(btnControlClick);
-            padButtons.add(btn);
-        }
 
-        for (int i = 0; i < padButtons.size(); i++)
-        {
-            Button btn = padButtons.get(i);
             String cmd = getApp().getButtonCommands().get(i);
             btn.setText(cmd);
+            btn.setOnClickListener(btnControlClick);
+
+            padButtons.add(btn);
         }
 
         checkButtonLabels();
@@ -325,7 +344,9 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         for (Button btn : padButtons)
         {
-            btn.setEnabled(!btn.getText().equals(NOT_SET_TEXT) || isSettingsMode);
+            boolean enabled = !btn.getText().equals(NOT_SET_TEXT) || isSettingsMode;
+            btn.setEnabled(enabled);
+            btn.setBackgroundResource(enabled ? R.drawable.shape_enabled : R.drawable.shape_disabled);
         }
     }
 
@@ -360,23 +381,28 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         newFragment.show(getFragmentManager(), "ButtonSetupDialog");
     }
 
+    private void saveSettingsHandler()
+    {
+        setSettingsMode(false);
+        checkButtonLabels();
+
+        for (int i = 0; i < padButtons.size(); i++)
+        {
+            Button btn = padButtons.get(i);
+            String cmd = btn.getText().toString();
+
+            getApp().getButtonCommands().set(i, cmd);
+        }
+
+        saveSettings();
+    }
+
     private OnClickListener btnSaveSettingsClick = new OnClickListener()
     {
         @Override
         public void onClick(View v)
         {
-            setSettingsMode(false);
-            checkButtonLabels();
-
-            for (int i = 0; i < padButtons.size(); i++)
-            {
-                Button btn = padButtons.get(i);
-                String cmd = btn.getText().toString();
-
-                getApp().getButtonCommands().set(i, cmd);
-            }
-
-            saveSettings();
+            saveSettingsHandler();
         }
     };
 
@@ -412,6 +438,18 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         }
 
         editor.apply();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (isSettingsMode)
+        {
+            saveSettingsHandler();
+            return;
+        }
+
+        moveTaskToBack(true);
     }
 
     @Override
@@ -476,12 +514,13 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         }
     }
 
-    public void updateButtonText(int btnId, String text)
+    public void updateButtonTextAndColor(int btnId, String text, int shapeIndex)
     {
         for (Button btn : padButtons)
         {
             if (btn.getId() == btnId)
             {
+                btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shapeIndex]);
                 btn.setText(text);
                 return;
             }
@@ -498,10 +537,13 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         {
             if (!enable)
             {
+                btn.setBackgroundResource(R.drawable.shape_disabled);
                 btn.setEnabled(false);
                 continue;
             }
-            btn.setEnabled(!btn.getText().equals(NOT_SET_TEXT) || isSettingsMode);
+            boolean enabled = !btn.getText().equals(NOT_SET_TEXT) || isSettingsMode;
+            btn.setEnabled(enabled);
+            btn.setBackgroundResource(enabled ? R.drawable.shape_enabled : R.drawable.shape_disabled);
         }
     }
 

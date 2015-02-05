@@ -26,8 +26,11 @@ public class OrientationView extends View
     public static int MAX_VALUE = 15;
     public static int MAX_POINTS = 5;
 
-    public static int START_COLOR = Color.GREEN;
-    public static int END_COLOR = Color.RED;
+    private static int START_COLOR = Color.GREEN;
+    private static int END_COLOR = Color.RED;
+
+    private int marginSize = 0;
+    public void setMarginSize(int marginSize) { this.marginSize = marginSize; }
 
     public OrientationView(Context context)
     {
@@ -65,8 +68,11 @@ public class OrientationView extends View
         paint.setDither(true);
     }
 
-    private void drawRect(Canvas canvas, int x1, int y1, int x2, int y2)
+    private void drawRect(Canvas canvas, int x1, int y1, int x2, int y2, String name, int value)
     {
+        if (D)
+            Log.d(TAG, String.format("%s (%d) - x1=%d y1=%d x2=%d y2=%d", name, value, x1, y1, x2, y2));
+
         Shader shader;
         if (orientation == LinearLayout.HORIZONTAL)
         {
@@ -102,14 +108,14 @@ public class OrientationView extends View
             {
                 if (value >= 0)
                 {
-                    drawRect(canvas, (MAX_POINTS - cur) * size1, 0, getRight(), getHeight());
+                    drawRect(canvas, (MAX_POINTS - cur) * size1, 0, getRight(), getHeight(), "right", savedValue);
                 }
             }
             else //LEFT
             {
                 if (value <= 0)
                 {
-                    drawRect(canvas, 0, 0, cur * size1, getHeight());
+                    drawRect(canvas, 0, 0, cur * size1, getHeight(), "left", savedValue);
                 }
             }
         }
@@ -121,14 +127,14 @@ public class OrientationView extends View
             {
                 if (value >= 0)
                 {
-                    drawRect(canvas, 0, (MAX_POINTS - cur) * size1, getRight(), getHeight());
+                    drawRect(canvas, 0, (MAX_POINTS - cur) * size1, getRight(), getHeight(), "back", savedValue);
                 }
             }
             else //LEFT
             {
                 if (value <= 0)
                 {
-                    drawRect(canvas, 0, 0, getRight(), cur * size1);
+                    drawRect(canvas, 0, 0, getRight(), cur * size1, "forward", savedValue);
                 }
             }
         }
