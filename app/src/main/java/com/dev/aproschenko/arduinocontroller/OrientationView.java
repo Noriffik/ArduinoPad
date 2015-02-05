@@ -106,14 +106,14 @@ public class OrientationView extends View
             int cur = savedValue / (MAX_VALUE / MAX_POINTS);
             if (gravity == Gravity.RIGHT)
             {
-                if (value >= 0)
+                if (value > 0)
                 {
                     drawRect(canvas, (MAX_POINTS - cur) * size1, 0, getRight(), getHeight(), "right", savedValue);
                 }
             }
             else //LEFT
             {
-                if (value <= 0)
+                if (value < 0)
                 {
                     drawRect(canvas, 0, 0, cur * size1, getHeight(), "left", savedValue);
                 }
@@ -125,14 +125,14 @@ public class OrientationView extends View
             int cur = savedValue / (MAX_VALUE / MAX_POINTS);
             if (gravity == Gravity.RIGHT)
             {
-                if (value >= 0)
+                if (value > 0)
                 {
                     drawRect(canvas, 0, (MAX_POINTS - cur) * size1, getRight(), getHeight(), "back", savedValue);
                 }
             }
             else //LEFT
             {
-                if (value <= 0)
+                if (value < 0)
                 {
                     drawRect(canvas, 0, 0, getRight(), cur * size1, "forward", savedValue);
                 }

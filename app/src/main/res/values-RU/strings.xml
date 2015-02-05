@@ -112,5 +112,6 @@
     <string name="terminal_copied">Лог скопирован</string>
     <string name="set_command_using_long_tap">Установите команду долгим нажатием</string>
     <string name="no_color">Без цвета</string>
+    <string name="settings_saved">Настройки сохранены</string>
 
 </resources>

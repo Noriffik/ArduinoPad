@@ -40,6 +40,7 @@ public class MainApplication extends Application
     public static final String PREFS_DEVICES_FILE = "devices.txt";
 
     public static final String PREFS_KEY_COMMAND = "command";
+    public static final String PREFS_KEY_SHAPE = "shape";
     public static final String PREFS_KEY_TERMINAL_COMMAND = "terminalcommand";
     public static final String PREFS_KEY_SORTTYPE = "sorttype";
     public static final String PREFS_KEY_COLLECT_DEVICES = "collectdevices";
@@ -84,6 +85,7 @@ public class MainApplication extends Application
     public int sentMessageEnding = LINE_ENDING_NONE;
     public int receivedMessageEnding = LINE_ENDING_NONE;
 
+    private ArrayList<Integer> buttonShapes = new ArrayList<>();
     private ArrayList<String> buttonCommands = new ArrayList<>();
     private ArrayList<String> terminalCommands = new ArrayList<>();
     ArrayList<MacData> macs = new ArrayList<>();
@@ -109,6 +111,7 @@ public class MainApplication extends Application
     public DeviceConnector getConnector() { return connector; }
     public SettingsData getSettings() { return settings; }
     public ArrayList<String> getButtonCommands() { return buttonCommands; }
+    public ArrayList<Integer> getButtonShapes() { return buttonShapes; }
     public ArrayList<String> getTerminalCommands() { return terminalCommands; }
     Set<BluetoothDevice> getBondedDevices() { return btAdapter.getBondedDevices(); }
     public ArrayList<MacData> getMACs() { return macs; }
@@ -236,10 +239,14 @@ public class MainApplication extends Application
             if (cmd.isEmpty())
                 cmd = defaultCmd;
 
+            key = PREFS_KEY_SHAPE + i;
+            int shape = settings.getInt(key, 0);
+
             if (D)
-                Log.d(TAG, "restored cmd key " + key + ":" + cmd);
+                Log.d(TAG, "restored cmd key " + key + ":" + cmd + " shape:" + shape);
 
             buttonCommands.add(cmd);
+            buttonShapes.add(shape);
         }
 
         for (int i = 0; i < TerminalActivity.BTN_COUNT; i++)

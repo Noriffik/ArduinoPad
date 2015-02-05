@@ -248,16 +248,6 @@
             android:drawableRight="@android:drawable/ic_menu_send"
             />
 
-        <Button
-            android:id="@+id/buttonSaveSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/save_settings"
-            />
-
     </RelativeLayout>
     
 </LinearLayout>

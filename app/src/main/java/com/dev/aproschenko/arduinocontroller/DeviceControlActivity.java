@@ -40,7 +40,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     public static final String NOT_SET_TEXT = "-";
 
-    private Button buttonSaveSettings;
     private Button buttonOpenTerminal;
     private OrientationView forwardView;
     private OrientationView backwardView;
@@ -301,16 +300,16 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
             String cmd = getApp().getButtonCommands().get(i);
             btn.setText(cmd);
+
+            int shape = getApp().getButtonShapes().get(i);
+            btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shape]);
+
             btn.setOnClickListener(btnControlClick);
 
             padButtons.add(btn);
         }
 
         checkButtonLabels();
-
-        buttonSaveSettings = (Button)findViewById(R.id.buttonSaveSettings);
-        buttonSaveSettings.setOnClickListener(btnSaveSettingsClick);
-        buttonSaveSettings.setVisibility(View.INVISIBLE);
 
         buttonOpenTerminal = (Button)findViewById(R.id.buttonTerminal);
         buttonOpenTerminal.setOnClickListener(buttonOpenTerminalClick);
@@ -394,7 +393,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
             getApp().getButtonCommands().set(i, cmd);
         }
 
-        saveSettings();
+        savePreferences();
     }
 
     private OnClickListener btnSaveSettingsClick = new OnClickListener()
@@ -422,7 +421,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         startActivity(intent);
     }
 
-    private void saveSettings()
+    private void savePreferences()
     {
         SharedPreferences settings = getSharedPreferences(MainApplication.PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -433,8 +432,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
             String cmd = getApp().getButtonCommands().get(i);
             editor.putString(key, cmd);
 
+            key = MainApplication.PREFS_KEY_SHAPE + i;
+            int shape = getApp().getButtonShapes().get(i);
+            editor.putInt(key, shape);
+
             if (D)
-                Log.d(TAG, "save cmd key " + key + ":" + cmd);
+                Log.d(TAG, "save cmd key " + key + ":" + cmd + " shape:" + shape);
         }
 
         editor.apply();
@@ -445,11 +448,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         if (isSettingsMode)
         {
+            Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
             saveSettingsHandler();
             return;
         }
 
-        moveTaskToBack(true);
+        finish();
     }
 
     @Override
@@ -483,7 +487,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     private void setSettingsMode(boolean mode)
     {
         isSettingsMode = mode;
-        buttonSaveSettings.setVisibility(isSettingsMode ? View.VISIBLE : View.INVISIBLE);
         buttonOpenTerminal.setVisibility(isSettingsMode ? View.INVISIBLE : (getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED) ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -516,14 +519,17 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     public void updateButtonTextAndColor(int btnId, String text, int shapeIndex)
     {
+        int i = 0;
         for (Button btn : padButtons)
         {
             if (btn.getId() == btnId)
             {
+                getApp().getButtonShapes().set(i, shapeIndex);
                 btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shapeIndex]);
                 btn.setText(text);
                 return;
             }
+            i++;
         }
     }
 
