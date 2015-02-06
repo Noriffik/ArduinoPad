@@ -68,13 +68,18 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     final Context context = this;
 
-    private MainApplication getApp() { return (MainApplication) getApplication(); }
+    public MainApplication getApp() { return (MainApplication) getApplication(); }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         if (D) Log.d(TAG, "+++ ON CREATE +++");
+
+        if (getApp().getConnector() != null)
+        {
+            if (D) Log.d(TAG, "+++ ON CREATE +++, connector state " + getApp().getConnector().getState());
+        }
 
         setContentView(R.layout.device_controller);
 
@@ -88,11 +93,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         setupControls();
         setupSensors();
         enableControls();
-
-        if (getApp().getConnector() != null)
-        {
-            if (D) Log.d(TAG, "+++ ON CREATE +++, connector state " + getApp().getConnector().getState());
-        }
     }
 
     @Override
@@ -161,9 +161,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
         Rect r2 = padButtonsRect.get(1);
         Rect r3 = padButtonsRect.get(2);
-        Rect r6 = padButtonsRect.get(5);
         Rect r10 = padButtonsRect.get(9);
-        Rect r14 = padButtonsRect.get(13);
 
         ViewGroup.LayoutParams params = forwardView.getLayoutParams();
         params.height = buttonHeight * 2 + marginSize * 2;
@@ -301,10 +299,11 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
             String cmd = getApp().getButtonCommands().get(i);
             btn.setText(cmd);
 
-            int shape = getApp().getButtonShapes().get(i);
-            btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shape]);
+            int shapeIndex = getApp().getButtonShapes().get(i);
+            btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shapeIndex]);
 
             btn.setOnClickListener(btnControlClick);
+            btn.setTag(i);
 
             padButtons.add(btn);
         }
@@ -343,9 +342,12 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         for (Button btn : padButtons)
         {
+            int buttonIndex = (int)btn.getTag();
             boolean enabled = !btn.getText().equals(NOT_SET_TEXT) || isSettingsMode;
+            int shapeId = ButtonSetupDialog.shapeIds[getApp().getButtonShapes().get(buttonIndex)];
+
             btn.setEnabled(enabled);
-            btn.setBackgroundResource(enabled ? R.drawable.shape_enabled : R.drawable.shape_disabled);
+            btn.setBackgroundResource(enabled ? shapeId : R.drawable.shape_disabled);
         }
     }
 
@@ -376,7 +378,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
 
     private void showButtonActionDialog(Button btn)
     {
-        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString(), false);
+        int buttonIndex = (int)btn.getTag();
+        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(buttonIndex, false);
         newFragment.show(getFragmentManager(), "ButtonSetupDialog");
     }
 
@@ -385,25 +388,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         setSettingsMode(false);
         checkButtonLabels();
 
-        for (int i = 0; i < padButtons.size(); i++)
-        {
-            Button btn = padButtons.get(i);
-            String cmd = btn.getText().toString();
-
-            getApp().getButtonCommands().set(i, cmd);
-        }
-
         savePreferences();
     }
-
-    private OnClickListener btnSaveSettingsClick = new OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            saveSettingsHandler();
-        }
-    };
 
     private OnClickListener buttonOpenTerminalClick = new OnClickListener()
     {
@@ -517,39 +503,37 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         }
     }
 
-    public void updateButtonTextAndColor(int btnId, String text, int shapeIndex)
+    public void updateButtonCommandAndColor(int buttonIndex, String command, int shapeIndex)
     {
-        int i = 0;
-        for (Button btn : padButtons)
-        {
-            if (btn.getId() == btnId)
-            {
-                getApp().getButtonShapes().set(i, shapeIndex);
-                btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shapeIndex]);
-                btn.setText(text);
-                return;
-            }
-            i++;
-        }
+        Button btn = padButtons.get(buttonIndex);
+        btn.setBackgroundResource(ButtonSetupDialog.shapeIds[shapeIndex]);
+        btn.setText(command);
+
+        getApp().getButtonShapes().set(buttonIndex, shapeIndex);
+        getApp().getButtonCommands().set(buttonIndex, command);
     }
 
     private void enableControls()
     {
-        boolean enable = getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED;
+        boolean isConnected = getApp().getConnectorState() == DeviceConnector.STATE_CONNECTED;
 
-        buttonOpenTerminal.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+        buttonOpenTerminal.setVisibility(isConnected ? View.VISIBLE : View.INVISIBLE);
 
         for (Button btn : padButtons)
         {
-            if (!enable)
+            if (!isConnected)
             {
                 btn.setBackgroundResource(R.drawable.shape_disabled);
                 btn.setEnabled(false);
                 continue;
             }
+
             boolean enabled = !btn.getText().equals(NOT_SET_TEXT) || isSettingsMode;
+            int buttonIndex = (int)btn.getTag();
+            int shapeId = ButtonSetupDialog.shapeIds[getApp().getButtonShapes().get(buttonIndex)];
+
             btn.setEnabled(enabled);
-            btn.setBackgroundResource(enabled ? R.drawable.shape_enabled : R.drawable.shape_disabled);
+            btn.setBackgroundResource(enabled ? shapeId : R.drawable.shape_disabled);
         }
     }
 
@@ -569,8 +553,8 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
         {
-            int forward = (int)event.values[1];
-            int left = (int)event.values[2];
+            int forward = isSettingsMode ? 0 : (int)event.values[1];
+            int left = isSettingsMode ? 0 : (int)event.values[2];
 
             if (forward > OrientationView.MAX_VALUE)
                 forward = OrientationView.MAX_VALUE;

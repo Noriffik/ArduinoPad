@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.dev.aproschenko.arduinocontroller.colorpicker.ColorPickerPreference;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class TerminalActivity extends Activity
@@ -39,12 +40,13 @@ public class TerminalActivity extends Activity
     private TextView commandsView;
 
     private String commandsCache = "";
-    Integer ids[] = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5};
+    private Integer buttonIds[] = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5};
+    private ArrayList<Button> terminalButtons = new ArrayList<>();
 
     public static final int BTN_COUNT = 5;
     final Context context = this;
 
-    private MainApplication getApp()
+    public MainApplication getApp()
     {
         return (MainApplication) getApplication();
     }
@@ -70,38 +72,32 @@ public class TerminalActivity extends Activity
         commandsView.setMovementMethod(new ScrollingMovementMethod());
         commandsView.setTextIsSelectable(true);
 
-        int i = 0;
-        for (int id : ids)
+        for (int i = 0; i < buttonIds.length; i++)
         {
+            int id = buttonIds[i];
             Button btn = (Button) findViewById(id);
+
             btn.setText(getApp().getTerminalCommands().get(i));
             btn.setOnLongClickListener(btnPredefinedCommandLongControlClick);
             btn.setOnClickListener(btnPredefinedCommandControlClick);
-            i++;
+            btn.setTag(i);
+
+            terminalButtons.add(btn);
         }
 
         getApp().addHandler(mHandler);
     }
 
-    public void updateButtonText(int btnId, String text)
+    public void updateButtonCommand(int buttonIndex, String command)
     {
-        int i = 0;
-        for (int id : ids)
-        {
-            Button btn = (Button) findViewById(id);
-            if (btn.getId() == btnId)
-            {
-                btn.setText(text);
-                getApp().getTerminalCommands().set(i, text);
+        Button btn = terminalButtons.get(buttonIndex);
+        btn.setText(command);
 
-                saveSettings();
-                return;
-            }
-            i++;
-        }
+        getApp().getTerminalCommands().set(buttonIndex, command);
+        savePreferences();
     }
 
-    private void saveSettings()
+    private void savePreferences()
     {
         SharedPreferences settings = getSharedPreferences(MainApplication.PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -132,7 +128,8 @@ public class TerminalActivity extends Activity
 
     private void showButtonActionDialog(Button btn)
     {
-        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(btn.getId(), btn.getText().toString(), true);
+        int buttonIndex = (int)btn.getTag();
+        ButtonSetupDialog newFragment = ButtonSetupDialog.newInstance(buttonIndex, true);
         newFragment.show(getFragmentManager(), "ButtonSetupDialog");
     }
 
