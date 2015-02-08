@@ -33,12 +33,12 @@ public class TerminalActivity extends Activity
     private static final boolean D = true;
 
     private String connectedDeviceName;
+    private String connectedDeviceAddress;
 
     private Button buttonSend;
     private EditText commandBox;
     private TextView commandsView;
 
-    private String commandsCache = "";
     private Integer buttonIds[] = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5};
     private ArrayList<Button> terminalButtons = new ArrayList<>();
 
@@ -58,6 +58,7 @@ public class TerminalActivity extends Activity
 
         Intent intent = getIntent();
         connectedDeviceName = intent.getStringExtra(MainActivity.DEVICE_NAME);
+        connectedDeviceAddress = intent.getStringExtra(MainActivity.DEVICE_ADDRESS);
 
         setContentView(R.layout.terminal_layout);
         setTitle(R.string.bluetooth_terminal);
@@ -70,6 +71,7 @@ public class TerminalActivity extends Activity
 
         commandsView.setMovementMethod(new ScrollingMovementMethod());
         commandsView.setTextIsSelectable(true);
+        commandsView.setText(Html.fromHtml(getCommandsCache()), TextView.BufferType.SPANNABLE);
 
         for (int i = 0; i < buttonIds.length; i++)
         {
@@ -85,6 +87,26 @@ public class TerminalActivity extends Activity
         }
 
         getApp().addHandler(mHandler);
+    }
+
+    private String getCommandsCache()
+    {
+        if (getApp().getTerminalHistory().containsKey(connectedDeviceAddress))
+        {
+            return getApp().getTerminalHistory().get(connectedDeviceAddress);
+        }
+
+        return "";
+    }
+
+    private void setCommandsCache(String cache)
+    {
+        if (getApp().getTerminalHistory().containsKey(connectedDeviceAddress))
+        {
+            getApp().getTerminalHistory().remove(connectedDeviceAddress);
+        }
+
+        getApp().getTerminalHistory().put(connectedDeviceAddress, cache);
     }
 
     public void updateButtonCommand(int buttonIndex, String command)
@@ -172,7 +194,7 @@ public class TerminalActivity extends Activity
     private void clearLog()
     {
         commandsView.setText("");
-        commandsCache = "";
+        setCommandsCache("");
         Toast.makeText(this, getResources().getString(R.string.terminal_cleared), Toast.LENGTH_SHORT).show();
     }
 
@@ -238,7 +260,8 @@ public class TerminalActivity extends Activity
         if (getApp().showDateTimeLabels)
             textToAdd = String.format("%s %s", date, textToAdd);
 
-        commandsCache = textToAdd + commandsCache;
+        String commandsCache = textToAdd + getCommandsCache();
+        setCommandsCache(commandsCache);
         commandsView.setText(Html.fromHtml(commandsCache), TextView.BufferType.SPANNABLE);
     }
 

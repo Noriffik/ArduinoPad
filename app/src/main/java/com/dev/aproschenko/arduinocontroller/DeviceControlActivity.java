@@ -402,6 +402,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         Intent intent = new Intent(context, TerminalActivity.class);
         intent.putExtra(MainActivity.DEVICE_NAME, connectedDeviceName);
+        intent.putExtra(MainActivity.DEVICE_ADDRESS, connectedDeviceAddress);
         startActivity(intent);
     }
 

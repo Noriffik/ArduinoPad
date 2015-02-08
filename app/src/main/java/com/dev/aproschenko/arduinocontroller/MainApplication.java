@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class MainApplication extends Application
@@ -91,6 +93,7 @@ public class MainApplication extends Application
     private ArrayList<String> buttonCommands = new ArrayList<>();
     private ArrayList<String> terminalCommands = new ArrayList<>();
     ArrayList<MacData> macs = new ArrayList<>();
+    private Map<String, String> terminalHistory = new HashMap<>();
 
     public enum SortType
     {
@@ -117,6 +120,7 @@ public class MainApplication extends Application
     public ArrayList<String> getTerminalCommands() { return terminalCommands; }
     Set<BluetoothDevice> getBondedDevices() { return btAdapter.getBondedDevices(); }
     public ArrayList<MacData> getMACs() { return macs; }
+    public Map<String, String> getTerminalHistory() { return terminalHistory; }
 
     public void cancelDiscovery()
     {
