@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -387,8 +386,7 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
     {
         setSettingsMode(false);
         checkButtonLabels();
-
-        savePreferences();
+        getApp().saveButtonsPreferences();
     }
 
     private OnClickListener buttonOpenTerminalClick = new OnClickListener()
@@ -405,28 +403,6 @@ public class DeviceControlActivity extends Activity implements SensorEventListen
         Intent intent = new Intent(context, TerminalActivity.class);
         intent.putExtra(MainActivity.DEVICE_NAME, connectedDeviceName);
         startActivity(intent);
-    }
-
-    private void savePreferences()
-    {
-        SharedPreferences settings = getSharedPreferences(MainApplication.PREFS_FOLDER_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-
-        for (int i = 0; i < padButtons.size(); i++)
-        {
-            String key = MainApplication.PREFS_KEY_COMMAND + i;
-            String cmd = getApp().getButtonCommands().get(i);
-            editor.putString(key, cmd);
-
-            key = MainApplication.PREFS_KEY_SHAPE + i;
-            int shape = getApp().getButtonShapes().get(i);
-            editor.putInt(key, shape);
-
-            if (D)
-                Log.d(TAG, "save cmd key " + key + ":" + cmd + " shape:" + shape);
-        }
-
-        editor.apply();
     }
 
     @Override

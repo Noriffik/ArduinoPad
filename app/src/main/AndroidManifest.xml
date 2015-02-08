@@ -19,8 +19,6 @@
         <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name"
-                android:configChanges="orientation"
-                android:screenOrientation="portrait">
                 >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,31 +30,25 @@
                 android:name=".DeviceControlActivity"
                 android:parentActivityName=".MainActivity"
                 android:configChanges="orientation"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
                 >
         </activity>
 
         <activity
             android:name=".TerminalActivity"
             android:parentActivityName=".DeviceControlActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
             >
         </activity>
 
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
             >
         </activity>
 
         <activity
             android:name=".DeviceInfoActivity"
             android:parentActivityName=".MainActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
             >
         </activity>
 

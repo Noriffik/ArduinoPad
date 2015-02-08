@@ -38,12 +38,17 @@
 
         </AbsoluteLayout>
 
-        <TableLayout android:layout_width="match_parent" android:layout_height="300dp">
-            <TableRow>
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+            <TableRow
+                android:layout_weight="1"
+                >
                 <Button
                         android:id="@+id/button1"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -55,7 +60,7 @@
                 <Button
                         android:id="@+id/button2"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -67,7 +72,7 @@
                 <Button
                         android:id="@+id/button3"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1.00"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -79,7 +84,7 @@
                 <Button
                         android:id="@+id/button4"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -88,11 +93,13 @@
                         android:layout_marginStart="@dimen/button_margin"
                         android:text="-" />
             </TableRow>
-            <TableRow>
+            <TableRow
+                android:layout_weight="1"
+                >
                 <Button
                         android:id="@+id/button5"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -104,7 +111,7 @@
                 <Button
                         android:id="@+id/button6"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -116,7 +123,7 @@
                 <Button
                         android:id="@+id/button7"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -128,7 +135,7 @@
                 <Button
                         android:id="@+id/button8"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -137,11 +144,13 @@
                         android:text="-"
                         android:layout_marginBottom="@dimen/button_gap"/>
             </TableRow>
-            <TableRow>
+            <TableRow
+                android:layout_weight="1"
+                >
                 <Button
                         android:id="@+id/button9"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1.00"
                         android:textAllCaps="false"
                         android:layout_marginBottom="@dimen/button_margin"
@@ -153,7 +162,7 @@
                 <Button
                         android:id="@+id/button10"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginBottom="@dimen/button_margin"
@@ -165,7 +174,7 @@
                 <Button
                         android:id="@+id/button11"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginBottom="@dimen/button_margin"
@@ -177,7 +186,7 @@
                 <Button
                         android:id="@+id/button12"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginBottom="@dimen/button_margin"
@@ -186,11 +195,13 @@
                         android:text="-"
                         android:layout_marginTop="@dimen/button_gap"/>
             </TableRow>
-            <TableRow>
+            <TableRow
+                android:layout_weight="1"
+                >
                 <Button
                         android:id="@+id/button13"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -202,7 +213,7 @@
                 <Button
                         android:id="@+id/button14"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -214,7 +225,7 @@
                 <Button
                         android:id="@+id/button15"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -226,7 +237,7 @@
                 <Button
                         android:id="@+id/button16"
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="fill_parent"
                         android:layout_weight="1"
                         android:textAllCaps="false"
                         android:layout_marginTop="@dimen/button_margin"
@@ -235,18 +246,21 @@
                         android:layout_marginStart="@dimen/button_margin"
                         android:text="-" />
             </TableRow>
-        </TableLayout>
 
-        <Button
-            android:id="@+id/buttonTerminal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/open_terminal"
-            android:drawableRight="@android:drawable/ic_menu_send"
-            />
+            <TableRow
+                android:layout_width="fill_parent"
+                >
+                <Button
+                    android:layout_span="4"
+                    android:id="@+id/buttonTerminal"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_terminal"
+                    android:drawableRight="@android:drawable/ic_menu_send"
+                    />
+            </TableRow>
+        </TableLayout>
 
     </RelativeLayout>
     

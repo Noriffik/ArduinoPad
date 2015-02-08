@@ -22,14 +22,16 @@ public class MainApplication extends Application
     private static final String TAG = "MainApplication";
     private static final boolean D = true;
 
-    public static final int bondedBgColorDefault = 0x2200FF00;
-    public static final int sentMessageColorDefault = 0xFF6F00FF;
-    public static final int receivedMessageColorDefault = 0xFF0062FF;
-
     public static final int LINE_ENDING_NONE = 0;
     public static final int LINE_ENDING_CR = 1;
     public static final int LINE_ENDING_LF = 2;
     public static final int LINE_ENDING_CRLF = 3;
+
+    public static final int bondedBgColorDefault = 0x2200FF00;
+    public static final int sentMessageColorDefault = 0xFF6F00FF;
+    public static final int receivedMessageColorDefault = 0xFF0062FF;
+    public static final int sentMessageEndingDefault = LINE_ENDING_CRLF;
+    public static final int receivedMessageEndingDefault = LINE_ENDING_CRLF;
 
     private BluetoothAdapter btAdapter;
     private DeviceConnector connector;
@@ -82,8 +84,8 @@ public class MainApplication extends Application
     public int bondedBgColor = bondedBgColorDefault;
     public int sentMessageColor = sentMessageColorDefault;
     public int receivedMessageColor = receivedMessageColorDefault;
-    public int sentMessageEnding = LINE_ENDING_NONE;
-    public int receivedMessageEnding = LINE_ENDING_NONE;
+    public int sentMessageEnding = sentMessageEndingDefault;
+    public int receivedMessageEnding = receivedMessageEndingDefault;
 
     private ArrayList<Integer> buttonShapes = new ArrayList<>();
     private ArrayList<String> buttonCommands = new ArrayList<>();
@@ -296,8 +298,8 @@ public class MainApplication extends Application
         bondedBgColor = settings.getInt(PREFS_KEY_BONDED_COLOR, bondedBgColorDefault);
         sentMessageColor = settings.getInt(PREFS_KEY_SENT_COLOR, sentMessageColorDefault);
         receivedMessageColor = settings.getInt(PREFS_KEY_RECEIVED_COLOR, receivedMessageColorDefault);
-        sentMessageEnding = settings.getInt(PREFS_KEY_SENT_ENDING, LINE_ENDING_NONE);
-        receivedMessageEnding = settings.getInt(PREFS_KEY_RECEIVED_ENDING, LINE_ENDING_NONE);
+        sentMessageEnding = settings.getInt(PREFS_KEY_SENT_ENDING, sentMessageEndingDefault);
+        receivedMessageEnding = settings.getInt(PREFS_KEY_RECEIVED_ENDING, receivedMessageEndingDefault);
     }
 
     public DeviceData getDeviceDataByAddress(String address)
@@ -313,12 +315,52 @@ public class MainApplication extends Application
 
     public void saveSettings()
     {
-        saveSettingsInternal();
+        savePreferences();
     }
 
-    private void saveSettingsInternal()
+    public void saveButtonsPreferences()
     {
-        if (D) Log.d(TAG, "saveSettingsInternal");
+        SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        for (int i = 0; i < DeviceControlActivity.BTN_COUNT; i++)
+        {
+            String key = PREFS_KEY_COMMAND + i;
+            String cmd = buttonCommands.get(i);
+            editor.putString(key, cmd);
+
+            key = PREFS_KEY_SHAPE + i;
+            int shape = buttonShapes.get(i);
+            editor.putInt(key, shape);
+
+            if (D)
+                Log.d(TAG, "save cmd key " + key + ":" + cmd + " shape:" + shape);
+        }
+
+        editor.apply();
+    }
+
+    public void saveTerminalPreferences()
+    {
+        SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        for (int i = 0; i < TerminalActivity.BTN_COUNT; i++)
+        {
+            String key = PREFS_KEY_TERMINAL_COMMAND + i;
+            String cmd = terminalCommands.get(i);
+            editor.putString(key, cmd);
+
+            if (D)
+                Log.d(TAG, "save terminal key " + key + ":" + cmd);
+        }
+
+        editor.apply();
+    }
+
+    private void savePreferences()
+    {
+        if (D) Log.d(TAG, "savePreferences");
 
         SharedPreferences settings = getSharedPreferences(PREFS_FOLDER_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -359,7 +401,7 @@ public class MainApplication extends Application
         editor.putInt(PREFS_KEY_SENT_ENDING, sentMessageEnding);
         editor.putInt(PREFS_KEY_RECEIVED_ENDING, receivedMessageEnding);
 
-        editor.commit();
+        editor.apply();
     }
 
     public String readFile(String fileName)

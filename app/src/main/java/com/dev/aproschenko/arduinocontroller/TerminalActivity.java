@@ -3,7 +3,6 @@ package com.dev.aproschenko.arduinocontroller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,25 +93,7 @@ public class TerminalActivity extends Activity
         btn.setText(command);
 
         getApp().getTerminalCommands().set(buttonIndex, command);
-        savePreferences();
-    }
-
-    private void savePreferences()
-    {
-        SharedPreferences settings = getSharedPreferences(MainApplication.PREFS_FOLDER_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-
-        for (int i = 0; i < BTN_COUNT; i++)
-        {
-            String key = MainApplication.PREFS_KEY_TERMINAL_COMMAND + i;
-            String cmd = getApp().getTerminalCommands().get(i);
-            editor.putString(key, cmd);
-
-            if (D)
-                Log.d(TAG, "save terminal key " + key + ":" + cmd);
-        }
-
-        editor.commit();
+        getApp().saveTerminalPreferences();
     }
 
     private View.OnLongClickListener btnPredefinedCommandLongControlClick = new View.OnLongClickListener()
