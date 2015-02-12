@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.dev.aproschenko.arduinocontroller"
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 21
-        versionCode 9
-        versionName "1.2"
+        versionCode 10
+        versionName "1.2.1"
     }
     buildTypes {
         release {

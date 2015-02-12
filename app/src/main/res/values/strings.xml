@@ -114,5 +114,6 @@
     <string name="set_command_using_long_tap">Set command using long tap</string>
     <string name="no_color">No color</string>
     <string name="settings_saved">Settings saved successfully</string>
+    <string name="menu_help">Help</string>
 
 </resources>

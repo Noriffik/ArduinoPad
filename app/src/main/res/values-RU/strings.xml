@@ -113,5 +113,6 @@
     <string name="set_command_using_long_tap">Установите команду долгим нажатием</string>
     <string name="no_color">Без цвета</string>
     <string name="settings_saved">Настройки сохранены</string>
+    <string name="menu_help">Справка</string>
 
 </resources>

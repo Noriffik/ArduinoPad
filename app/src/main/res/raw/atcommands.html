@@ -1,0 +1,215 @@
+AT Commands, GSM AT command set<br/>
+<br/>
+---------------------<br/>
+<br/>
+AT commands are used to control MODEMs. AT is the abbreviation for Attention. These commands come from Hayes commands that were used by the Hayes smart modems. The Hayes commands started with AT to indicate the attention from the MODEM. The dial up and wireless MODEMs (devices that involve machine to machine communication) need AT commands to interact with a computer. These include the Hayes command set as a subset, along with other extended AT commands.<br/>
+<br/>
+AT commands with a GSM/GPRS MODEM or mobile phone can be used to access following information and services:<br/>
+1. Information and configuration pertaining to mobile device or MODEM and SIM card.<br/>
+2. SMS services.<br/>
+3. MMS services.<br/>
+4. Fax services.<br/>
+5. Data and Voice link over mobile network.<br/>
+<br/>
+---------------------<br/>
+<br/>
+The Hayes subset commands are called the basic commands and the commands specific to a GSM network are called extended AT commands.<br/>
+<br/>
+Types of AT Commands:<br/>
+<br/>
+1) Test commands - used to check whether a command is supported or not by the MODEM.<br/>
+<br/>
+SYNTAX: AT&lt;command name&gt;=?<br/>
+For example: ATD=?<br/>
+<br/>
+2) Read command - used to get mobile phone or MODEM settings for an operation.<br/>
+SYNTAX: AT&lt;command name&gt;?<br/>
+For example: AT+CBC?<br/>
+<br/>
+3) Set commands - used to modify mobile phone or MODEM settings for an operation.<br/>
+SYNTAX: AT&lt;command name&gt;=value1, value2, …, valueN<br/>
+Some values in set commands can be optional.<br/>
+For example: AT+CSCA=”+9876543210”, 120<br/>
+<br/>
+4) Execution commands - used to carry out an operation.<br/>
+SYNTAX: AT&lt;command name&gt;=parameter1, parameter2, …, parameterN<br/>
+The read commands are not available to get value of last parameter assigned in execution commands because parameters of execution commands are not stored.<br/>
+For example: AT+CMSS=1,”+ 9876543210”, 120<br/>
+<br/>
+---------------------<br/>
+<br/>
+Explanation of commonly used AT commands:<br/>
+1) AT - This command is used to check communication between the module and the computer.<br/>
+For example,<br/>
+<br/>
+AT<br/>
+OK<br/>
+<br/>
+The command returns a result code OK if the computer (serial port) and module are connected properly. If any of module or SIM is not working, it would return a result code ERROR.<br/>
+<br/>
+2) +CMGF - This command is used to set the SMS mode. Either text or PDU mode can be selected by assigning 1 or 0 in the command.<br/>
+SYNTAX: AT+CMGF=&lt;mode&gt;<br/>
+0: for PDU mode<br/>
+1: for text mode<br/>
+<br/>
+The text mode of SMS is easier to operate but it allows limited features of SMS. The PDU (protocol data unit) allows more access to SMS services but the operator requires bit level knowledge of TPDUs. The headers and body of SMS are accessed in hex format in PDU mode so it allows availing more features.<br/>
+<br/>
+For example,<br/>
+<br/>
+AT+CMGF=1<br/>
+OK<br/>
+<br/>
+3) +CMGW - This command is used to store message in the SIM.<br/>
+SYNTAX: AT+CMGW=”Phone number”&gt; Message to be stored Ctrl+z<br/>
+As one types AT+CMGW and phone number, ”&gt;” sign appears on next line where one can type the message. Multiple line messages can be typed in this case. This is why the message is terminated by providing a ”Ctrl+z” combination. As Ctrl+z is pressed, the following information response is displayed on the screen.<br/>
+<br/>
++CMGW: Number on which message has been stored<br/>
+<br/>
+4) +CMGS - This command is used to send a SMS message to a phone number.<br/>
+SYNTAX: AT+CMGS= serial number of message to be send.<br/>
+<br/>
+As the command AT+CMGS and serial number of message are entered, SMS is sent to the particular SIM.<br/>
+For example,<br/>
+<br/>
+AT+CMGS=1<br/>
+OK<br/>
+<br/>
+5) ATD - This command is used to dial or call a number.<br/>
+SYNTAX: ATD&lt;Phone number&gt;;(Enter)<br/>
+For example,<br/>
+<br/>
+ATD123456789;<br/>
+<br/>
+6) ATA - This command is used to answer a call. An incoming call is indicated by a message ”RING” which is repeated for every ring of the call. When the call ends ”NO CARRIER” is displayed on the screen.<br/>
+SYNTAX: ATA(Enter)<br/>
+<br/>
+As ATA followed by enter key is pressed, incoming call is answered.<br/>
+For example,<br/>
+<br/>
+RING<br/>
+RING<br/>
+ATA<br/>
+<br/>
+7) ATH - This command is used to disconnect remote user link with the GSM module.<br/>
+SYNTAX: ATH (Enter)<br/>
+<br/>
+---------------------<br/>
+<br/>
+List of AT commands:<br/>
+The AT commands for both, GSM module and the mobile phone, are listed below. Some of these commands may not be supported by all the GSM modules available. Also there might be some commands which won�t be supported by some mobile handsets.<br/>
+<br/>
+Testing:<br/>
+<br/>
+AT Checking communication between the module and computer.<br/>
+<br/>
+Call control:<br/>
+<br/>
+ATA Answer command<br/>
+ATD Dial command<br/>
+ATH Hang up call<br/>
+ATL Monitor speaker loudness<br/>
+ATM Monitor speaker mode<br/>
+ATO Go on-line<br/>
+ATP Set pulse dial as default<br/>
+ATT Set tone dial as default<br/>
+AT+CSTA Select type of address<br/>
+AT+CRC Cellular result codes<br/>
+<br/>
+Data card Control:<br/>
+<br/>
+ATI Identification<br/>
+ATS Select an S-register<br/>
+ATZ Recall stored profile<br/>
+AT&F Restore factory settings<br/>
+AT&V View active configuration<br/>
+AT&W Store parameters in given profile<br/>
+AT&Y Select Set as power up option<br/>
+AT+CLCK Facility lock command<br/>
+AT+COLP Connected line identification presentation<br/>
+AT+GCAP Request complete capabilities list<br/>
+AT+GMI Request manufacturer identification<br/>
+AT+GMM Request model identification<br/>
+AT+GMR Request revision identification<br/>
+AT+GSN Request product serial number identification (IMEI)<br/>
+<br/>
+Phone control:<br/>
+<br/>
+AT+CBC Battery charge<br/>
+AT+CGMI Request manufacturer identification<br/>
+AT+CGMM Request model identification<br/>
+AT+CGMR Request revision identification<br/>
+AT+CGSN Request product serial number identification<br/>
+AT+CMEE Report mobile equipment error<br/>
+AT+CPAS Phone activity status<br/>
+AT+CPBF Find phone book entries<br/>
+AT+CPBR Read phone book entry<br/>
+AT+CPBS Select phone book memory storage<br/>
+AT+CPBW Write phone book entry<br/>
+AT+CSCS Select TE character set<br/>
+AT+CSQ Signal quality<br/>
+<br/>
+Computer data interface :<br/>
+<br/>
+ATE Command Echo<br/>
+ATQ Result code suppression<br/>
+ATV Define response format<br/>
+ATX Response range selection<br/>
+AT&C Define DCD usage<br/>
+AT&D Define DTR usage<br/>
+AT&K Select flow control<br/>
+AT&Q Define communications mode option<br/>
+AT&S Define DSR option<br/>
+AT+ICF DTE-DCE character framing<br/>
+AT+IFC DTE-DCE Local flow control<br/>
+AT+IPR Fixed DTE rate<br/>
+<br/>
+Service :<br/>
+<br/>
+AT+CLIP Calling line identification presentation<br/>
+AT+CR Service reporting control<br/>
+AT+DR Data compression reporting<br/>
+AT+ILRR DTE-DCE local rate reporting<br/>
+<br/>
+Network Communication parameter:<br/>
+<br/>
+ATB Communications standard option<br/>
+AT+CBST Select bearer service type<br/>
+AT+CEER Extended error report<br/>
+AT+CRLP Radio link protocol<br/>
+AT+DS Data compression<br/>
+<br/>
+Miscellaneous :<br/>
+A/ Re-execute command line<br/>
+AT? Command help<br/>
+AT*C Start SMS interpreter<br/>
+AT*T Enter SMS block mode protocol<br/>
+AT*V Activate V.25bis mode<br/>
+AT*NOKIATEST Test command<br/>
+AT+CESP Enter SMS block mode protocol<br/>
+<br/>
+SMS Text mode:<br/>
+<br/>
+AT+CSMS Select message service<br/>
+AT+CPMS Preferred message storage<br/>
+AT+CMGF Message format<br/>
+AT+CSCA Service centre address<br/>
+AT+CSMP Set text mode parameters<br/>
+AT+CSDH Show text mode parameters<br/>
+AT+CSCB Select cell broadcast message types<br/>
+AT+CSAS Save settings<br/>
+AT+CRES Restore settings<br/>
+AT+CNMI New message indications to TE<br/>
+AT+CMGL List messages<br/>
+AT+CMGR Read message<br/>
+AT+CMGS Send message<br/>
+AT+CMSS Send message from storage<br/>
+AT+CMGW Write message to memory<br/>
+AT+CMGD Delete message<br/>
+<br/>
+SMS PDU mode:<br/>
+<br/>
+AT+CMGL List Messages<br/>
+AT+CMGR Read message<br/>
+AT+CMGS Send message<br/>
+AT+CMGW Write message to memory<br/>
+ 

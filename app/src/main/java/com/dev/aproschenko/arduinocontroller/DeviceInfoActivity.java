@@ -81,7 +81,7 @@ public class DeviceInfoActivity extends Activity
     {
         if (getApp().getMACs().size() == 0)
         {
-            String macJson = MacConverter.readMacsJson(R.raw.vendors, this);
+            String macJson = MacConverter.readEmbeddedTextFile(R.raw.vendors, this);
             ArrayList<MacData> macs = MacUtil.deserializeMacs(macJson);
             for (MacData macData : macs)
             {

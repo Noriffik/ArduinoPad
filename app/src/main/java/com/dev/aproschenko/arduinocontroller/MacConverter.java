@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,13 +14,13 @@ public class MacConverter
     private static final String TAG = "MacConverter";
     private static final boolean D = true;
 
-    public static String readMacsJson(int macId, Context context)
+    public static String readEmbeddedTextFile(int rawId, Context context)
     {
         String jsonData = "";
 
         try
         {
-            InputStream inputStream = context.getResources().openRawResource(macId);
+            InputStream inputStream = context.getResources().openRawResource(rawId);
             BufferedReader myReader = new BufferedReader(new InputStreamReader(inputStream));
             String aDataRow;
             String aBuffer = "";
@@ -35,7 +33,7 @@ public class MacConverter
         }
         catch (Exception e)
         {
-            if (D) Log.e(TAG, "readMacsJson() failed", e);
+            if (D) Log.e(TAG, "readEmbeddedTextFile() failed", e);
         }
 
         return jsonData;

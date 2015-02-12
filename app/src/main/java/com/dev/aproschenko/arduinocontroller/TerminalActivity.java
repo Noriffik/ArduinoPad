@@ -185,10 +185,19 @@ public class TerminalActivity extends Activity
             case R.id.menu_clear_terminal:
                 clearLog();
                 return true;
+            case R.id.menu_help:
+                openHelp();
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openHelp()
+    {
+        TerminalHelpDialog newFragment = TerminalHelpDialog.newInstance();
+        newFragment.show(getFragmentManager(), "TerminalHelpDialog");
     }
 
     private void clearLog()
@@ -288,7 +297,8 @@ public class TerminalActivity extends Activity
                 getApp().getConnector().write(command);
                 appendCommand(command, Messages.MESSAGE_WRITE);
                 commandBox.setText("");
-            } else
+            }
+            else
             {
                 if (commandBox.requestFocus())
                 {
