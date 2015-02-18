@@ -1,0 +1,30 @@
+Control your Arduino circuit with ease using Bluetooth and your smartphone. Easy setup allows you to set up a lot of commands to send to your Arduino. Also possible to send commands to circuit using smartphone's gyroscope.
+Application has built-in Bluetooth terminal.
+Application allows to control circuit via any DIY bluetooth adapter - for example not expensive HC-05/HC-06. Bluetooth module should be connected to the Arduino using RX/TX wire using circuit from site below.
+
+© Arduino trademark and its logo are registered by Arduino team - please refer http://arduino.cc/en/Trademark/HomePage
+
+What's new:
+
+1.2.2 - Added landscape support.
+
+1.2.1 - Added help with most useful AT commands.
+
+1.2 - Added color settings for the command buttons.
+
+1.1 - Added predefined Bluetooth commands in Terminal.
+
+1.0.6 - Added Bluetooth device information screen.
+
+1.0.5 - Added Bluetooth terminal.
+
+1.0.3 - Fixed multi-char commands support.
+
+1.0.2 - Small UI changes.
+
+1.0.1 - Added Russian locale.
+
+1.0 - Initial version
+
+FAQ and code for Arduino:
+https://code.google.com/p/arduino-controller/source/browse/

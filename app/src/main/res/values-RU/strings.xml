@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Arduino Bluetooth Controller</string>
+    <string name="app_name"> Bluetooth Controller</string>
     <string name="bt_devices_to_connect">Устройства Bluetooth для подключения:</string>
     <string name="menu_settings">Настройки</string>
     <string name="brightness_control">Яркость:</string>
