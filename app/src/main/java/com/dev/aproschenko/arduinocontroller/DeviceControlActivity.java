@@ -1,6 +1,5 @@
 package com.dev.aproschenko.arduinocontroller;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -13,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class DeviceControlActivity extends Activity implements SensorEventListener
+public class DeviceControlActivity extends ActionBarActivity implements SensorEventListener
 {
     private static final String TAG = "DeviceControlActivity";
     private static final boolean D = true;

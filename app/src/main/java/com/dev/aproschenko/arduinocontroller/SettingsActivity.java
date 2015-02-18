@@ -10,7 +10,9 @@ import android.util.Log;
 
 import com.dev.aproschenko.arduinocontroller.colorpicker.ColorPickerPreference;
 
-public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener
+public class SettingsActivity extends PreferenceActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener,
+        Preference.OnPreferenceChangeListener
 {
     private static final String TAG = "SettingsActivity";
     private static final boolean D = true;

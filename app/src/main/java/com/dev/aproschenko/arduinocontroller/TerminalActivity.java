@@ -1,12 +1,12 @@
 package com.dev.aproschenko.arduinocontroller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
 import android.text.Html;
 import android.text.format.DateFormat;
@@ -27,7 +27,7 @@ import com.dev.aproschenko.arduinocontroller.colorpicker.ColorPickerPreference;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TerminalActivity extends Activity
+public class TerminalActivity extends ActionBarActivity
 {
     private static final String TAG = "TerminalActivity";
     private static final boolean D = true;

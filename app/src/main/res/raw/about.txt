@@ -6,6 +6,8 @@ Application allows to control circuit via any DIY bluetooth adapter - for exampl
 
 What's new:
 
+1.2.3 - Added support for 4.0.3 devices.
+
 1.2.2 - Added landscape support.
 
 1.2.1 - Added help with most useful AT commands.

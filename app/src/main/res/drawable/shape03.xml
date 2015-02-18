@@ -9,7 +9,7 @@
                 android:radius="3dp" />
             <stroke
                 android:width="@dimen/button_stroke_width"
-                android:color="#fff"
+                android:color="@color/button_stroke_border_pressed"
                 />
         </shape>
     </item>
@@ -22,7 +22,7 @@
                 android:radius="3dp" />
             <stroke
                 android:width="@dimen/button_stroke_width"
-                android:color="#878787"
+                android:color="@color/button_stroke_border"
                 />
         </shape>
     </item>

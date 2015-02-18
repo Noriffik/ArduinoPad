@@ -86,7 +86,7 @@
         android:textColor="#ccc"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/deviceName"
+        android:layout_toRightOf="@+id/deviceName"
         android:textSize="10dp"
         android:clickable="false"
         android:focusable="false"

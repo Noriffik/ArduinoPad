@@ -1,10 +1,10 @@
 package com.dev.aproschenko.arduinocontroller;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.SortedMap;
 
-public class DeviceInfoActivity extends Activity
+public class DeviceInfoActivity extends ActionBarActivity
 {
     private static final String TAG = "DeviceInfoActivity";
     private static final boolean D = true;
