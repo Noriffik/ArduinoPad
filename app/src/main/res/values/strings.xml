@@ -115,5 +115,6 @@
     <string name="no_color">No color</string>
     <string name="settings_saved">Settings saved successfully</string>
     <string name="menu_help">Help</string>
+    <string name="handle_device_position">Handle device position</string>
 
 </resources>

@@ -90,7 +90,10 @@ public class DeviceControlActivity extends ActionBarActivity implements SensorEv
         setTitle(title);
 
         setupControls();
-        setupSensors();
+        if (getApp().handleDevicePosition)
+        {
+            setupSensors();
+        }
         enableControls();
     }
 
@@ -127,7 +130,10 @@ public class DeviceControlActivity extends ActionBarActivity implements SensorEv
         super.onResume();
         if (D) Log.d(TAG, "+ ON RESUME +");
 
-        sensorManager.registerListener(this, rotationVectorSensor, 10000);
+        if (getApp().handleDevicePosition)
+        {
+            sensorManager.registerListener(this, rotationVectorSensor, 10000);
+        }
 
         if (getApp().getConnector() != null)
         {
@@ -230,7 +236,10 @@ public class DeviceControlActivity extends ActionBarActivity implements SensorEv
         super.onPause();
         if (D) Log.d(TAG, "- ON PAUSE -");
 
-        sensorManager.unregisterListener(this);
+        if (getApp().handleDevicePosition)
+        {
+            sensorManager.unregisterListener(this);
+        }
 
         if (getApp().getConnector() != null)
         {

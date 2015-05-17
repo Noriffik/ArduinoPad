@@ -2,6 +2,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
+        android:title="@string/handle_device_position"
+        android:key="handle_position"
+        android:defaultValue="true"
+        android:summaryOn="@string/enabled"
+        android:summaryOff="@string/disabled"
+        />
+
+    <SwitchPreference
         android:title="@string/collect_devices_statistics"
         android:key="collect_devices"
         android:defaultValue="false"

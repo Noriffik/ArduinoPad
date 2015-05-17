@@ -61,6 +61,7 @@ public class MainApplication extends Application
     public static final String PREFS_KEY_SHOW_WEARABLE = "wearable";
     public static final String PREFS_KEY_SHOW_UNCATEGORIZED = "uncategorized";
     public static final String PREFS_KEY_SHOW_DATETIME_LABELS = "showdatetime";
+    public static final String PREFS_KEY_HANDLE_POSITION = "handleposition";
     public static final String PREFS_KEY_BONDED_COLOR = "bondedcolor";
     public static final String PREFS_KEY_SENT_COLOR = "sentcolor";
     public static final String PREFS_KEY_RECEIVED_COLOR = "receivedcolor";
@@ -82,6 +83,7 @@ public class MainApplication extends Application
 
     public boolean collectDevicesStat = false;
     public boolean showDateTimeLabels = false;
+    public boolean handleDevicePosition = true;
 
     public int bondedBgColor = bondedBgColorDefault;
     public int sentMessageColor = sentMessageColorDefault;
@@ -298,6 +300,7 @@ public class MainApplication extends Application
 
         collectDevicesStat = settings.getBoolean(PREFS_KEY_COLLECT_DEVICES, false);
         showDateTimeLabels = settings.getBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, false);
+        handleDevicePosition = settings.getBoolean(PREFS_KEY_HANDLE_POSITION, true);
 
         bondedBgColor = settings.getInt(PREFS_KEY_BONDED_COLOR, bondedBgColorDefault);
         sentMessageColor = settings.getInt(PREFS_KEY_SENT_COLOR, sentMessageColorDefault);
@@ -398,6 +401,7 @@ public class MainApplication extends Application
 
         editor.putBoolean(PREFS_KEY_COLLECT_DEVICES, collectDevicesStat);
         editor.putBoolean(PREFS_KEY_SHOW_DATETIME_LABELS, showDateTimeLabels);
+        editor.putBoolean(PREFS_KEY_HANDLE_POSITION, handleDevicePosition);
 
         editor.putInt(PREFS_KEY_BONDED_COLOR, bondedBgColor);
         editor.putInt(PREFS_KEY_SENT_COLOR, sentMessageColor);

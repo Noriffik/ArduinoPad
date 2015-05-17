@@ -19,6 +19,7 @@ public class SettingsActivity extends PreferenceActivity
 
     SwitchPreference collectDevicesPreference;
     SwitchPreference showDatetimeLabelPreference;
+    SwitchPreference handlePositionPreference;
     ColorPickerPreference bondedDeviceBgPreference;
     ColorPickerPreference sentMessagePreference;
     ColorPickerPreference receivedMessagePreference;
@@ -37,6 +38,7 @@ public class SettingsActivity extends PreferenceActivity
         addPreferencesFromResource(R.xml.preferences);
 
         collectDevicesPreference = (SwitchPreference)findPreference("collect_devices");
+        handlePositionPreference = (SwitchPreference)findPreference("handle_position");
         showDatetimeLabelPreference = (SwitchPreference)findPreference("show_datetime_label");
         bondedDeviceBgPreference = (ColorPickerPreference)findPreference("bonded_device_color");
         sentMessagePreference = (ColorPickerPreference)findPreference("terminal_self_message");
@@ -52,6 +54,7 @@ public class SettingsActivity extends PreferenceActivity
         // Setup the initial values
         collectDevicesPreference.setChecked(getApp().collectDevicesStat);
         showDatetimeLabelPreference.setChecked(getApp().showDateTimeLabels);
+        handlePositionPreference.setChecked(getApp().handleDevicePosition);
 
         bondedDeviceBgPreference.setColor(getApp().bondedBgColor);
         bondedDeviceBgPreference.setOnPreferenceChangeListener(this);
@@ -129,6 +132,11 @@ public class SettingsActivity extends PreferenceActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
         if (D) Log.d(TAG, "onSharedPreferenceChanged " + key);
+
+        if (key.equals("handle_position"))
+        {
+            getApp().handleDevicePosition = handlePositionPreference.isChecked();
+        }
 
         if (key.equals("collect_devices"))
         {
